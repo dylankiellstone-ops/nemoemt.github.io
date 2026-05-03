@@ -63,13 +63,32 @@
 
   /* ---------- HERO ---------- */
   .hero {
-    min-height: 100vh;
-    padding: 110px 48px 60px;
+    min-height: 90vh;
+    padding: 60px 48px 80px;
     position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 80px;
+    align-items: center;
     border-bottom: 1px solid var(--purple);
+  }
+  .hero-content { max-width: 640px; }
+  .hero-visual {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+  .hero-visual img {
+    width: 100%;
+    max-width: 460px;
+    height: auto;
+    filter: drop-shadow(0 8px 24px rgba(78,42,132,0.15));
+    animation: gentle-float 6s ease-in-out infinite;
+  }
+  @keyframes gentle-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
   }
 
   .hero-eyebrow {
@@ -655,7 +674,6 @@
     background: transparent;
     color: var(--cream);
     border-color: var(--cream);
-    margin-left: 12px;
   }
   .btn-secondary:hover {
     background: var(--cream);
@@ -665,10 +683,10 @@
   /* ---------- FOOTER ---------- */
   footer {
     background: var(--paper);
-    padding: 48px;
+    padding: 64px 48px;
     border-top: 4px double var(--purple);
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1.4fr 1fr 1fr 1.2fr;
     gap: 48px;
     font-size: 13px;
   }
@@ -698,7 +716,9 @@
 
   /* ---------- RESPONSIVE ---------- */
   @media (max-width: 900px) {
-    .hero { padding: 100px 24px 40px; }
+    .hero { padding: 60px 24px 60px; grid-template-columns: 1fr; gap: 40px; min-height: auto; }
+    .hero-visual img { max-width: 280px; }
+    .hero-visual { order: -1; }
     section { padding: 60px 24px; }
     .course-grid { grid-template-columns: 1fr; }
     .specs-card { position: static; }
@@ -711,6 +731,7 @@
     .schedule-table { font-size: 13px; }
     .schedule-table th, .schedule-table td { padding: 12px 10px; }
     .schedule-table .topic { width: auto; }
+    #schedule > div[style*="grid-template-columns: repeat(3"] { grid-template-columns: 1fr !important; }
     .cost-band { margin: 0 -24px; padding: 60px 24px; }
     .section-num { right: 24px; top: 16px; }
   }
@@ -743,16 +764,19 @@
 
 <!-- HERO -->
 <header class="hero">
-  <div>
+  <div class="hero-content">
     <div class="hero-eyebrow">EMT-B Certification Course</div>
     <h1>The pre-med club<br><em>making a difference.</em></h1>
     <p class="hero-lede">Northwestern's flagship student-run EMT-B program. Two quarters. One certification. A direct line into emergency medicine — for a fraction of what private programs charge.</p>
     <div class="hero-meta">
       <span>Format<b>In-Person</b></span>
-      <span>Duration<b>~180 hrs</b></span>
+      <span>Duration<b>Jan – Mid-May</b></span>
       <span>Capacity<b>120 seats</b></span>
       <span>Tuition<b>$600</b></span>
     </div>
+  </div>
+  <div class="hero-visual">
+    <img src="assets/nemo_logo.png" alt="NEMO Star of Life logo" />
   </div>
 </header>
 
@@ -776,71 +800,87 @@
 <!-- SCHEDULE -->
 <section id="schedule">
   <div class="section-num">§ 02 / SCHEDULE</div>
-  <div class="section-eyebrow">When it happens</div>
-  <h2 class="section-title">NEMO EMT Course Schedule, <em>2026.</em></h2>
+  <div class="section-eyebrow">What you'll cover</div>
+  <h2 class="section-title">A Winter–Spring arc, ending at <em>the Registry exam.</em></h2>
 
-  <p style="font-size: 16px; max-width: 800px; line-height: 1.6; color: var(--ink); margin-bottom: 32px;">
-    Tuesday lectures are on Zoom. Sunday skills classes are in person in <strong>LR4</strong>. Skills practice / office hours runs Wednesdays in <strong>L211</strong>, 8:30–10pm. Exam days run on a slightly different schedule — let us know in advance if you can't make an exam.
+  <p style="font-size: 17px; max-width: 720px; line-height: 1.6; color: var(--ink); margin-bottom: 48px;">
+    Tuesday lectures on Zoom, Sunday skills sessions in person, optional Wednesday office hours. Each block builds on the last — foundations to assessment to medical to trauma to operations, with three written exams and a psychomotor final spaced across the term.
   </p>
 
-  <table class="schedule-table">
-    <thead>
-      <tr>
-        <th>Date</th>
-        <th>Time</th>
-        <th>Topic / Chapters / Skills</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr><td class="week">Sun, Jan 11</td><td class="topic">1:30–2:30pm · L211</td><td class="detail">Orientation — Intro to class, MyLab, NIMS, Rules &amp; Expectations, Grading, Planning for ride time, International student social security.</td></tr>
-      <tr><td class="week">Tue, Jan 13</td><td class="topic">6–10pm</td><td class="detail">Ch. 1 Intro to EMS · Ch. 2 Well-Being of the EMT · Ch. 3 Lifting/Moving Patients · Ch. 5 Medical Terminology (90 pages)</td></tr>
-      <tr><td class="week">Sun, Jan 18</td><td class="topic">10am–2pm / 2–6pm</td><td class="detail">Skills: Back safety, Mental health, Lifting/Moving, Stretcher transfer, Stair chair, Donning/Doffing gloves &amp; gown.</td></tr>
-      <tr><td class="week">Tue, Jan 20</td><td class="topic">6–10pm</td><td class="detail">Ch. 4 Medical/Legal &amp; Ethical · Ch. 6 Anatomy &amp; Physiology · Ch. 7 Pathophysiology · Ch. 8 Life Span Development (110 pages)</td></tr>
-      <tr><td class="week">Sun, Jan 25</td><td class="topic">12–4pm · LR2</td><td class="detail">Speaker event with Frank Nagorka, JD, Paramedic.</td></tr>
-      <tr><td class="week">Tue, Jan 27</td><td class="topic">6–10pm</td><td class="detail">Ch. 11 Scene Size-Up · Ch. 13 Vital Signs &amp; Monitoring · Ch. 17 Communication &amp; Documentation (90 pages)</td></tr>
-      <tr><td class="week">Sun, Feb 1</td><td class="topic">10am–2pm / 2–6pm</td><td class="detail">Skills: Vital Signs — BP, Pulse, Resps, Pulse ox, Blood glucose, Lung sounds, Pupils, Written/Radio Reports.</td></tr>
-      <tr><td class="week">Tue, Feb 3</td><td class="topic">6–10pm</td><td class="detail">Ch. 12 Primary Assessment · Ch. 14 Principles of Assessment (60 pages)</td></tr>
-      <tr style="background: rgba(232,163,61,0.12) !important;"><td class="week">Sun, Feb 8</td><td class="topic">AM Skills 10–12 · Exam LR2 12–2 · PM Skills 2–4 (LR4)</td><td class="detail"><strong>Written Exam #1</strong> (Ch. 1–14, excl. 9 &amp; 10). Skills: Scene Size-Up, Primary Assessment, History-taking. HW due Sat Feb 7, 11:59pm.</td></tr>
-      <tr><td class="week">Tue, Feb 10</td><td class="topic">6–10pm</td><td class="detail">Ch. 9 Airway Management · Ch. 10 Respiration &amp; Artificial Ventilation · Ch. 19 Respiratory Emergencies (125 pages)</td></tr>
-      <tr><td class="week">Sun, Feb 15</td><td class="topic">10am–2pm / 2–6pm</td><td class="detail">Skills: OPA/NPA/Supraglottic airway, Manual maneuvers, Suctioning, NC, NRB, BVM, O₂ tank set-up, Inhaler, I-Gel, CPAP, Nebulizer.</td></tr>
-      <tr><td class="week">Tue, Feb 17</td><td class="topic">6–10pm</td><td class="detail">Ch. 22 Diabetic Emergencies &amp; AMS · Ch. 23 Allergic Reactions · Ch. 24 Infectious Diseases &amp; Sepsis (70 pages)</td></tr>
-      <tr><td class="week">Sun, Feb 22</td><td class="topic">10am–2pm / 2–6pm</td><td class="detail">Skills: Assessing AMS, Oral glucose / IM Glucagon, Allergic reaction &amp; anaphylaxis management, Psychomotor practice.</td></tr>
-      <tr><td class="week">Tue, Feb 24</td><td class="topic">6–10pm</td><td class="detail">Ch. 28 Hematologic/Renal · Ch. 29 Bleeding/Shock · Ch. 30 Soft-Tissue Trauma (100 pages)</td></tr>
-      <tr><td class="week">Sun, Mar 1</td><td class="topic">10am–2pm / 2–6pm</td><td class="detail">Stop The Bleed &amp; Psychomotor practice.</td></tr>
-      <tr><td class="week">Tue, Mar 3</td><td class="topic">6–10pm</td><td class="detail">Ch. 15 Secondary Assessment · Ch. 16 Reassessment · Ch. 18 General Pharmacology (80 pages)</td></tr>
-      <tr style="background: rgba(232,163,61,0.12) !important;"><td class="week">Sun, Mar 8</td><td class="topic">10am–2pm / 2–6pm</td><td class="detail"><strong>Psychomotor Midterm: Primary Assessment.</strong></td></tr>
-      <tr><td class="week">Tue, Mar 10</td><td class="topic">6–10pm</td><td class="detail">Ch. 20 Cardiac Emergencies · Ch. 21 Resuscitation (70 pages)</td></tr>
-      <tr style="background: rgba(78,42,132,0.06) !important;"><td class="week">Mar 15 – Mar 29</td><td class="topic">— Spring Break —</td><td class="detail">No class.</td></tr>
-      <tr><td class="week">Tue, Mar 31</td><td class="topic">6–10pm</td><td class="detail">Ch. 25 Poisoning/Overdose · Ch. 26 Abdominal Emergencies · Ch. 27 Behavioral &amp; Psychiatric Emergencies (70 pages)</td></tr>
-      <tr style="background: rgba(232,163,61,0.12) !important;"><td class="week">Sun, Apr 5</td><td class="topic">AM Skills 10–12 · Exam LR2 12–2 · PM Skills 2–4 (LR4)</td><td class="detail">Skills: Cardiac leads, OD treatment / IN Narcan, Restraint, De-escalation, Radio reports. <strong>Written Exam #2</strong> (Ch. 9–10, 15–30). HW due Sat Apr 4, 11:59pm.</td></tr>
-      <tr><td class="week">Tue, Apr 7</td><td class="topic">6–10pm</td><td class="detail">Ch. 31 Chest &amp; Abdominal Trauma · Ch. 32 Musculoskeletal Trauma · Ch. 33 Trauma to Head/Neck/Spine (130 pages)</td></tr>
-      <tr><td class="week">Sun, Apr 12</td><td class="topic">10am–2pm / 2–6pm</td><td class="detail">Skills: Splinting, Sling/Swath, Pelvic binder, Traction splint, C-spine immobilization, Chest seals, Eviscerations, Helmet removal, Impaled objects.</td></tr>
-      <tr><td class="week">Tue, Apr 14</td><td class="topic">6–10pm</td><td class="detail">Ch. 34 Multisystem Trauma · Ch. 35 Environmental Emergencies · Ch. 36 OB/GYN Emergencies (100 pages)</td></tr>
-      <tr><td class="week">Sun, Apr 19</td><td class="topic">10am–2pm / 2–6pm</td><td class="detail">Skills: Head-to-toe trauma assessment, Log roll, Extrication, KED, Delivery.</td></tr>
-      <tr><td class="week">Tue, Apr 21</td><td class="topic">6–10pm</td><td class="detail">Ch. 37 Patients with Special Challenges · Ch. 38 EMS Operations · Ch. 39 Hazardous Materials/MCIs (110 pages)</td></tr>
-      <tr><td class="week">Sun, Apr 26</td><td class="topic">10am–2pm / 2–6pm</td><td class="detail">Mass Casualty Drill — JUMP/START Triage.</td></tr>
-      <tr><td class="week">Tue, Apr 28</td><td class="topic">6–10pm</td><td class="detail">Ch. 40 Highway Safety &amp; Vehicle Ops · Ch. 41 EMS Response to Terrorism (70 pages)</td></tr>
-      <tr style="background: rgba(232,163,61,0.12) !important;"><td class="week">Sun, May 3</td><td class="topic">AM Skills 10–12 · Exam LR2 12–2 · PM Skills 2–4 (LR4)</td><td class="detail"><strong>Written Exam #3</strong> (Ch. 31–41) &amp; Final Practical Practice. Remaining HW due Sat May 2, 11:59pm.</td></tr>
-      <tr><td class="week">Tue, May 5</td><td class="topic">6–10pm</td><td class="detail">Final Review Session · NREMT Sign-Up · Licensing after NREMT.</td></tr>
-      <tr style="background: rgba(232,163,61,0.18) !important;"><td class="week">Sun, May 10</td><td class="topic">10am–2pm / 2–6pm</td><td class="detail"><strong>Final Written Exam · Skills Exam.</strong></td></tr>
-      <tr style="background: rgba(232,163,61,0.18) !important;"><td class="week">Tue, May 12</td><td class="topic">6–10pm</td><td class="detail">Final Psychomotor Testing.</td></tr>
-      <tr style="background: rgba(232,163,61,0.18) !important;"><td class="week">Wed, May 13</td><td class="topic">6–10pm</td><td class="detail">Final Psychomotor Testing.</td></tr>
-      <tr style="background: rgba(232,163,61,0.18) !important;"><td class="week">Thu, May 14</td><td class="topic">6–10pm</td><td class="detail">Final Psychomotor Testing.</td></tr>
-      <tr><td class="week">Sun, May 17</td><td class="topic">—</td><td class="detail">End of course.</td></tr>
-    </tbody>
-  </table>
+  <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--purple); border: 1px solid var(--purple);">
 
-  <div style="margin-top: 48px; display: grid; grid-template-columns: 1fr 1fr; gap: 32px; max-width: 800px;">
-    <div>
-      <h4 style="font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--purple); margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid var(--purple);">Grading Breakdown</h4>
-      <div style="display: flex; justify-content: space-between; padding: 8px 0; font-size: 14px;"><span>Homework</span><strong>20%</strong></div>
-      <div style="display: flex; justify-content: space-between; padding: 8px 0; font-size: 14px;"><span>Participation / Cameras (Tue)</span><strong>5%</strong></div>
-      <div style="display: flex; justify-content: space-between; padding: 8px 0; font-size: 14px;"><span>Written Exams (×3)</span><strong>30%</strong></div>
-      <div style="display: flex; justify-content: space-between; padding: 8px 0; font-size: 14px;"><span>Final Written Exam</span><strong>15%</strong></div>
-      <div style="display: flex; justify-content: space-between; padding: 8px 0; font-size: 14px;"><span>Skills Exam</span><strong>20%</strong></div>
-      <div style="display: flex; justify-content: space-between; padding: 8px 0; font-size: 14px;"><span>Final Psychomotor</span><strong>10% + P/NP</strong></div>
-      <div style="display: flex; justify-content: space-between; padding: 8px 0; font-size: 14px; color: var(--purple-deep);"><span>Midterm Psychomotor</span><strong>P/NP</strong></div>
+    <div style="background: var(--paper); padding: 32px 28px;">
+      <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.2em; color: var(--accent); margin-bottom: 12px;">JANUARY</div>
+      <h4 style="font-family: 'Fraunces', serif; font-size: 24px; font-weight: 700; color: var(--purple-ink); margin-bottom: 12px; line-height: 1.1;">Foundations</h4>
+      <p style="font-size: 14px; line-height: 1.5; opacity: 0.85;">Intro to EMS, well-being, lifting and moving, medical terminology, anatomy, pathophysiology, and the medical-legal frame.</p>
     </div>
+
+    <div style="background: var(--paper); padding: 32px 28px;">
+      <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.2em; color: var(--accent); margin-bottom: 12px;">JAN – FEB</div>
+      <h4 style="font-family: 'Fraunces', serif; font-size: 24px; font-weight: 700; color: var(--purple-ink); margin-bottom: 12px; line-height: 1.1;">Patient Assessment</h4>
+      <p style="font-size: 14px; line-height: 1.5; opacity: 0.85;">Scene size-up, primary survey, vital signs, history-taking, communication and documentation.</p>
+    </div>
+
+    <div style="background: var(--paper); padding: 32px 28px;">
+      <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.2em; color: var(--accent); margin-bottom: 12px;">FEBRUARY</div>
+      <h4 style="font-family: 'Fraunces', serif; font-size: 24px; font-weight: 700; color: var(--purple-ink); margin-bottom: 12px; line-height: 1.1;">Airway &amp; Respiratory</h4>
+      <p style="font-size: 14px; line-height: 1.5; opacity: 0.85;">Airway management, oxygen delivery, BVM and adjuncts, respiratory emergencies, CPAP and nebulizer use.</p>
+    </div>
+
+    <div style="background: var(--paper); padding: 32px 28px;">
+      <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.2em; color: var(--accent); margin-bottom: 12px;">FEBRUARY</div>
+      <h4 style="font-family: 'Fraunces', serif; font-size: 24px; font-weight: 700; color: var(--purple-ink); margin-bottom: 12px; line-height: 1.1;">Medical Emergencies I</h4>
+      <p style="font-size: 14px; line-height: 1.5; opacity: 0.85;">Diabetic emergencies and altered mental status, allergic reactions and anaphylaxis, infectious disease and sepsis.</p>
+    </div>
+
+    <div style="background: var(--paper); padding: 32px 28px;">
+      <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.2em; color: var(--accent); margin-bottom: 12px;">FEB – MAR</div>
+      <h4 style="font-family: 'Fraunces', serif; font-size: 24px; font-weight: 700; color: var(--purple-ink); margin-bottom: 12px; line-height: 1.1;">Bleeding &amp; Shock</h4>
+      <p style="font-size: 14px; line-height: 1.5; opacity: 0.85;">Hematologic and renal emergencies, hemorrhage control, soft-tissue trauma, Stop The Bleed.</p>
+    </div>
+
+    <div style="background: var(--paper); padding: 32px 28px;">
+      <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.2em; color: var(--accent); margin-bottom: 12px;">MARCH</div>
+      <h4 style="font-family: 'Fraunces', serif; font-size: 24px; font-weight: 700; color: var(--purple-ink); margin-bottom: 12px; line-height: 1.1;">Cardiac &amp; Pharmacology</h4>
+      <p style="font-size: 14px; line-height: 1.5; opacity: 0.85;">Cardiac emergencies, resuscitation, secondary assessment and reassessment, general pharmacology.</p>
+    </div>
+
+    <div style="background: var(--paper); padding: 32px 28px;">
+      <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.2em; color: var(--accent); margin-bottom: 12px;">APRIL</div>
+      <h4 style="font-family: 'Fraunces', serif; font-size: 24px; font-weight: 700; color: var(--purple-ink); margin-bottom: 12px; line-height: 1.1;">Toxicology &amp; Behavioral</h4>
+      <p style="font-size: 14px; line-height: 1.5; opacity: 0.85;">Poisoning and overdose (including IN Narcan), abdominal emergencies, behavioral and psychiatric calls, de-escalation.</p>
+    </div>
+
+    <div style="background: var(--paper); padding: 32px 28px;">
+      <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.2em; color: var(--accent); margin-bottom: 12px;">APRIL</div>
+      <h4 style="font-family: 'Fraunces', serif; font-size: 24px; font-weight: 700; color: var(--purple-ink); margin-bottom: 12px; line-height: 1.1;">Trauma</h4>
+      <p style="font-size: 14px; line-height: 1.5; opacity: 0.85;">Chest and abdominal trauma, musculoskeletal injuries, head and spine, splinting, c-spine immobilization, extrication.</p>
+    </div>
+
+    <div style="background: var(--paper); padding: 32px 28px;">
+      <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.2em; color: var(--accent); margin-bottom: 12px;">APRIL</div>
+      <h4 style="font-family: 'Fraunces', serif; font-size: 24px; font-weight: 700; color: var(--purple-ink); margin-bottom: 12px; line-height: 1.1;">Special Populations</h4>
+      <p style="font-size: 14px; line-height: 1.5; opacity: 0.85;">Multisystem trauma, environmental emergencies, OB/GYN and delivery, pediatric and geriatric considerations.</p>
+    </div>
+
+    <div style="background: var(--paper); padding: 32px 28px;">
+      <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.2em; color: var(--accent); margin-bottom: 12px;">APRIL</div>
+      <h4 style="font-family: 'Fraunces', serif; font-size: 24px; font-weight: 700; color: var(--purple-ink); margin-bottom: 12px; line-height: 1.1;">EMS Operations</h4>
+      <p style="font-size: 14px; line-height: 1.5; opacity: 0.85;">Patients with special challenges, hazmat and MCIs, JUMP/START triage in a mass casualty drill.</p>
+    </div>
+
+    <div style="background: var(--paper); padding: 32px 28px;">
+      <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.2em; color: var(--accent); margin-bottom: 12px;">LATE APRIL</div>
+      <h4 style="font-family: 'Fraunces', serif; font-size: 24px; font-weight: 700; color: var(--purple-ink); margin-bottom: 12px; line-height: 1.1;">Safety &amp; Response</h4>
+      <p style="font-size: 14px; line-height: 1.5; opacity: 0.85;">Highway safety, vehicle operations, EMS response to terrorism, system-level decision-making.</p>
+    </div>
+
+    <div style="background: var(--purple); color: var(--cream); padding: 32px 28px;">
+      <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.2em; color: var(--accent); margin-bottom: 12px;">MAY</div>
+      <h4 style="font-family: 'Fraunces', serif; font-size: 24px; font-weight: 700; color: var(--cream); margin-bottom: 12px; line-height: 1.1;">Finals &amp; NREMT</h4>
+      <p style="font-size: 14px; line-height: 1.5; opacity: 0.9;">Final written exam, skills exam, three nights of psychomotor testing. NREMT sign-up and licensing.</p>
+    </div>
+
   </div>
 </section>
 
@@ -979,9 +1019,10 @@
   <div class="section-eyebrow">Next cohort: Winter 2027</div>
   <h2>Get on <em>the rig.</em></h2>
   <p>Applications open in fall quarter. Capacity is 120 seats. We hold an info session in the first two weeks of fall — bring questions, bring snacks.</p>
-  <div>
-    <a class="btn" href="#">Join the interest list</a>
-    <a class="btn btn-secondary" href="#">Email NEMO</a>
+  <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 12px;">
+    <a class="btn" href="#">Application</a>
+    <a class="btn btn-secondary" href="#">Join the interest list</a>
+    <a class="btn btn-secondary" href="mailto:nemo@u.northwestern.edu">Email NEMO</a>
   </div>
 </section>
 
@@ -989,6 +1030,8 @@
 <footer>
   <div>
     <div class="footer-mark">NEMO</div>
+    <p style="margin-top: 14px; font-family: 'Fraunces', serif; font-size: 15px; color: var(--purple-ink); line-height: 1.4;">Northwestern Emergency<br>Medical Organization</p>
+    <p style="margin-top: 12px; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.2em; color: var(--purple); text-transform: uppercase;">Est. 2006 · Evanston, IL</p>
   </div>
   <div>
     <h5>Course</h5>
@@ -996,6 +1039,12 @@
     <a href="#schedule">Schedule</a>
     <a href="#cost">Tuition</a>
     <a href="#faq">FAQ</a>
+  </div>
+  <div>
+    <h5>Apply</h5>
+    <a href="#">Application</a>
+    <a href="#">Join the interest list</a>
+    <a href="mailto:nemo@u.northwestern.edu">Email NEMO</a>
   </div>
   <div>
     <h5>Connect</h5>
