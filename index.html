@@ -53,19 +53,6 @@
     text-transform: uppercase;
     border-bottom: 1px solid rgba(245,239,227,0.15);
   }
-  .topbar .pulse {
-    display: inline-block;
-    width: 8px; height: 8px;
-    background: var(--accent);
-    border-radius: 50%;
-    margin-right: 8px;
-    animation: pulse 1.6s ease-in-out infinite;
-    vertical-align: middle;
-  }
-  @keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.5; transform: scale(1.3); }
-  }
   .topbar nav { display: flex; gap: 24px; }
   .topbar nav a {
     color: var(--cream);
@@ -79,9 +66,9 @@
     min-height: 100vh;
     padding: 110px 48px 60px;
     position: relative;
-    display: grid;
-    grid-template-columns: 1fr 380px;
-    gap: 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     border-bottom: 1px solid var(--purple);
   }
 
@@ -420,7 +407,7 @@
   .cost-band {
     background: var(--purple);
     color: var(--cream);
-    padding: 80px 48px;
+    padding: 100px 96px;
     margin: 0 -48px;
     border-top: 1px solid var(--purple);
     border-bottom: 1px solid var(--purple);
@@ -514,14 +501,61 @@
   }
 
   /* ---------- LEADERSHIP ---------- */
-  .leadership-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
+  .leadership-scroll {
+    display: flex;
     gap: 32px;
     margin-top: 32px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: 24px;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    /* fade right edge as visual hint that content scrolls */
+    mask-image: linear-gradient(to right, black 0%, black 92%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, black 0%, black 92%, transparent 100%);
+  }
+  .leadership-scroll::-webkit-scrollbar {
+    height: 6px;
+  }
+  .leadership-scroll::-webkit-scrollbar-track {
+    background: var(--cream);
+  }
+  .leadership-scroll::-webkit-scrollbar-thumb {
+    background: var(--purple);
+  }
+  .leadership-hint {
+    margin-top: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--purple);
+    opacity: 0.6;
   }
   .person {
     text-align: left;
+    flex: 0 0 280px;
+    scroll-snap-align: start;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    transition: transform 0.3s ease;
+  }
+  .person:hover { transform: translateY(-4px); }
+  .person:hover .photo-frame { border-color: var(--accent); }
+  .person:hover .photo-frame::after {
+    content: 'View →';
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--purple);
+    background: var(--cream);
+    padding: 4px 8px;
+    z-index: 2;
   }
   .person .photo-frame {
     aspect-ratio: 3/4;
@@ -661,18 +695,16 @@
     line-height: 0.9;
     letter-spacing: -0.04em;
   }
-  .footer-mark span { color: var(--accent); }
 
   /* ---------- RESPONSIVE ---------- */
   @media (max-width: 900px) {
-    .hero { grid-template-columns: 1fr; padding: 100px 24px 40px; }
-    .hero-aside { border-left: none; border-top: 1px solid var(--purple); padding-left: 0; padding-top: 32px; }
+    .hero { padding: 100px 24px 40px; }
     section { padding: 60px 24px; }
     .course-grid { grid-template-columns: 1fr; }
     .specs-card { position: static; }
     .modules { grid-template-columns: 1fr; }
     .cost-grid { grid-template-columns: 1fr; }
-    .leadership-grid { grid-template-columns: repeat(2, 1fr); }
+    .leadership-scroll .person { flex: 0 0 240px; }
     footer { grid-template-columns: 1fr; padding: 32px 24px; }
     .topbar { padding: 10px 16px; font-size: 9px; }
     .topbar nav { gap: 12px; }
@@ -699,10 +731,9 @@
 
 <!-- TOP BAR -->
 <div class="topbar">
-  <div><span class="pulse"></span>NEMO · NORTHWESTERN EMERGENCY MEDICAL ORGANIZATION · EST. SAFC PROJECT 70031142</div>
+  <div>NEMO · NORTHWESTERN EMERGENCY MEDICAL ORGANIZATION · EST. 2006</div>
   <nav>
     <a href="#course">Course</a>
-    <a href="#curriculum">Curriculum</a>
     <a href="#schedule">Schedule</a>
     <a href="#cost">Cost</a>
     <a href="#faq">FAQ</a>
@@ -713,7 +744,7 @@
 <!-- HERO -->
 <header class="hero">
   <div>
-    <div class="hero-eyebrow">EMT-B Certification Course · Winter–Spring 2027</div>
+    <div class="hero-eyebrow">EMT-B Certification Course</div>
     <h1>The course<br>that puts you<br><em>on the rig.</em></h1>
     <p class="hero-lede">Northwestern's flagship student-run EMT-B program. Two quarters. One certification. A direct line into emergency medicine — for a fraction of what private programs charge.</p>
     <div class="hero-meta">
@@ -723,38 +754,6 @@
       <span>Tuition<b>$600</b></span>
     </div>
   </div>
-  <aside class="hero-aside">
-    <div>
-      <div class="ecg-strip">
-        <svg viewBox="0 0 400 40" preserveAspectRatio="none">
-          <polyline fill="none" stroke="#4E2A84" stroke-width="1.5"
-            points="0,20 60,20 70,20 75,8 82,32 88,5 94,35 100,20 180,20 190,20 195,12 202,28 208,20 280,20 290,20 295,15 302,25 308,20 400,20" />
-        </svg>
-      </div>
-      <div class="star-wrap">
-        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-          <g transform="translate(100,100)">
-            <!-- 6-pointed star of life style: 3 elongated rectangles rotated -->
-            <g fill="#4E2A84" stroke="#F5EFE3" stroke-width="3">
-              <rect x="-22" y="-90" width="44" height="180" rx="3"/>
-              <rect x="-22" y="-90" width="44" height="180" rx="3" transform="rotate(60)"/>
-              <rect x="-22" y="-90" width="44" height="180" rx="3" transform="rotate(120)"/>
-            </g>
-            <!-- rod of asclepius (simplified) -->
-            <line x1="0" y1="-50" x2="0" y2="50" stroke="#F5EFE3" stroke-width="4" stroke-linecap="round"/>
-            <path d="M 0,-40 Q -12,-25 0,-10 Q 12,5 0,20 Q -12,35 0,45"
-                  stroke="#F5EFE3" stroke-width="4" fill="none" stroke-linecap="round"/>
-            <circle cx="-2" cy="-42" r="3" fill="#E8A33D"/>
-          </g>
-        </svg>
-      </div>
-    </div>
-    <div class="aside-callout">
-      <div class="label">EST. ANNUAL OUTPUT</div>
-      <div class="number">~100</div>
-      <div class="desc">Northwestern students certified per year — growing to 120 in 2027.</div>
-    </div>
-  </aside>
 </header>
 
 <!-- COURSE OVERVIEW -->
@@ -763,115 +762,94 @@
   <div class="section-eyebrow">What this is</div>
   <h2 class="section-title">A real EMT-B course, run <em>by students</em>, on a campus schedule, at a campus price.</h2>
 
-  <div class="course-grid">
-    <div class="course-prose">
-      <p>NEMO's annual EMT-Basic course is the largest student-run pre-clinical training program at Northwestern. We partner with MedEx Ambulance Service — a state-licensed EMS provider — to deliver the same Illinois Department of Public Health (IDPH) approved curriculum that anchors paid commercial programs across the Chicago area.</p>
+  <div class="course-prose">
+    <p>NEMO's annual EMT-Basic course is the largest student-run pre-clinical training program at Northwestern. We partner with MedEx Ambulance Service — a state-licensed EMS provider — to deliver the same Illinois Department of Public Health (IDPH) approved curriculum that anchors paid commercial programs across the Chicago area.</p>
 
-      <p>The course runs across Winter and Spring quarters. Lectures, hands-on skills sessions, simulation labs, and clinical rotations are scheduled around academic loads. By the time students sit for the National Registry of Emergency Medical Technicians (NREMT) cognitive and psychomotor exams in late spring, they've logged the lecture hours, clinical hours, and competency check-offs required for state and national licensure.</p>
+    <p>The course runs across Winter and Spring quarters. Lectures, hands-on skills sessions, simulation labs, and clinical rotations are scheduled around academic loads. By the time students sit for the National Registry of Emergency Medical Technicians (NREMT) cognitive and psychomotor exams in late spring, they've logged the lecture hours, clinical hours, and competency check-offs required for state and national licensure.</p>
 
-      <p>NEMO takes zero profit. Tuition flows directly from students to MedEx for instruction and materials. SAFC funding covers infrastructure — manikins, AED trainers, in-house instructor certification — that keeps the price floor as low as we can push it.</p>
+    <p>NEMO takes zero profit. Tuition flows directly from students to MedEx for instruction and materials. Outside funding covers infrastructure — manikins, AED trainers, in-house instructor certification — that keeps the price floor as low as we can push it.</p>
 
-      <p>For pre-meds, this is the cheapest route into clinical exposure that actually counts on an application. For students from EMS backgrounds, it's the certification you bring home. For everyone else, it's the most useful elective you'll ever take.</p>
-    </div>
-
-    <aside class="specs-card">
-      <h3>At a Glance</h3>
-      <div class="spec-row"><span class="key">Course</span><span class="val">EMT-Basic</span></div>
-      <div class="spec-row"><span class="key">Provider</span><span class="val">MedEx Ambulance Service</span></div>
-      <div class="spec-row"><span class="key">Approval</span><span class="val">IDPH</span></div>
-      <div class="spec-row"><span class="key">Quarters</span><span class="val">Winter → Spring</span></div>
-      <div class="spec-row"><span class="key">Lecture</span><span class="val">~120 hrs</span></div>
-      <div class="spec-row"><span class="key">Clinical</span><span class="val">≥10 patient contacts</span></div>
-      <div class="spec-row"><span class="key">Exam</span><span class="val">NREMT (cognitive + psychomotor)</span></div>
-      <div class="spec-row"><span class="key">Result</span><span class="val">IL EMT-B License</span></div>
-    </aside>
-  </div>
-</section>
-
-<!-- CURRICULUM -->
-<section id="curriculum">
-  <div class="section-num">§ 02 / CURRICULUM</div>
-  <div class="section-eyebrow">What you'll learn</div>
-  <h2 class="section-title">Six modules, mapped to the <em>National EMS Education Standards.</em></h2>
-
-  <div class="modules">
-    <div class="module">
-      <div class="mod-num">M.01</div>
-      <h4>Foundations & Patient Assessment</h4>
-      <p>The framework every call runs on: scene size-up, primary survey, vitals, history-taking, and the secondary assessment.</p>
-      <div class="topics">SAMPLE · OPQRST · SCENE SAFETY · LIFTING & MOVING · COMMUNICATION & DOCUMENTATION</div>
-    </div>
-    <div class="module">
-      <div class="mod-num">M.02</div>
-      <h4>Airway, Breathing, Circulation</h4>
-      <p>Oxygen delivery, basic and advanced airway adjuncts, BVM ventilation, and the cardiac chain of survival including CPR and AED use.</p>
-      <div class="topics">OPA / NPA · NRB · BVM · SUCTION · AHA BLS · ROSC PROTOCOL</div>
-    </div>
-    <div class="module">
-      <div class="mod-num">M.03</div>
-      <h4>Medical Emergencies</h4>
-      <p>The bread-and-butter of 911 calls: cardiac, respiratory, neurological, endocrine, GI/GU, behavioral, and toxicological emergencies.</p>
-      <div class="topics">ACS · STROKE (CINCINNATI) · DKA · ANAPHYLAXIS · OD / NARCAN · SEIZURE</div>
-    </div>
-    <div class="module">
-      <div class="mod-num">M.04</div>
-      <h4>Trauma</h4>
-      <p>Mechanism-based assessment, hemorrhage control, spinal motion restriction, splinting, and rapid transport decisions.</p>
-      <div class="topics">TOURNIQUETS · TXA · MILS · TRACTION SPLINTS · TRAUMA TRIAGE · MCI</div>
-    </div>
-    <div class="module">
-      <div class="mod-num">M.05</div>
-      <h4>Special Populations</h4>
-      <p>Pediatric, geriatric, obstetric, and patients with special healthcare needs — what changes anatomically, physiologically, and procedurally.</p>
-      <div class="topics">PAT · APGAR · NEONATAL RESUSCITATION · DEMENTIA · BARIATRIC · TRACH / VENT</div>
-    </div>
-    <div class="module">
-      <div class="mod-num">M.06</div>
-      <h4>EMS Operations</h4>
-      <p>The system you'll work in: incident command, hazmat awareness, ambulance operations, rescue access, and provider wellness.</p>
-      <div class="topics">NIMS · ICS · HAZMAT · EXTRICATION · PPE · MENTAL HEALTH · HIPAA</div>
-    </div>
+    <p>For pre-meds, this is the cheapest route into clinical exposure that actually counts on an application. For students from EMS backgrounds, it's the certification you bring home. For everyone else, it's the most useful elective you'll ever take.</p>
   </div>
 </section>
 
 <!-- SCHEDULE -->
 <section id="schedule">
-  <div class="section-num">§ 03 / SCHEDULE</div>
+  <div class="section-num">§ 02 / SCHEDULE</div>
   <div class="section-eyebrow">When it happens</div>
-  <h2 class="section-title">A two-quarter arc, ending at <em>the Registry exam.</em></h2>
+  <h2 class="section-title">NEMO EMT Course Schedule, <em>2026.</em></h2>
+
+  <p style="font-size: 16px; max-width: 800px; line-height: 1.6; color: var(--ink); margin-bottom: 32px;">
+    Tuesday lectures are on Zoom. Sunday skills classes are in person in <strong>LR4</strong>. Skills practice / office hours runs Wednesdays in <strong>L211</strong>, 8:30–10pm. Exam days run on a slightly different schedule — let us know in advance if you can't make an exam.
+  </p>
 
   <table class="schedule-table">
     <thead>
       <tr>
-        <th>Phase</th>
-        <th>Topic</th>
-        <th>Detail</th>
+        <th>Date</th>
+        <th>Time</th>
+        <th>Topic / Chapters / Skills</th>
       </tr>
     </thead>
     <tbody>
-      <tr><td class="week">WK 01–02</td><td class="topic">Orientation & EMS Systems</td><td class="detail">Scope of practice, IL EMS Act, medical-legal foundations, course logistics.</td></tr>
-      <tr><td class="week">WK 03–04</td><td class="topic">Patient Assessment</td><td class="detail">Scene size-up, primary/secondary survey, vitals — first hands-on lab.</td></tr>
-      <tr><td class="week">WK 05–06</td><td class="topic">Airway & Ventilation</td><td class="detail">Oxygen therapy, adjuncts, BVM technique. AHA BLS certification embedded.</td></tr>
-      <tr><td class="week">WK 07–08</td><td class="topic">Cardiac Emergencies</td><td class="detail">ACS recognition, AED operation, CPR competency check-off.</td></tr>
-      <tr><td class="week">WK 09–10</td><td class="topic">Medical I (Resp / Neuro / Endo)</td><td class="detail">Asthma, COPD, stroke, seizure, diabetic emergencies.</td></tr>
-      <tr><td class="week">— BREAK —</td><td class="topic">Quarter Transition</td><td class="detail">Reading week + cumulative skills review.</td></tr>
-      <tr><td class="week">WK 11–12</td><td class="topic">Medical II (GI / GU / Behavioral / Tox)</td><td class="detail">Abdominal pain, psych emergencies, overdose & poisoning.</td></tr>
-      <tr><td class="week">WK 13–14</td><td class="topic">Trauma I — Soft Tissue & Hemorrhage</td><td class="detail">Bleeding control, tourniquets, burns, dressing & bandaging lab.</td></tr>
-      <tr><td class="week">WK 15–16</td><td class="topic">Trauma II — Musculoskeletal & Spine</td><td class="detail">Splinting practical, spinal motion restriction, head injuries.</td></tr>
-      <tr><td class="week">WK 17–18</td><td class="topic">Special Populations</td><td class="detail">Pediatrics, OB/childbirth, geriatrics, behavioral health.</td></tr>
-      <tr><td class="week">WK 19</td><td class="topic">Operations & MCI</td><td class="detail">Ambulance ops, ICS, mass-casualty triage simulation.</td></tr>
-      <tr><td class="week">WK 20</td><td class="topic">Clinical Rotations</td><td class="detail">ED + ambulance ride-alongs through MedEx clinical sites.</td></tr>
-      <tr><td class="week">FINAL</td><td class="topic">NREMT Exam</td><td class="detail">Cognitive (computer-adaptive) + psychomotor stations. Pass = IL licensure.</td></tr>
+      <tr><td class="week">Sun, Jan 11</td><td class="topic">1:30–2:30pm · L211</td><td class="detail">Orientation — Intro to class, MyLab, NIMS, Rules &amp; Expectations, Grading, Planning for ride time, International student social security.</td></tr>
+      <tr><td class="week">Tue, Jan 13</td><td class="topic">6–10pm</td><td class="detail">Ch. 1 Intro to EMS · Ch. 2 Well-Being of the EMT · Ch. 3 Lifting/Moving Patients · Ch. 5 Medical Terminology (90 pages)</td></tr>
+      <tr><td class="week">Sun, Jan 18</td><td class="topic">10am–2pm / 2–6pm</td><td class="detail">Skills: Back safety, Mental health, Lifting/Moving, Stretcher transfer, Stair chair, Donning/Doffing gloves &amp; gown.</td></tr>
+      <tr><td class="week">Tue, Jan 20</td><td class="topic">6–10pm</td><td class="detail">Ch. 4 Medical/Legal &amp; Ethical · Ch. 6 Anatomy &amp; Physiology · Ch. 7 Pathophysiology · Ch. 8 Life Span Development (110 pages)</td></tr>
+      <tr><td class="week">Sun, Jan 25</td><td class="topic">12–4pm · LR2</td><td class="detail">Speaker event with Frank Nagorka, JD, Paramedic.</td></tr>
+      <tr><td class="week">Tue, Jan 27</td><td class="topic">6–10pm</td><td class="detail">Ch. 11 Scene Size-Up · Ch. 13 Vital Signs &amp; Monitoring · Ch. 17 Communication &amp; Documentation (90 pages)</td></tr>
+      <tr><td class="week">Sun, Feb 1</td><td class="topic">10am–2pm / 2–6pm</td><td class="detail">Skills: Vital Signs — BP, Pulse, Resps, Pulse ox, Blood glucose, Lung sounds, Pupils, Written/Radio Reports.</td></tr>
+      <tr><td class="week">Tue, Feb 3</td><td class="topic">6–10pm</td><td class="detail">Ch. 12 Primary Assessment · Ch. 14 Principles of Assessment (60 pages)</td></tr>
+      <tr style="background: rgba(232,163,61,0.12) !important;"><td class="week">Sun, Feb 8</td><td class="topic">AM Skills 10–12 · Exam LR2 12–2 · PM Skills 2–4 (LR4)</td><td class="detail"><strong>Written Exam #1</strong> (Ch. 1–14, excl. 9 &amp; 10). Skills: Scene Size-Up, Primary Assessment, History-taking. HW due Sat Feb 7, 11:59pm.</td></tr>
+      <tr><td class="week">Tue, Feb 10</td><td class="topic">6–10pm</td><td class="detail">Ch. 9 Airway Management · Ch. 10 Respiration &amp; Artificial Ventilation · Ch. 19 Respiratory Emergencies (125 pages)</td></tr>
+      <tr><td class="week">Sun, Feb 15</td><td class="topic">10am–2pm / 2–6pm</td><td class="detail">Skills: OPA/NPA/Supraglottic airway, Manual maneuvers, Suctioning, NC, NRB, BVM, O₂ tank set-up, Inhaler, I-Gel, CPAP, Nebulizer.</td></tr>
+      <tr><td class="week">Tue, Feb 17</td><td class="topic">6–10pm</td><td class="detail">Ch. 22 Diabetic Emergencies &amp; AMS · Ch. 23 Allergic Reactions · Ch. 24 Infectious Diseases &amp; Sepsis (70 pages)</td></tr>
+      <tr><td class="week">Sun, Feb 22</td><td class="topic">10am–2pm / 2–6pm</td><td class="detail">Skills: Assessing AMS, Oral glucose / IM Glucagon, Allergic reaction &amp; anaphylaxis management, Psychomotor practice.</td></tr>
+      <tr><td class="week">Tue, Feb 24</td><td class="topic">6–10pm</td><td class="detail">Ch. 28 Hematologic/Renal · Ch. 29 Bleeding/Shock · Ch. 30 Soft-Tissue Trauma (100 pages)</td></tr>
+      <tr><td class="week">Sun, Mar 1</td><td class="topic">10am–2pm / 2–6pm</td><td class="detail">Stop The Bleed &amp; Psychomotor practice.</td></tr>
+      <tr><td class="week">Tue, Mar 3</td><td class="topic">6–10pm</td><td class="detail">Ch. 15 Secondary Assessment · Ch. 16 Reassessment · Ch. 18 General Pharmacology (80 pages)</td></tr>
+      <tr style="background: rgba(232,163,61,0.12) !important;"><td class="week">Sun, Mar 8</td><td class="topic">10am–2pm / 2–6pm</td><td class="detail"><strong>Psychomotor Midterm: Primary Assessment.</strong></td></tr>
+      <tr><td class="week">Tue, Mar 10</td><td class="topic">6–10pm</td><td class="detail">Ch. 20 Cardiac Emergencies · Ch. 21 Resuscitation (70 pages)</td></tr>
+      <tr style="background: rgba(78,42,132,0.06) !important;"><td class="week">Mar 15 – Mar 29</td><td class="topic">— Spring Break —</td><td class="detail">No class.</td></tr>
+      <tr><td class="week">Tue, Mar 31</td><td class="topic">6–10pm</td><td class="detail">Ch. 25 Poisoning/Overdose · Ch. 26 Abdominal Emergencies · Ch. 27 Behavioral &amp; Psychiatric Emergencies (70 pages)</td></tr>
+      <tr style="background: rgba(232,163,61,0.12) !important;"><td class="week">Sun, Apr 5</td><td class="topic">AM Skills 10–12 · Exam LR2 12–2 · PM Skills 2–4 (LR4)</td><td class="detail">Skills: Cardiac leads, OD treatment / IN Narcan, Restraint, De-escalation, Radio reports. <strong>Written Exam #2</strong> (Ch. 9–10, 15–30). HW due Sat Apr 4, 11:59pm.</td></tr>
+      <tr><td class="week">Tue, Apr 7</td><td class="topic">6–10pm</td><td class="detail">Ch. 31 Chest &amp; Abdominal Trauma · Ch. 32 Musculoskeletal Trauma · Ch. 33 Trauma to Head/Neck/Spine (130 pages)</td></tr>
+      <tr><td class="week">Sun, Apr 12</td><td class="topic">10am–2pm / 2–6pm</td><td class="detail">Skills: Splinting, Sling/Swath, Pelvic binder, Traction splint, C-spine immobilization, Chest seals, Eviscerations, Helmet removal, Impaled objects.</td></tr>
+      <tr><td class="week">Tue, Apr 14</td><td class="topic">6–10pm</td><td class="detail">Ch. 34 Multisystem Trauma · Ch. 35 Environmental Emergencies · Ch. 36 OB/GYN Emergencies (100 pages)</td></tr>
+      <tr><td class="week">Sun, Apr 19</td><td class="topic">10am–2pm / 2–6pm</td><td class="detail">Skills: Head-to-toe trauma assessment, Log roll, Extrication, KED, Delivery.</td></tr>
+      <tr><td class="week">Tue, Apr 21</td><td class="topic">6–10pm</td><td class="detail">Ch. 37 Patients with Special Challenges · Ch. 38 EMS Operations · Ch. 39 Hazardous Materials/MCIs (110 pages)</td></tr>
+      <tr><td class="week">Sun, Apr 26</td><td class="topic">10am–2pm / 2–6pm</td><td class="detail">Mass Casualty Drill — JUMP/START Triage.</td></tr>
+      <tr><td class="week">Tue, Apr 28</td><td class="topic">6–10pm</td><td class="detail">Ch. 40 Highway Safety &amp; Vehicle Ops · Ch. 41 EMS Response to Terrorism (70 pages)</td></tr>
+      <tr style="background: rgba(232,163,61,0.12) !important;"><td class="week">Sun, May 3</td><td class="topic">AM Skills 10–12 · Exam LR2 12–2 · PM Skills 2–4 (LR4)</td><td class="detail"><strong>Written Exam #3</strong> (Ch. 31–41) &amp; Final Practical Practice. Remaining HW due Sat May 2, 11:59pm.</td></tr>
+      <tr><td class="week">Tue, May 5</td><td class="topic">6–10pm</td><td class="detail">Final Review Session · NREMT Sign-Up · Licensing after NREMT.</td></tr>
+      <tr style="background: rgba(232,163,61,0.18) !important;"><td class="week">Sun, May 10</td><td class="topic">10am–2pm / 2–6pm</td><td class="detail"><strong>Final Written Exam · Skills Exam.</strong></td></tr>
+      <tr style="background: rgba(232,163,61,0.18) !important;"><td class="week">Tue, May 12</td><td class="topic">6–10pm</td><td class="detail">Final Psychomotor Testing.</td></tr>
+      <tr style="background: rgba(232,163,61,0.18) !important;"><td class="week">Wed, May 13</td><td class="topic">6–10pm</td><td class="detail">Final Psychomotor Testing.</td></tr>
+      <tr style="background: rgba(232,163,61,0.18) !important;"><td class="week">Thu, May 14</td><td class="topic">6–10pm</td><td class="detail">Final Psychomotor Testing.</td></tr>
+      <tr><td class="week">Sun, May 17</td><td class="topic">—</td><td class="detail">End of course.</td></tr>
     </tbody>
   </table>
+
+  <div style="margin-top: 48px; display: grid; grid-template-columns: 1fr 1fr; gap: 32px; max-width: 800px;">
+    <div>
+      <h4 style="font-family: 'JetBrains Mono', monospace; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--purple); margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid var(--purple);">Grading Breakdown</h4>
+      <div style="display: flex; justify-content: space-between; padding: 8px 0; font-size: 14px;"><span>Homework</span><strong>20%</strong></div>
+      <div style="display: flex; justify-content: space-between; padding: 8px 0; font-size: 14px;"><span>Participation / Cameras (Tue)</span><strong>5%</strong></div>
+      <div style="display: flex; justify-content: space-between; padding: 8px 0; font-size: 14px;"><span>Written Exams (×3)</span><strong>30%</strong></div>
+      <div style="display: flex; justify-content: space-between; padding: 8px 0; font-size: 14px;"><span>Final Written Exam</span><strong>15%</strong></div>
+      <div style="display: flex; justify-content: space-between; padding: 8px 0; font-size: 14px;"><span>Skills Exam</span><strong>20%</strong></div>
+      <div style="display: flex; justify-content: space-between; padding: 8px 0; font-size: 14px;"><span>Final Psychomotor</span><strong>10% + P/NP</strong></div>
+      <div style="display: flex; justify-content: space-between; padding: 8px 0; font-size: 14px; color: var(--purple-deep);"><span>Midterm Psychomotor</span><strong>P/NP</strong></div>
+    </div>
+  </div>
 </section>
 
 <!-- COST / IMPACT -->
 <section class="cost-band" id="cost">
-  <div class="section-num" style="color: var(--accent);">§ 04 / TUITION</div>
+  <div class="section-num" style="color: var(--accent);">§ 03 / TUITION</div>
   <div class="section-eyebrow">What it costs</div>
   <h2 class="section-title">$600 vs. $2,000. <em>Same certification.</em></h2>
-  <p style="font-size: 19px; max-width: 700px; line-height: 1.5; opacity: 0.85;">Private EMT programs in the Chicago area run between $1,800 and $2,400. We teach the same IDPH-approved curriculum, with the same NREMT exam at the end, for less than a third of that — because NEMO takes no margin and SAFC funding offsets infrastructure costs.</p>
+  <p style="font-size: 19px; max-width: 700px; line-height: 1.5; opacity: 0.85;">Private EMT programs in the Chicago area run between $1,800 and $2,400. We teach the same IDPH-approved curriculum, with the same NREMT exam at the end, for less than a third of that — because NEMO takes no margin and outside funding offsets infrastructure costs.</p>
 
   <div class="cost-grid">
     <div class="cost-card">
@@ -889,39 +867,80 @@
 
 <!-- LEADERSHIP -->
 <section id="leadership">
-  <div class="section-num">§ 05 / LEADERSHIP</div>
+  <div class="section-num">§ 04 / LEADERSHIP</div>
   <div class="section-eyebrow">Who runs this</div>
-  <h2 class="section-title">A student board, a faculty advisor, a <em>licensed EMS provider.</em></h2>
+  <h2 class="section-title">The board <em>behind the badge.</em></h2>
 
-  <div class="leadership-grid">
-    <div class="person">
-      <div class="photo-frame"><span class="initials">PB</span></div>
-      <div class="role">Faculty Advisor</div>
-      <div class="name">Prof. Brace</div>
-    </div>
-    <div class="person">
+  <div class="leadership-scroll">
+    <a href="people/dylan-stone.html" class="person">
+      <div class="photo-frame"><span class="initials">DS</span></div>
+      <div class="role">Co-President</div>
+      <div class="name">Dylan Stone</div>
+    </a>
+    <a href="people/sophia-sanchez.html" class="person">
+      <div class="photo-frame"><span class="initials">SS</span></div>
+      <div class="role">Co-President</div>
+      <div class="name">Sophia Sanchez</div>
+    </a>
+    <a href="people/nathan-miller.html" class="person">
+      <div class="photo-frame"><span class="initials">NM</span></div>
+      <div class="role">Executive Advisor</div>
+      <div class="name">Nathan Miller</div>
+    </a>
+    <a href="people/niko-delis.html" class="person">
       <div class="photo-frame"><span class="initials">ND</span></div>
       <div class="role">Treasurer</div>
       <div class="name">Niko Delis</div>
-    </div>
-    <div class="person">
-      <div class="photo-frame"><span class="initials">ME</span></div>
-      <div class="role">Course Provider</div>
-      <div class="name">MedEx Ambulance Service</div>
-    </div>
-    <div class="person">
-      <div class="photo-frame"><span class="initials">SB</span></div>
-      <div class="role">Student Board</div>
-      <div class="name">Officers, Instructors, Proctors</div>
-    </div>
+    </a>
+    <a href="people/ritvik-viniak.html" class="person">
+      <div class="photo-frame"><span class="initials">RV</span></div>
+      <div class="role">Board Member</div>
+      <div class="name">Ritvik Viniak</div>
+    </a>
+    <a href="people/ben-cruz.html" class="person">
+      <div class="photo-frame"><span class="initials">BC</span></div>
+      <div class="role">Board Member</div>
+      <div class="name">Ben Cruz</div>
+    </a>
+    <a href="people/james-mendelson.html" class="person">
+      <div class="photo-frame"><span class="initials">JM</span></div>
+      <div class="role">Board Member</div>
+      <div class="name">James Mendelson</div>
+    </a>
+    <a href="people/abby-wertz.html" class="person">
+      <div class="photo-frame"><span class="initials">AW</span></div>
+      <div class="role">Board Member</div>
+      <div class="name">Abby Wertz</div>
+    </a>
+    <a href="people/anay-adam-dipasquale.html" class="person">
+      <div class="photo-frame"><span class="initials">AD</span></div>
+      <div class="role">Board Member</div>
+      <div class="name">Anay Adam DiPasquale</div>
+    </a>
+    <a href="people/saniya-patel.html" class="person">
+      <div class="photo-frame"><span class="initials">SP</span></div>
+      <div class="role">Board Member</div>
+      <div class="name">Saniya Patel</div>
+    </a>
+    <a href="people/victoria-sefen.html" class="person">
+      <div class="photo-frame"><span class="initials">VS</span></div>
+      <div class="role">Board Member</div>
+      <div class="name">Victoria Sefen</div>
+    </a>
+    <a href="people/anay-patel.html" class="person">
+      <div class="photo-frame"><span class="initials">AP</span></div>
+      <div class="role">Board Member</div>
+      <div class="name">Anay Patel</div>
+    </a>
   </div>
+  <div class="leadership-hint">← scroll for more →</div>
 </section>
 
 <!-- FAQ -->
 <section id="faq">
-  <div class="section-num">§ 06 / FAQ</div>
+  <div class="section-num">§ 05 / FAQ</div>
   <div class="section-eyebrow">Things you should ask</div>
-  <h2 class="section-title">Frequently asked, <em>honestly answered.</em></h2>
+  <h2 class="section-title">Frequently asked <em>questions.</em></h2>
 
   <div class="faq-list">
     <details class="faq-item">
@@ -938,7 +957,7 @@
     </details>
     <details class="faq-item">
       <summary><h4>Is financial aid available?</h4><span class="toggle">+</span></summary>
-      <div class="answer">SAFC funding offsets the price floor for everyone. We're actively pursuing additional aid pools to subsidize tuition for students with documented financial need — 47% of 2025 applicants flagged tuition as a barrier, and we're working to fix that.</div>
+      <div class="answer">We're actively pursuing aid pools to subsidize tuition for students with documented financial need — 47% of 2025 applicants flagged tuition as a barrier, and we're working to fix that.</div>
     </details>
     <details class="faq-item">
       <summary><h4>What does the certification actually let me do?</h4><span class="toggle">+</span></summary>
@@ -969,13 +988,11 @@
 <!-- FOOTER -->
 <footer>
   <div>
-    <div class="footer-mark">NE<span>M</span>O</div>
-    <p style="margin-top: 16px; opacity: 0.7;">Northwestern Emergency Medical Organization · Evanston, IL · A student-run EMT pipeline since the days when manikins still had hair.</p>
+    <div class="footer-mark">NEMO</div>
   </div>
   <div>
     <h5>Course</h5>
     <a href="#course">Overview</a>
-    <a href="#curriculum">Curriculum</a>
     <a href="#schedule">Schedule</a>
     <a href="#cost">Tuition</a>
     <a href="#faq">FAQ</a>
@@ -983,9 +1000,8 @@
   <div>
     <h5>Connect</h5>
     <a href="mailto:nemo@u.northwestern.edu">nemo@u.northwestern.edu</a>
-    <a href="#">Wildcat Connection</a>
-    <a href="#">Instagram</a>
-    <p style="opacity: 0.6; margin-top: 16px; font-size: 11px;">SAFC Project ID 70031142</p>
+    <a href="https://catsoncampus.northwestern.edu/" target="_blank" rel="noopener">Cats on Campus</a>
+    <a href="https://www.instagram.com/nemo.northwestern/" target="_blank" rel="noopener">Instagram · @nemo.northwestern</a>
   </div>
 </footer>
 
