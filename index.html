@@ -86,14 +86,10 @@
     filter: drop-shadow(0 8px 24px rgba(78,42,132,0.15));
     cursor: pointer;
     transition: filter 0.3s;
-    will-change: transform, filter;
+    will-change: transform;
   }
   .hero-visual img:hover {
     filter: drop-shadow(0 12px 32px rgba(78,42,132,0.25));
-  }
-  .hero-visual img.boosting {
-    filter: blur(3px) drop-shadow(0 8px 24px rgba(78,42,132,0.15));
-    transition: filter 0.15s ease-out;
   }
 
   .hero-eyebrow {
@@ -1088,23 +1084,43 @@
 
     // degrees per millisecond
     const NORMAL_SPEED = 360 / 40000;   // 360° per 40s
-    const BOOST_SPEED  = 360 / 50;      // 360° per 50ms — 20 rotations per second
+    const BOOST_SPEED  = 360 / 50;      // 360° per 50ms — super fast
+    const RAMP_MS      = 80;            // brief ease in/out window
 
     let angle = 0;
     let speed = NORMAL_SPEED;
     let lastTime = performance.now();
-    let boostUntil = 0;
+
+    // Boost timing windows
+    let boostStart = 0;     // ramp-up begins
+    let holdStart  = 0;     // boost hold (full speed) begins
+    let holdEnd    = 0;     // ramp-down begins
+    let boostEnd   = 0;     // back to normal
+
+    // Smooth ease for ramp transitions
+    const easeInOut = t => t < 0.5 ? 2*t*t : 1 - Math.pow(-2*t + 2, 2) / 2;
 
     function tick(now) {
       const dt = now - lastTime;
       lastTime = now;
 
-      // If we're past the boost window, drop back to normal speed.
-      // Angle is preserved, so the slowdown happens from the exact spot.
-      if (boostUntil && now >= boostUntil) {
-        speed = NORMAL_SPEED;
-        boostUntil = 0;
-        star.classList.remove('boosting');
+      if (boostEnd) {
+        if (now < holdStart) {
+          // ramping up
+          const t = (now - boostStart) / RAMP_MS;
+          speed = NORMAL_SPEED + (BOOST_SPEED - NORMAL_SPEED) * easeInOut(t);
+        } else if (now < holdEnd) {
+          // holding boost
+          speed = BOOST_SPEED;
+        } else if (now < boostEnd) {
+          // ramping down
+          const t = (now - holdEnd) / RAMP_MS;
+          speed = BOOST_SPEED - (BOOST_SPEED - NORMAL_SPEED) * easeInOut(t);
+        } else {
+          // done
+          speed = NORMAL_SPEED;
+          boostEnd = 0;
+        }
       }
 
       angle = (angle + speed * dt) % 360;
@@ -1114,10 +1130,12 @@
     requestAnimationFrame(tick);
 
     star.addEventListener('click', () => {
-      // Boost from wherever the angle currently is, for 500ms.
-      speed = BOOST_SPEED;
-      boostUntil = performance.now() + 500;
-      star.classList.add('boosting');
+      // 80ms ramp up, 125ms hold, 80ms ramp down
+      const now = performance.now();
+      boostStart = now;
+      holdStart  = now + RAMP_MS;
+      holdEnd    = holdStart + 125;
+      boostEnd   = holdEnd + RAMP_MS;
     });
   })();
 </script>
