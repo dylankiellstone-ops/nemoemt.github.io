@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>NEMO — Northwestern Emergency Medical Organization</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,800;1,9..144,400&family=JetBrains+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --purple: #4E2A84;          /* Northwestern purple */
+    --purple-deep: #2E1855;
+    --purple-ink: #1A0E33;
+    --cream: #F5EFE3;
+    --paper: #FAF6EC;
+    --rule: #2E1855;
+    --accent: #E8A33D;          /* warm signal amber */
+    --red: #B83A2A;             /* emergency accent */
+    --ink: #18121F;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Fraunces', Georgia, serif;
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.5;
+    overflow-x: hidden;
+    /* paper grain */
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(78,42,132,0.025) 0%, transparent 40%),
+      radial-gradient(circle at 80% 70%, rgba(232,163,61,0.025) 0%, transparent 40%);
+  }
+
+  /* ---------- TOP BAR ---------- */
+  .topbar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: var(--purple);
+    color: var(--cream);
+    padding: 10px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-bottom: 1px solid rgba(245,239,227,0.15);
+  }
+  .topbar .pulse {
+    display: inline-block;
+    width: 8px; height: 8px;
+    background: var(--accent);
+    border-radius: 50%;
+    margin-right: 8px;
+    animation: pulse 1.6s ease-in-out infinite;
+    vertical-align: middle;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.3); }
+  }
+  .topbar nav { display: flex; gap: 24px; }
+  .topbar nav a {
+    color: var(--cream);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .topbar nav a:hover { color: var(--accent); }
+
+  /* ---------- HERO ---------- */
+  .hero {
+    min-height: 100vh;
+    padding: 110px 48px 60px;
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 60px;
+    border-bottom: 1px solid var(--purple);
+  }
+
+  .hero-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--purple);
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .hero-eyebrow::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--purple);
+    opacity: 0.4;
+  }
+
+  .hero h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 800;
+    font-size: clamp(56px, 9vw, 140px);
+    line-height: 0.92;
+    color: var(--purple-ink);
+    letter-spacing: -0.03em;
+    margin-bottom: 32px;
+  }
+  .hero h1 em {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--purple);
+  }
+
+  .hero-lede {
+    font-size: 22px;
+    line-height: 1.4;
+    color: var(--ink);
+    max-width: 600px;
+    margin-bottom: 40px;
+    font-weight: 400;
+  }
+
+  .hero-meta {
+    display: flex;
+    gap: 32px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--purple-deep);
+    margin-top: auto;
+  }
+  .hero-meta span { display: block; }
+  .hero-meta b {
+    display: block;
+    font-family: 'Fraunces', serif;
+    font-size: 28px;
+    color: var(--purple);
+    margin-top: 6px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  /* Star of Life sidebar */
+  .hero-aside {
+    border-left: 1px solid var(--purple);
+    padding-left: 32px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .star-wrap {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 24px;
+  }
+  .star-wrap svg {
+    width: 220px;
+    height: 220px;
+    animation: gentle-spin 60s linear infinite;
+  }
+  @keyframes gentle-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .ecg-strip {
+    border-top: 1px solid var(--purple);
+    border-bottom: 1px solid var(--purple);
+    padding: 12px 0;
+    margin-bottom: 24px;
+    overflow: hidden;
+  }
+  .ecg-strip svg {
+    width: 100%;
+    height: 40px;
+    display: block;
+  }
+
+  .aside-callout {
+    background: var(--purple);
+    color: var(--cream);
+    padding: 24px;
+    margin-top: 24px;
+  }
+  .aside-callout .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  .aside-callout .number {
+    font-family: 'Fraunces', serif;
+    font-size: 56px;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .aside-callout .desc {
+    font-size: 13px;
+    opacity: 0.9;
+    line-height: 1.4;
+  }
+
+  /* ---------- SECTION FRAME ---------- */
+  section {
+    padding: 100px 48px;
+    border-bottom: 1px solid var(--purple);
+    position: relative;
+  }
+  .section-num {
+    position: absolute;
+    top: 32px;
+    right: 48px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--purple);
+    opacity: 0.6;
+  }
+  .section-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--purple);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-eyebrow::before {
+    content: '◆';
+    color: var(--accent);
+  }
+  .section-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 800;
+    font-size: clamp(40px, 5vw, 72px);
+    line-height: 1;
+    color: var(--purple-ink);
+    letter-spacing: -0.025em;
+    margin-bottom: 48px;
+    max-width: 900px;
+  }
+  .section-title em {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--purple);
+  }
+
+  /* ---------- COURSE OVERVIEW ---------- */
+  .course-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 60px;
+    margin-top: 32px;
+  }
+  .course-prose p {
+    font-size: 19px;
+    line-height: 1.6;
+    margin-bottom: 22px;
+    color: var(--ink);
+  }
+  .course-prose p:first-of-type::first-letter {
+    font-size: 72px;
+    float: left;
+    line-height: 0.85;
+    padding: 4px 12px 0 0;
+    color: var(--purple);
+    font-weight: 800;
+  }
+
+  .specs-card {
+    background: var(--cream);
+    border: 1px solid var(--purple);
+    padding: 32px;
+    align-self: start;
+    position: sticky;
+    top: 80px;
+  }
+  .specs-card h3 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--purple);
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--purple);
+  }
+  .spec-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px dashed rgba(78,42,132,0.3);
+    font-size: 14px;
+  }
+  .spec-row:last-child { border-bottom: none; }
+  .spec-row .key {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--purple-deep);
+    opacity: 0.7;
+  }
+  .spec-row .val {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    color: var(--purple-ink);
+    text-align: right;
+  }
+
+  /* ---------- CURRICULUM MODULES ---------- */
+  .modules {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--purple);
+    border: 1px solid var(--purple);
+    margin-top: 32px;
+  }
+  .module {
+    background: var(--paper);
+    padding: 32px 28px;
+    transition: background 0.3s;
+    cursor: default;
+    position: relative;
+  }
+  .module:hover {
+    background: var(--cream);
+  }
+  .module .mod-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+  .module h4 {
+    font-family: 'Fraunces', serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--purple-ink);
+    margin-bottom: 12px;
+    line-height: 1.1;
+  }
+  .module p {
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--ink);
+    opacity: 0.85;
+  }
+  .module .topics {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px dashed rgba(78,42,132,0.3);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.05em;
+    color: var(--purple-deep);
+    line-height: 1.7;
+  }
+
+  /* ---------- SCHEDULE ---------- */
+  .schedule-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 32px;
+    font-size: 15px;
+  }
+  .schedule-table th {
+    text-align: left;
+    padding: 16px 20px;
+    background: var(--purple);
+    color: var(--cream);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .schedule-table td {
+    padding: 18px 20px;
+    border-bottom: 1px solid rgba(78,42,132,0.2);
+    vertical-align: top;
+  }
+  .schedule-table tr:nth-child(even) td { background: var(--cream); }
+  .schedule-table tr:hover td { background: rgba(232,163,61,0.08); }
+  .schedule-table .week {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--purple);
+    font-weight: 500;
+    width: 70px;
+  }
+  .schedule-table .topic {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    color: var(--purple-ink);
+    width: 240px;
+  }
+  .schedule-table .detail {
+    color: var(--ink);
+    opacity: 0.85;
+  }
+
+  /* ---------- COST / IMPACT ---------- */
+  .cost-band {
+    background: var(--purple);
+    color: var(--cream);
+    padding: 80px 48px;
+    margin: 0 -48px;
+    border-top: 1px solid var(--purple);
+    border-bottom: 1px solid var(--purple);
+  }
+  .cost-band .section-eyebrow { color: var(--accent); }
+  .cost-band .section-eyebrow::before { color: var(--cream); }
+  .cost-band .section-title { color: var(--cream); }
+  .cost-band .section-title em { color: var(--accent); }
+
+  .cost-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 48px;
+    margin-top: 48px;
+  }
+  .cost-card {
+    border: 1px solid var(--cream);
+    padding: 40px;
+    position: relative;
+  }
+  .cost-card.feature {
+    background: var(--cream);
+    color: var(--purple-ink);
+  }
+  .cost-card .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    opacity: 0.8;
+  }
+  .cost-card .amount {
+    font-family: 'Fraunces', serif;
+    font-size: 96px;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    margin-bottom: 16px;
+  }
+  .cost-card.feature .amount { color: var(--purple); }
+  .cost-card .strike {
+    text-decoration: line-through;
+    text-decoration-thickness: 3px;
+    opacity: 0.6;
+  }
+  .cost-card .note {
+    font-size: 15px;
+    line-height: 1.5;
+    max-width: 320px;
+  }
+
+  /* ---------- FAQ ---------- */
+  .faq-list { margin-top: 32px; }
+  .faq-item {
+    border-top: 1px solid var(--purple);
+    padding: 28px 0;
+  }
+  .faq-item:last-child { border-bottom: 1px solid var(--purple); }
+  .faq-item summary {
+    list-style: none;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 24px;
+  }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-item summary h4 {
+    font-family: 'Fraunces', serif;
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--purple-ink);
+    line-height: 1.2;
+    flex: 1;
+  }
+  .faq-item summary .toggle {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 24px;
+    color: var(--purple);
+    transition: transform 0.3s;
+    flex-shrink: 0;
+  }
+  .faq-item[open] summary .toggle { transform: rotate(45deg); }
+  .faq-item .answer {
+    margin-top: 20px;
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--ink);
+    max-width: 800px;
+  }
+
+  /* ---------- LEADERSHIP ---------- */
+  .leadership-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 32px;
+    margin-top: 32px;
+  }
+  .person {
+    text-align: left;
+  }
+  .person .photo-frame {
+    aspect-ratio: 3/4;
+    background: var(--cream);
+    border: 1px solid var(--purple);
+    margin-bottom: 16px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .person .photo-frame::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(135deg, transparent 49%, var(--purple) 49%, var(--purple) 51%, transparent 51%);
+    opacity: 0.08;
+  }
+  .person .initials {
+    font-family: 'Fraunces', serif;
+    font-size: 80px;
+    font-weight: 800;
+    color: var(--purple);
+    opacity: 0.4;
+    letter-spacing: -0.05em;
+  }
+  .person .role {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--purple);
+    margin-bottom: 6px;
+  }
+  .person .name {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--purple-ink);
+    line-height: 1.1;
+  }
+
+  /* ---------- CTA / APPLY ---------- */
+  .apply {
+    background: var(--purple-ink);
+    color: var(--cream);
+    padding: 120px 48px;
+    text-align: center;
+    border-bottom: none;
+  }
+  .apply .section-eyebrow { color: var(--accent); justify-content: center; }
+  .apply .section-eyebrow::before { color: var(--cream); }
+  .apply h2 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(48px, 7vw, 96px);
+    font-weight: 800;
+    line-height: 1;
+    color: var(--cream);
+    letter-spacing: -0.025em;
+    margin-bottom: 32px;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .apply h2 em {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--accent);
+  }
+  .apply p {
+    font-size: 20px;
+    max-width: 600px;
+    margin: 0 auto 48px;
+    line-height: 1.5;
+    opacity: 0.85;
+  }
+  .btn {
+    display: inline-block;
+    padding: 22px 48px;
+    background: var(--accent);
+    color: var(--purple-ink);
+    text-decoration: none;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-weight: 500;
+    border: 2px solid var(--accent);
+    transition: all 0.3s;
+  }
+  .btn:hover {
+    background: transparent;
+    color: var(--accent);
+  }
+  .btn-secondary {
+    background: transparent;
+    color: var(--cream);
+    border-color: var(--cream);
+    margin-left: 12px;
+  }
+  .btn-secondary:hover {
+    background: var(--cream);
+    color: var(--purple-ink);
+  }
+
+  /* ---------- FOOTER ---------- */
+  footer {
+    background: var(--paper);
+    padding: 48px;
+    border-top: 4px double var(--purple);
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 48px;
+    font-size: 13px;
+  }
+  footer h5 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--purple);
+    margin-bottom: 16px;
+  }
+  footer p, footer a {
+    color: var(--ink);
+    text-decoration: none;
+    line-height: 1.6;
+    display: block;
+  }
+  footer a:hover { color: var(--purple); }
+  .footer-mark {
+    font-family: 'Fraunces', serif;
+    font-size: 56px;
+    font-weight: 800;
+    color: var(--purple);
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+  }
+  .footer-mark span { color: var(--accent); }
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; padding: 100px 24px 40px; }
+    .hero-aside { border-left: none; border-top: 1px solid var(--purple); padding-left: 0; padding-top: 32px; }
+    section { padding: 60px 24px; }
+    .course-grid { grid-template-columns: 1fr; }
+    .specs-card { position: static; }
+    .modules { grid-template-columns: 1fr; }
+    .cost-grid { grid-template-columns: 1fr; }
+    .leadership-grid { grid-template-columns: repeat(2, 1fr); }
+    footer { grid-template-columns: 1fr; padding: 32px 24px; }
+    .topbar { padding: 10px 16px; font-size: 9px; }
+    .topbar nav { gap: 12px; }
+    .schedule-table { font-size: 13px; }
+    .schedule-table th, .schedule-table td { padding: 12px 10px; }
+    .schedule-table .topic { width: auto; }
+    .cost-band { margin: 0 -24px; padding: 60px 24px; }
+    .section-num { right: 24px; top: 16px; }
+  }
+
+  /* fade-in observer */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+  }
+  .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div><span class="pulse"></span>NEMO · NORTHWESTERN EMERGENCY MEDICAL ORGANIZATION · EST. SAFC PROJECT 70031142</div>
+  <nav>
+    <a href="#course">Course</a>
+    <a href="#curriculum">Curriculum</a>
+    <a href="#schedule">Schedule</a>
+    <a href="#cost">Cost</a>
+    <a href="#faq">FAQ</a>
+    <a href="#apply">Apply</a>
+  </nav>
+</div>
+
+<!-- HERO -->
+<header class="hero">
+  <div>
+    <div class="hero-eyebrow">EMT-B Certification Course · Winter–Spring 2027</div>
+    <h1>The course<br>that puts you<br><em>on the rig.</em></h1>
+    <p class="hero-lede">Northwestern's flagship student-run EMT-B program. Two quarters. One certification. A direct line into emergency medicine — for a fraction of what private programs charge.</p>
+    <div class="hero-meta">
+      <span>Format<b>In-Person</b></span>
+      <span>Duration<b>~180 hrs</b></span>
+      <span>Capacity<b>120 seats</b></span>
+      <span>Tuition<b>$600</b></span>
+    </div>
+  </div>
+  <aside class="hero-aside">
+    <div>
+      <div class="ecg-strip">
+        <svg viewBox="0 0 400 40" preserveAspectRatio="none">
+          <polyline fill="none" stroke="#4E2A84" stroke-width="1.5"
+            points="0,20 60,20 70,20 75,8 82,32 88,5 94,35 100,20 180,20 190,20 195,12 202,28 208,20 280,20 290,20 295,15 302,25 308,20 400,20" />
+        </svg>
+      </div>
+      <div class="star-wrap">
+        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+          <g transform="translate(100,100)">
+            <!-- 6-pointed star of life style: 3 elongated rectangles rotated -->
+            <g fill="#4E2A84" stroke="#F5EFE3" stroke-width="3">
+              <rect x="-22" y="-90" width="44" height="180" rx="3"/>
+              <rect x="-22" y="-90" width="44" height="180" rx="3" transform="rotate(60)"/>
+              <rect x="-22" y="-90" width="44" height="180" rx="3" transform="rotate(120)"/>
+            </g>
+            <!-- rod of asclepius (simplified) -->
+            <line x1="0" y1="-50" x2="0" y2="50" stroke="#F5EFE3" stroke-width="4" stroke-linecap="round"/>
+            <path d="M 0,-40 Q -12,-25 0,-10 Q 12,5 0,20 Q -12,35 0,45"
+                  stroke="#F5EFE3" stroke-width="4" fill="none" stroke-linecap="round"/>
+            <circle cx="-2" cy="-42" r="3" fill="#E8A33D"/>
+          </g>
+        </svg>
+      </div>
+    </div>
+    <div class="aside-callout">
+      <div class="label">EST. ANNUAL OUTPUT</div>
+      <div class="number">~100</div>
+      <div class="desc">Northwestern students certified per year — growing to 120 in 2027.</div>
+    </div>
+  </aside>
+</header>
+
+<!-- COURSE OVERVIEW -->
+<section id="course">
+  <div class="section-num">§ 01 / OVERVIEW</div>
+  <div class="section-eyebrow">What this is</div>
+  <h2 class="section-title">A real EMT-B course, run <em>by students</em>, on a campus schedule, at a campus price.</h2>
+
+  <div class="course-grid">
+    <div class="course-prose">
+      <p>NEMO's annual EMT-Basic course is the largest student-run pre-clinical training program at Northwestern. We partner with MedEx Ambulance Service — a state-licensed EMS provider — to deliver the same Illinois Department of Public Health (IDPH) approved curriculum that anchors paid commercial programs across the Chicago area.</p>
+
+      <p>The course runs across Winter and Spring quarters. Lectures, hands-on skills sessions, simulation labs, and clinical rotations are scheduled around academic loads. By the time students sit for the National Registry of Emergency Medical Technicians (NREMT) cognitive and psychomotor exams in late spring, they've logged the lecture hours, clinical hours, and competency check-offs required for state and national licensure.</p>
+
+      <p>NEMO takes zero profit. Tuition flows directly from students to MedEx for instruction and materials. SAFC funding covers infrastructure — manikins, AED trainers, in-house instructor certification — that keeps the price floor as low as we can push it.</p>
+
+      <p>For pre-meds, this is the cheapest route into clinical exposure that actually counts on an application. For students from EMS backgrounds, it's the certification you bring home. For everyone else, it's the most useful elective you'll ever take.</p>
+    </div>
+
+    <aside class="specs-card">
+      <h3>At a Glance</h3>
+      <div class="spec-row"><span class="key">Course</span><span class="val">EMT-Basic</span></div>
+      <div class="spec-row"><span class="key">Provider</span><span class="val">MedEx Ambulance Service</span></div>
+      <div class="spec-row"><span class="key">Approval</span><span class="val">IDPH</span></div>
+      <div class="spec-row"><span class="key">Quarters</span><span class="val">Winter → Spring</span></div>
+      <div class="spec-row"><span class="key">Lecture</span><span class="val">~120 hrs</span></div>
+      <div class="spec-row"><span class="key">Clinical</span><span class="val">≥10 patient contacts</span></div>
+      <div class="spec-row"><span class="key">Exam</span><span class="val">NREMT (cognitive + psychomotor)</span></div>
+      <div class="spec-row"><span class="key">Result</span><span class="val">IL EMT-B License</span></div>
+    </aside>
+  </div>
+</section>
+
+<!-- CURRICULUM -->
+<section id="curriculum">
+  <div class="section-num">§ 02 / CURRICULUM</div>
+  <div class="section-eyebrow">What you'll learn</div>
+  <h2 class="section-title">Six modules, mapped to the <em>National EMS Education Standards.</em></h2>
+
+  <div class="modules">
+    <div class="module">
+      <div class="mod-num">M.01</div>
+      <h4>Foundations & Patient Assessment</h4>
+      <p>The framework every call runs on: scene size-up, primary survey, vitals, history-taking, and the secondary assessment.</p>
+      <div class="topics">SAMPLE · OPQRST · SCENE SAFETY · LIFTING & MOVING · COMMUNICATION & DOCUMENTATION</div>
+    </div>
+    <div class="module">
+      <div class="mod-num">M.02</div>
+      <h4>Airway, Breathing, Circulation</h4>
+      <p>Oxygen delivery, basic and advanced airway adjuncts, BVM ventilation, and the cardiac chain of survival including CPR and AED use.</p>
+      <div class="topics">OPA / NPA · NRB · BVM · SUCTION · AHA BLS · ROSC PROTOCOL</div>
+    </div>
+    <div class="module">
+      <div class="mod-num">M.03</div>
+      <h4>Medical Emergencies</h4>
+      <p>The bread-and-butter of 911 calls: cardiac, respiratory, neurological, endocrine, GI/GU, behavioral, and toxicological emergencies.</p>
+      <div class="topics">ACS · STROKE (CINCINNATI) · DKA · ANAPHYLAXIS · OD / NARCAN · SEIZURE</div>
+    </div>
+    <div class="module">
+      <div class="mod-num">M.04</div>
+      <h4>Trauma</h4>
+      <p>Mechanism-based assessment, hemorrhage control, spinal motion restriction, splinting, and rapid transport decisions.</p>
+      <div class="topics">TOURNIQUETS · TXA · MILS · TRACTION SPLINTS · TRAUMA TRIAGE · MCI</div>
+    </div>
+    <div class="module">
+      <div class="mod-num">M.05</div>
+      <h4>Special Populations</h4>
+      <p>Pediatric, geriatric, obstetric, and patients with special healthcare needs — what changes anatomically, physiologically, and procedurally.</p>
+      <div class="topics">PAT · APGAR · NEONATAL RESUSCITATION · DEMENTIA · BARIATRIC · TRACH / VENT</div>
+    </div>
+    <div class="module">
+      <div class="mod-num">M.06</div>
+      <h4>EMS Operations</h4>
+      <p>The system you'll work in: incident command, hazmat awareness, ambulance operations, rescue access, and provider wellness.</p>
+      <div class="topics">NIMS · ICS · HAZMAT · EXTRICATION · PPE · MENTAL HEALTH · HIPAA</div>
+    </div>
+  </div>
+</section>
+
+<!-- SCHEDULE -->
+<section id="schedule">
+  <div class="section-num">§ 03 / SCHEDULE</div>
+  <div class="section-eyebrow">When it happens</div>
+  <h2 class="section-title">A two-quarter arc, ending at <em>the Registry exam.</em></h2>
+
+  <table class="schedule-table">
+    <thead>
+      <tr>
+        <th>Phase</th>
+        <th>Topic</th>
+        <th>Detail</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td class="week">WK 01–02</td><td class="topic">Orientation & EMS Systems</td><td class="detail">Scope of practice, IL EMS Act, medical-legal foundations, course logistics.</td></tr>
+      <tr><td class="week">WK 03–04</td><td class="topic">Patient Assessment</td><td class="detail">Scene size-up, primary/secondary survey, vitals — first hands-on lab.</td></tr>
+      <tr><td class="week">WK 05–06</td><td class="topic">Airway & Ventilation</td><td class="detail">Oxygen therapy, adjuncts, BVM technique. AHA BLS certification embedded.</td></tr>
+      <tr><td class="week">WK 07–08</td><td class="topic">Cardiac Emergencies</td><td class="detail">ACS recognition, AED operation, CPR competency check-off.</td></tr>
+      <tr><td class="week">WK 09–10</td><td class="topic">Medical I (Resp / Neuro / Endo)</td><td class="detail">Asthma, COPD, stroke, seizure, diabetic emergencies.</td></tr>
+      <tr><td class="week">— BREAK —</td><td class="topic">Quarter Transition</td><td class="detail">Reading week + cumulative skills review.</td></tr>
+      <tr><td class="week">WK 11–12</td><td class="topic">Medical II (GI / GU / Behavioral / Tox)</td><td class="detail">Abdominal pain, psych emergencies, overdose & poisoning.</td></tr>
+      <tr><td class="week">WK 13–14</td><td class="topic">Trauma I — Soft Tissue & Hemorrhage</td><td class="detail">Bleeding control, tourniquets, burns, dressing & bandaging lab.</td></tr>
+      <tr><td class="week">WK 15–16</td><td class="topic">Trauma II — Musculoskeletal & Spine</td><td class="detail">Splinting practical, spinal motion restriction, head injuries.</td></tr>
+      <tr><td class="week">WK 17–18</td><td class="topic">Special Populations</td><td class="detail">Pediatrics, OB/childbirth, geriatrics, behavioral health.</td></tr>
+      <tr><td class="week">WK 19</td><td class="topic">Operations & MCI</td><td class="detail">Ambulance ops, ICS, mass-casualty triage simulation.</td></tr>
+      <tr><td class="week">WK 20</td><td class="topic">Clinical Rotations</td><td class="detail">ED + ambulance ride-alongs through MedEx clinical sites.</td></tr>
+      <tr><td class="week">FINAL</td><td class="topic">NREMT Exam</td><td class="detail">Cognitive (computer-adaptive) + psychomotor stations. Pass = IL licensure.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- COST / IMPACT -->
+<section class="cost-band" id="cost">
+  <div class="section-num" style="color: var(--accent);">§ 04 / TUITION</div>
+  <div class="section-eyebrow">What it costs</div>
+  <h2 class="section-title">$600 vs. $2,000. <em>Same certification.</em></h2>
+  <p style="font-size: 19px; max-width: 700px; line-height: 1.5; opacity: 0.85;">Private EMT programs in the Chicago area run between $1,800 and $2,400. We teach the same IDPH-approved curriculum, with the same NREMT exam at the end, for less than a third of that — because NEMO takes no margin and SAFC funding offsets infrastructure costs.</p>
+
+  <div class="cost-grid">
+    <div class="cost-card">
+      <div class="label">Commercial / Private Program</div>
+      <div class="amount strike">$2,000</div>
+      <div class="note">Typical out-of-pocket cost at private EMS academies in the Chicago metro.</div>
+    </div>
+    <div class="cost-card feature">
+      <div class="label">NEMO at Northwestern</div>
+      <div class="amount">$600</div>
+      <div class="note">Direct to MedEx. Includes textbooks, equipment access, AHA BLS certification, and NREMT exam preparation.</div>
+    </div>
+  </div>
+</section>
+
+<!-- LEADERSHIP -->
+<section id="leadership">
+  <div class="section-num">§ 05 / LEADERSHIP</div>
+  <div class="section-eyebrow">Who runs this</div>
+  <h2 class="section-title">A student board, a faculty advisor, a <em>licensed EMS provider.</em></h2>
+
+  <div class="leadership-grid">
+    <div class="person">
+      <div class="photo-frame"><span class="initials">PB</span></div>
+      <div class="role">Faculty Advisor</div>
+      <div class="name">Prof. Brace</div>
+    </div>
+    <div class="person">
+      <div class="photo-frame"><span class="initials">ND</span></div>
+      <div class="role">Treasurer</div>
+      <div class="name">Niko Delis</div>
+    </div>
+    <div class="person">
+      <div class="photo-frame"><span class="initials">ME</span></div>
+      <div class="role">Course Provider</div>
+      <div class="name">MedEx Ambulance Service</div>
+    </div>
+    <div class="person">
+      <div class="photo-frame"><span class="initials">SB</span></div>
+      <div class="role">Student Board</div>
+      <div class="name">Officers, Instructors, Proctors</div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="section-num">§ 06 / FAQ</div>
+  <div class="section-eyebrow">Things you should ask</div>
+  <h2 class="section-title">Frequently asked, <em>honestly answered.</em></h2>
+
+  <div class="faq-list">
+    <details class="faq-item">
+      <summary><h4>Do I need any medical background to enroll?</h4><span class="toggle">+</span></summary>
+      <div class="answer">No. The course is designed for first-time EMS students. You need to be 18+ by the NREMT exam date, hold a high school diploma or equivalent, and be able to commit to the full two-quarter schedule including clinical rotations.</div>
+    </details>
+    <details class="faq-item">
+      <summary><h4>Will I actually be a licensed EMT at the end?</h4><span class="toggle">+</span></summary>
+      <div class="answer">Yes — assuming you pass the NREMT cognitive and psychomotor exams. Successful candidates receive National Registry certification and Illinois EMT-B licensure through IDPH. If you're certifying out of state, ask us about reciprocity (we've done NY, Michigan, and several others).</div>
+    </details>
+    <details class="faq-item">
+      <summary><h4>How does this fit alongside my coursework?</h4><span class="toggle">+</span></summary>
+      <div class="answer">Lectures and labs are scheduled outside standard class blocks — primarily evenings and weekends. Clinical rotations are flexible and arranged around your availability. Past students have completed NEMO while taking organic chemistry, physics, and full pre-med course loads.</div>
+    </details>
+    <details class="faq-item">
+      <summary><h4>Is financial aid available?</h4><span class="toggle">+</span></summary>
+      <div class="answer">SAFC funding offsets the price floor for everyone. We're actively pursuing additional aid pools to subsidize tuition for students with documented financial need — 47% of 2025 applicants flagged tuition as a barrier, and we're working to fix that.</div>
+    </details>
+    <details class="faq-item">
+      <summary><h4>What does the certification actually let me do?</h4><span class="toggle">+</span></summary>
+      <div class="answer">Work for an EMS agency (911 or interfacility), volunteer rescue squad, ER tech roles, ski patrol, event medical, and many research / clinical roles that require licensure. For pre-meds, it's clinical hours that AdComs recognize.</div>
+    </details>
+    <details class="faq-item">
+      <summary><h4>What happens if I don't pass the NREMT?</h4><span class="toggle">+</span></summary>
+      <div class="answer">NREMT allows up to 6 attempts within two years of course completion. NEMO instructors hold review sessions for students retaking the exam, and MedEx provides remediation support at no additional cost.</div>
+    </details>
+    <details class="faq-item">
+      <summary><h4>Do you also offer CPR-only certification?</h4><span class="toggle">+</span></summary>
+      <div class="answer">Yes — NEMO runs 2–3 open AHA CPR/BLS certification classes per quarter, capped at ~15 students each. These are open to the broader Northwestern community at a low fee. Watch the calendar or email us for the next session.</div>
+    </details>
+  </div>
+</section>
+
+<!-- APPLY / CTA -->
+<section class="apply" id="apply">
+  <div class="section-eyebrow">Next cohort: Winter 2027</div>
+  <h2>Get on <em>the rig.</em></h2>
+  <p>Applications open in fall quarter. Capacity is 120 seats. We hold an info session in the first two weeks of fall — bring questions, bring snacks.</p>
+  <div>
+    <a class="btn" href="#">Join the interest list</a>
+    <a class="btn btn-secondary" href="#">Email NEMO</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="footer-mark">NE<span>M</span>O</div>
+    <p style="margin-top: 16px; opacity: 0.7;">Northwestern Emergency Medical Organization · Evanston, IL · A student-run EMT pipeline since the days when manikins still had hair.</p>
+  </div>
+  <div>
+    <h5>Course</h5>
+    <a href="#course">Overview</a>
+    <a href="#curriculum">Curriculum</a>
+    <a href="#schedule">Schedule</a>
+    <a href="#cost">Tuition</a>
+    <a href="#faq">FAQ</a>
+  </div>
+  <div>
+    <h5>Connect</h5>
+    <a href="mailto:nemo@u.northwestern.edu">nemo@u.northwestern.edu</a>
+    <a href="#">Wildcat Connection</a>
+    <a href="#">Instagram</a>
+    <p style="opacity: 0.6; margin-top: 16px; font-size: 11px;">SAFC Project ID 70031142</p>
+  </div>
+</footer>
+
+<script>
+  // Smooth fade-in on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) e.target.classList.add('visible');
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('section').forEach(s => {
+    s.classList.add('fade-in');
+    observer.observe(s);
+  });
+</script>
+
+</body>
+</html>
