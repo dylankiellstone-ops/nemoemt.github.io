@@ -104,6 +104,14 @@
     background-image: linear-gradient(135deg, transparent 49%, var(--purple) 49%, var(--purple) 51%, transparent 51%);
     opacity: 0.08;
   }
+  .photo-frame img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+  }
   .photo-frame .initials {
     font-family: 'Fraunces', serif;
     font-size: 110px;
@@ -236,7 +244,7 @@
 
   <div class="header-grid">
     <div class="photo-frame">
-      <span class="initials">DS</span>
+      <img src="../assets/dylan-stone.png" alt="Dylan Stone" />
     </div>
     <div class="header-text">
       <div class="role">Co-President</div>
@@ -251,25 +259,33 @@
     </div>
     <div class="info-cell">
       <div class="label">Email</div>
-      <div class="value placeholder">— to be added —</div>
+      <div class="value"><a href="mailto:dylanstone2027@u.northwestern.edu">dylanstone2027@u.northwestern.edu</a></div>
     </div>
     <div class="info-cell">
       <div class="label">School / Year</div>
-      <div class="value placeholder">— to be added —</div>
+      <div class="value">Northwestern · Class of 2027</div>
     </div>
     <div class="info-cell">
       <div class="label">Major</div>
-      <div class="value placeholder">— to be added —</div>
+      <div class="value">Biological Sciences &amp; Religious Studies</div>
     </div>
     <div class="info-cell" style="grid-column: 1 / -1;">
       <div class="label">Favorite Ice Cream</div>
-      <div class="value placeholder">— to be added —</div>
+      <div class="value">Black Raspberry Chocolate Chip</div>
     </div>
   </div>
 
   <div class="bio-section">
     <h2>About</h2>
-    <p class="bio-text">A short biography about Dylan Stone will live here. Coming soon.</p>
+    <p style="font-size: 19px; line-height: 1.6; color: var(--ink); margin-bottom: 20px;">
+      Dylan is a junior at Northwestern studying Biological Sciences and Religious Studies, with sights set on medical school and a career in surgery and emergency medicine. As Co-President of NEMO, he co-leads Northwestern's flagship student-run EMT-B program — the same one that put him on the rig in the first place.
+    </p>
+    <p style="font-size: 19px; line-height: 1.6; color: var(--ink); margin-bottom: 20px;">
+      Outside of NEMO, Dylan stays busy across campus: he serves as President of CKNU (Northwestern's food-recovery org) and as Treasurer for both Health Equity at Northwestern (HEN) and the GH Foundation. He also works as an EMT with Chatham Rescue Squad and conducts cardiology research on beta-blocker prescribing patterns in HFpEF, a project he presented at the American College of Cardiology conference earlier this year.
+    </p>
+    <p style="font-size: 19px; line-height: 1.6; color: var(--ink);">
+      When he's not in lecture, on a call, or in the lab, you can find him brewing cider, debating the finer points of personal style, or training for his next endurance event.
+    </p>
   </div>
 
   <a href="../index.html#leadership" class="back-link">← Back to Leadership</a>
