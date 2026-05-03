@@ -84,11 +84,16 @@
     max-width: 460px;
     height: auto;
     filter: drop-shadow(0 8px 24px rgba(78,42,132,0.15));
-    animation: hero-spin 40s linear infinite;
+    cursor: pointer;
+    transition: filter 0.3s;
+    will-change: transform, filter;
   }
-  @keyframes hero-spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
+  .hero-visual img:hover {
+    filter: drop-shadow(0 12px 32px rgba(78,42,132,0.25));
+  }
+  .hero-visual img.boosting {
+    filter: blur(3px) drop-shadow(0 8px 24px rgba(78,42,132,0.15));
+    transition: filter 0.15s ease-out;
   }
 
   .hero-eyebrow {
@@ -113,11 +118,11 @@
   .hero h1 {
     font-family: 'Fraunces', serif;
     font-weight: 800;
-    font-size: clamp(56px, 9vw, 140px);
+    font-size: clamp(64px, 10vw, 168px);
     line-height: 0.92;
     color: var(--purple-ink);
     letter-spacing: -0.03em;
-    margin-bottom: 32px;
+    margin-bottom: 36px;
   }
   .hero h1 em {
     font-style: italic;
@@ -126,33 +131,35 @@
   }
 
   .hero-lede {
-    font-size: 22px;
+    font-size: 26px;
     line-height: 1.4;
     color: var(--ink);
-    max-width: 600px;
-    margin-bottom: 40px;
+    max-width: 760px;
+    margin-bottom: 48px;
     font-weight: 400;
   }
 
   .hero-meta {
     display: flex;
-    gap: 32px;
+    gap: 48px;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
+    font-size: 12px;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--purple-deep);
     margin-top: auto;
+    flex-wrap: wrap;
   }
-  .hero-meta span { display: block; }
+  .hero-meta span { display: block; white-space: nowrap; }
   .hero-meta b {
     display: block;
     font-family: 'Fraunces', serif;
-    font-size: 28px;
+    font-size: 36px;
     color: var(--purple);
-    margin-top: 6px;
+    margin-top: 8px;
     font-weight: 600;
     letter-spacing: -0.01em;
+    white-space: nowrap;
   }
 
   /* Star of Life sidebar */
@@ -1073,6 +1080,46 @@
     s.classList.add('fade-in');
     observer.observe(s);
   });
+
+  // Star spin — continuous rotation, click to boost briefly
+  (function() {
+    const star = document.querySelector('.hero-visual img');
+    if (!star) return;
+
+    // degrees per millisecond
+    const NORMAL_SPEED = 360 / 40000;   // 360° per 40s
+    const BOOST_SPEED  = 360 / 50;      // 360° per 50ms — 20 rotations per second
+
+    let angle = 0;
+    let speed = NORMAL_SPEED;
+    let lastTime = performance.now();
+    let boostUntil = 0;
+
+    function tick(now) {
+      const dt = now - lastTime;
+      lastTime = now;
+
+      // If we're past the boost window, drop back to normal speed.
+      // Angle is preserved, so the slowdown happens from the exact spot.
+      if (boostUntil && now >= boostUntil) {
+        speed = NORMAL_SPEED;
+        boostUntil = 0;
+        star.classList.remove('boosting');
+      }
+
+      angle = (angle + speed * dt) % 360;
+      star.style.transform = `rotate(${angle}deg)`;
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+
+    star.addEventListener('click', () => {
+      // Boost from wherever the angle currently is, for 500ms.
+      speed = BOOST_SPEED;
+      boostUntil = performance.now() + 500;
+      star.classList.add('boosting');
+    });
+  })();
 </script>
 
 </body>
