@@ -3,6 +3,33 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>
+// Catches any uncaught JS errors and shows them in the banner.
+// Runs as the very first script so it's ready when other scripts blow up.
+window.addEventListener('error', function(e) {
+  var banner = document.getElementById('loadError');
+  var msg = document.getElementById('loadErrorMsg');
+  if (banner && msg) {
+    msg.textContent = (e.message || 'Unknown error') +
+      ' — line ' + (e.lineno || '?') +
+      ', col ' + (e.colno || '?');
+    banner.style.display = 'block';
+  } else {
+    // Banner not in DOM yet (error happened before body loaded).
+    // Wait for it then show.
+    document.addEventListener('DOMContentLoaded', function() {
+      var b = document.getElementById('loadError');
+      var m = document.getElementById('loadErrorMsg');
+      if (b && m) {
+        m.textContent = (e.message || 'Unknown error') +
+          ' — line ' + (e.lineno || '?') +
+          ', col ' + (e.colno || '?');
+        b.style.display = 'block';
+      }
+    });
+  }
+});
+</script>
 <title>NEMO Psychomotor Assessment Tool</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
