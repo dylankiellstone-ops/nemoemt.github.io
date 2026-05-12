@@ -2173,7 +2173,7 @@ const SCENARIOS = {
   },
 
   'medical-2': {
-    title: 'CHF / Pulmonary Edema — 78M',
+    title: 'Pulmonary Edema — 78M',
     tag: 'Medical · Scenario 2',
     autoComplaint: 'respiratory',
     brief: [
@@ -2186,7 +2186,7 @@ const SCENARIOS = {
       { title: 'Hidden Details (only if directly assessed)', type: 'hidden',
         items: [['JVD','Yes, prominent at 45°'],['Peripheral edema','pitting edema to mid-shin bilaterally'],['Pursed-lip breathing','Yes, obvious'],['Pink frothy sputum','Yes — small amount on lips, more with cough'],['Tracheal deviation','None'],['Wife confirms','"He\'s been more swollen all week. Skipped his Lasix yesterday because he didn\'t want to be up all night peeing."']] },
       { title: 'Expected Treatment', fullWidth: true,
-        body: '<p><strong>Oxygen:</strong> SpO₂ 84% — NRB 15 LPM. CPAP if available/within scope. <em>Failure to provide = critical fail.</em></p><p><strong>Position:</strong> upright, legs dependent.</p><p><strong>Aspirin 324 mg</strong> — indicated, possible cardiac component, no allergy.</p><p><strong style="color:#9D0208">Nitroglycerin: NOT indicated</strong> — patient is not prescribed nitro and has not previously taken it. Do not administer.</p><p><strong style="color:#9D0208">NO albuterol</strong> — wheezing here is "cardiac wheeze," not bronchospasm. Albuterol can worsen tachycardia.</p><p><strong>Transport:</strong> unstable, ALS intercept.</p>' },
+        body: '<p><strong>Oxygen:</strong> SpO₂ 84% — NRB 15 LPM, should be CPAP. <em>Failure to provide = critical fail.</em></p><p><strong>Position:</strong> upright, legs dependent.</p><p><strong style="color:#9D0208">Nitroglycerin: NOT indicated</strong> — patient is not prescribed nitro and has not previously taken it. Do not administer.</p><p><strong style="color:#9D0208">NO albuterol</strong> — wheezing here is "cardiac wheeze," not bronchospasm. Albuterol can worsen tachycardia.</p><p><strong>Transport:</strong> unstable, ALS intercept.</p>' },
       { title: 'Common Pitfalls', fullWidth: true,
         body: '<p>• Reaching for albuterol because of wheezing (this is rales, not true wheezing)<br>• Letting patient lie back<br>• Forgetting to ask about pillow count (orthopnea is diagnostic)<br>• Missing the pink frothy sputum<br>• Giving nitro when the patient isn\'t prescribed it</p>' }
     ],
@@ -2210,7 +2210,7 @@ const SCENARIOS = {
       'Accessory muscle use': 'Yes.',
       'SpO₂': '84% on room air.',
       'Lung sounds': 'Coarse rales bilaterally.',
-      'Initiates appropriate oxygen therapy / ventilatory mgmt if needed': 'NRB 15 LPM (CPAP if available).',
+      'Initiates appropriate oxygen therapy / ventilatory mgmt if needed': 'NRB 15 LPM/CPAP.',
       'Assess/control major bleeding': 'No bleeding.',
       'Color': 'Pale.',
       'Temperature': 'Cool.',
@@ -2259,7 +2259,7 @@ const SCENARIOS = {
       'Chest pain': '"A little pressure."',
       'Weakness': '"Yes."',
       'Fever': '"No."',
-      'Swollen hands or feet': 'Yes — 2+ pitting edema bilaterally.',
+      'Swollen hands or feet': 'Yes — pitting edema bilaterally.',
       'Cough': '"Pink, foamy."',
       'Respiratory infection / symptoms of one?': '"No."',
       'More comfortable in any position?': '"Sitting up. Can\'t lie down."',
@@ -2424,7 +2424,7 @@ const SCENARIOS = {
       'If shock → initiate shock treatment': 'Not indicated.',
       'Identify patient priority (stable/unstable) and transport decision': 'Unstable presentation — load and go.',
       'Onset': '"Came on suddenly, staying steady."',
-      'Provocation / palliation': '"Took 2 of my nitros, didn\'t help."',
+      'Provocation / palliation': '"Took 2 of my nitros, didn\'t help. Now that I'm thinking, I haven't taken my aspirin for the last week."',
       'Quality': '"Pressure. Heaviness."',
       'Radiation': '"Into my left shoulder."',
       'Severity': '"5 out of 10. Started at 7."',
@@ -2697,8 +2697,8 @@ const SCENARIOS = {
       'Determines the number of patients': 'One patient.',
       'Requests additional help (ALS, PD, FD) if necessary': '"ALS unavailable."',
       'Patient description (age, sex assigned at birth)': '64-year-old male.',
-      'Determines responsiveness — AVPU': 'Verbal — confused.',
-      'If alert → A&O out of 4 (who/where/when/general)': 'Not oriented — confused.',
+      'Determines responsiveness — AVPU': 'Alert — confused.',
+      'If alert → A&O out of 4 (who/where/when/general)': 'A&O x 0 — confused.',
       'Considers spine stabilization': 'Not necessary.',
       'Determines apparent life threats': 'None that you can see.',
       'Determines chief complaint': 'Per wife: altered mental status, sweating, confusion.',
@@ -2791,9 +2791,9 @@ const SCENARIOS = {
       { title: 'Vitals (Reference)', type: 'vitals',
         rows: [['BP','92 / 56'],['HR','124, regular, weak radial'],['RR','22, shallow, regular'],['SpO₂','95% on room air'],['Skin','Pale/gray, cool, diaphoretic'],['Lung sounds','Clear bilaterally'],['Cap refill','4 seconds'],['BGL','116 mg/dL (if checked)'],['Pupils','PEARL, 3mm']] },
       { title: 'Hidden Details (only if directly assessed)', type: 'hidden',
-        items: [['Pulsating abdominal mass','YES — palpable epigastric/upper abdomen (KEY)'],['Cullen\'s sign','No'],['Grey-Turner\'s','No'],['Tenderness','Severe, central'],['Rebound tenderness','Yes'],['Guarding/rigidity','Voluntary guarding'],['Pedal pulses','Weak bilaterally, possibly asymmetric'],['Bowel sounds','Diminished but present']] },
+        items: [['Pulsating abdominal mass','YES — palpable epigastric/upper abdomen (KEY)'],['Tenderness','Severe, central'],['Rebound tenderness','Yes'],['Guarding/rigidity','Voluntary guarding'],['Pedal pulses','Weak bilaterally, possibly asymmetric'],['Bowel sounds','Diminished but present']] },
       { title: 'Expected Treatment', fullWidth: true,
-        body: '<p><strong>Oxygen:</strong> SpO₂ 95% — borderline. NC 2 LPM acceptable, hold acceptable.</p><p><strong>No specific medication treatment in EMT scope</strong> — load-and-go scenario.</p><p><strong>Position:</strong> supine, legs flat. Keep warm.</p><p><strong>NPO</strong> — no oral anything.</p><p><strong>Transport:</strong> load and go. UNSTABLE. Trauma center / vascular surgery capable. ALS intercept critical.</p>' },
+        body: '<p><strong>Oxygen:</strong> SpO₂ 95% — borderline. NRB 10-12 LPM.</p><p><strong>No specific medication treatment in EMT scope</strong> — load-and-go scenario.</p><p><strong>Position:</strong> supine, legs flat. Keep warm.</p><p><strong>NPO</strong> — no oral anything.</p><p><strong>Transport:</strong> load and go. UNSTABLE. Trauma center / vascular surgery capable. ALS intercept critical.</p>' },
       { title: 'Common Pitfalls', fullWidth: true,
         body: '<p>• <strong>Missing the pulsating mass</strong> — didn\'t palpate carefully or didn\'t consider AAA<br>• Treating as "just stomach pain" — vitals + tearing back-radiating pain in 69M smoker = vascular emergency<br>• Spending too long on scene<br>• Giving aspirin — wrong call in suspected AAA / GI bleed<br>• Not assessing pedal pulses bilaterally (asymmetry suggests aortic involvement)<br>• Forgetting NPO<br>• Letting him stand or walk to the stretcher</p>' }
     ],
@@ -2817,7 +2817,7 @@ const SCENARIOS = {
       'Accessory muscle use': 'None.',
       'SpO₂': '95% on room air.',
       'Lung sounds': 'Clear bilaterally.',
-      'Initiates appropriate oxygen therapy / ventilatory mgmt if needed': 'Borderline — NC 2 LPM acceptable.',
+      'Initiates appropriate oxygen therapy / ventilatory mgmt if needed': 'NRM 10-12 LPM, shock potential from AAA.',
       'Assess/control major bleeding': 'No external bleeding.',
       'Color': 'Pale, gray.',
       'Temperature': 'Cool.',
@@ -2867,7 +2867,7 @@ const SCENARIOS = {
       'Unusual bowel habits? Describe; dark tarry stool?': '"Yesterday normal. No blood."',
       'Pain with urination? Unusual odors? Urine appearance?': '"Haven\'t tried recently."',
       'If female: vaginal discharge? Could be pregnant?': 'N/A.',
-      'Look: discoloration': 'No Cullen\'s or Grey-Turner\'s.',
+      'Look: discoloration': 'Bruising present',
       'Look: distention': 'Mild.',
       'Look: obvious injury': 'None.',
       'Look: swelling': 'Mild abdominal distension.',
@@ -2877,7 +2877,7 @@ const SCENARIOS = {
       'Palpate quadrants: rebound tenderness': 'Yes.',
       'Palpate quadrants: guarding/rigidity': 'Voluntary guarding.',
       'Palpate quadrants: unusual masses': 'Pulsating mass upper abdomen.',
-      'Proper oxygen therapy': 'Borderline — NC 2 LPM or hold.'
+      'Proper oxygen therapy': 'NRB 10-12 LPM.',
     }
   }
 ,
@@ -3028,7 +3028,7 @@ const SCENARIOS = {
       { title: 'Hidden Findings (only if directly assessed)', type: 'hidden',
         items: [['Head','No visible trauma. Helmet-less but no head strike per witness.'],['Neck','Trachea midline. Mild posterior cervical tenderness.'],['Chest','No deformity. Tender T-spine on palpation.'],['Abdomen','Soft, mildly tender lower abdomen.'],['Pelvis','UNSTABLE — subtle crepitus on lateral compression. Hematoma forming over right hip.'],['Extremities','Cannot feel toes well bilaterally — diminished sensation below the umbilicus.'],['PMS distal','Pulses present, motor weak in legs, sensation diminished. Upper extremities normal.'],['Posterior','Bruising over lower lumbar/sacral area — palpable step-off at L2.']] },
       { title: 'Expected Treatment', fullWidth: true,
-        body: '<p><strong>Spinal motion restriction:</strong> full SMR (spinal motion restriction) — C-collar, log-roll to backboard, towel rolls, straps. <em>Critical fail if not done.</em></p><p><strong>Oxygen:</strong> SpO₂ 96% — NC 2–4 LPM acceptable.</p><p><strong>Pelvic binder</strong> — unstable pelvis with hypotension. CRITICAL FAIL IF DOES NOT, Apply commercial binder or improvise with sheet at level of greater trochanters.</p><p><strong>Treat for shock</strong> — keep warm, supine.</p><p><strong>Transport:</strong> UNSTABLE — load and go. Trauma center. ALS intercept.</p>' },
+        body: '<p><strong>Spinal motion restriction:</strong> full SMR (spinal motion restriction) — C-collar, log-roll to backboard, towel rolls, straps. <em>Critical fail if not done.</em></p><p><strong>Oxygen:</strong> SpO₂ 96% — NRB 10-12 LPM acceptable.</p><p><strong>Pelvic binder</strong> — unstable pelvis with hypotension. CRITICAL FAIL IF DOES NOT, Apply commercial binder or improvise with sheet at level of greater trochanters.</p><p><strong>Treat for shock</strong> — keep warm, supine.</p><p><strong>Transport:</strong> UNSTABLE — load and go. Trauma center. ALS intercept.</p>' },
       { title: 'Common Pitfalls', fullWidth: true,
         body: '<p>• <strong>Letting patient move himself</strong> — major spinal mechanism<br>• Missing the unstable pelvis (hypotension + fall = think pelvis)<br>• Not assessing PMS bilaterally<br>• Not applying pelvic binder<br>• Skipping the posterior assessment during log-roll<br>• Forgetting to ask about loss of consciousness</p>' }
     ],
@@ -3052,7 +3052,7 @@ const SCENARIOS = {
       'Accessory muscle use': 'Mild.',
       'SpO₂': '96% on room air.',
       'Lung sounds': 'Clear bilaterally.',
-      'Initiates oxygen therapy / ventilatory mgmt if needed': 'NC 2–4 LPM.',
+      'Initiates oxygen therapy / ventilatory mgmt if needed': 'NRB 10-12 LPM.',
       'Assess/control major bleeding': 'No external bleeding.',
       'Color': 'Pale.',
       'Temperature': 'Cool.',
@@ -3142,7 +3142,7 @@ const SCENARIOS = {
       'Treatment: posterior — bandage': 'Not indicated.',
       'Treatment: posterior — immobilize if needed': 'Backboard.',
       'States field impression of patient': 'Fall from height — suspected unstable pelvis, possible spinal cord injury, early shock.',
-      'Administers proper treatment': 'C-collar + SMR + pelvic binder, O2 PRN, keep warm, rapid transport.',
+      'Administers proper treatment': 'C-collar + SMR + pelvic binder, NRB 10-12 LPM, keep warm, rapid transport.',
       'Provides accurate verbal report to receiving facility': '42M fall ~18ft, BP 100/62, HR 118, unstable pelvis, sensation diminished below umbilicus, SMR + binder applied.'
     }
   },
@@ -3158,11 +3158,11 @@ const SCENARIOS = {
       { title: 'Vitals (Reference)', type: 'vitals',
         rows: [['BP','82 / 50'],['HR','138, regular, weak radial'],['RR','26, shallow, regular'],['SpO₂','94% on room air'],['Skin','Pale, cool, very diaphoretic'],['Lung sounds','Clear bilaterally'],['Cap refill','5 seconds'],['BGL','100 mg/dL (if checked)'],['Pupils','PEARL, 4mm']] },
       { title: 'Hidden Findings (only if directly assessed)', type: 'hidden',
-        items: [['Entry wound','Single GSW right upper abdomen, ~1cm round wound, oozing dark blood.'],['Exit wound','Yes — palpable on log-roll, posterior R flank. Larger, more bleeding.'],['Number of wounds','TWO total — entry + exit.'],['Abdomen','Tender, distending, no rigidity yet.'],['Other injuries','None on exam.'],['Pulses','Distal pulses weak but present.'],['Mental status','Alert but lethargic, slow to respond.']] },
+        items: [['Entry wound','Single GSW right upper abdomen, ~1cm round wound, oozing dark blood.'],['Exit wound','Yes — palpable on log-roll, posterior R flank. Larger, more bleeding. CRITICAL FAIL IF DON'\T FIND'],['Number of wounds','TWO total — entry + exit.'],['Abdomen','Tender, distending, no rigidity yet.'],['Other injuries','None on exam.'],['Pulses','Distal pulses weak but present.'],['Mental status','Alert but lethargic, slow to respond.']] },
       { title: 'Expected Treatment', fullWidth: true,
-        body: '<p><strong>Scene safety:</strong> verify PD secured before approach. <em>Critical fail if approached unsafe scene.</em></p><p><strong>Spinal precautions:</strong> NOT mandatory for isolated GSW without spinal symptoms — current trauma guidelines.</p><p><strong>Oxygen:</strong> NRB 15 LPM. <em>Critical fail if not provided.</em></p><p><strong>Hemorrhage control:</strong> direct pressure to wounds. Sterile occlusive dressing on abdominal wounds (not chest sucking wound — abdominal).</p><p><strong>FIND THE EXIT WOUND</strong> — log-roll to inspect posterior. Address both wounds.</p><p><strong>Treat for shock:</strong> supine, keep warm.</p><p><strong>Transport:</strong> UNSTABLE — load and go IMMEDIATELY. Trauma center. ALS intercept critical.</p>' },
+        body: '<p><strong>Scene safety:</strong> verify PD secured before approach. <em>Critical fail if approached unsafe scene.</em></p><p><strong>Spinal precautions:</strong> NOT mandatory for isolated GSW without spinal symptoms — current trauma guidelines.</p><p><strong>Oxygen:</strong> NRB 15 LPM. <em>Critical fail if not provided.</em></p><p><strong>Hemorrhage control:</strong> direct pressure to wounds. Sterile occlusive dressing on abdominal wounds (not chest sucking wound — abdominal).</p><p><strong>FIND THE EXIT WOUND, CRITICAL FAIL IF DO NOT</strong> — log-roll to inspect posterior. Address both wounds.</p><p><strong>Treat for shock:</strong> supine, keep warm.</p><p><strong>Transport:</strong> UNSTABLE — load and go IMMEDIATELY. Trauma center. ALS intercept critical.</p>' },
       { title: 'Common Pitfalls', fullWidth: true,
-        body: '<p>• <strong>Missing the exit wound</strong> — must log-roll<br>• Approaching scene before PD secures it<br>• Spending time on detailed secondary survey — this is load and go<br>• Forgetting to count wounds (always look for entry AND exit)<br>• Removing clothing without good reason in cold environment<br>• Not communicating ETA to trauma center early</p>' }
+        body: '<p>• <strong>Missing the exit wound, CRITICAL FAIL</strong> — must log-roll<br>• Approaching scene before PD secures it<br>• Spending time on detailed secondary survey — this is load and go<br>• Forgetting to count wounds (always look for entry AND exit)<br>• Removing clothing without good reason in cold environment<br>• Not communicating ETA to trauma center early</p>' }
     ],
     itemResponses: {
       'Takes or verbalizes appropriate BSI/PPE precautions': 'Gloves, eye protection.',
