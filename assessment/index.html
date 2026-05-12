@@ -1209,6 +1209,123 @@
     min-height: 14px;
   }
 </style>
+<style>
+  /* ── Reset modal (appears when Reset is clicked with work in progress) ── */
+  .reset-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.18s ease-out;
+    padding: 24px;
+  }
+  .reset-modal {
+    background: var(--white);
+    border: 2px solid var(--navy);
+    border-radius: 20px;
+    box-shadow: 0 6px 0 var(--navy), 0 14px 36px rgba(45, 42, 110, 0.25);
+    padding: 28px 32px;
+    max-width: 460px;
+    width: 100%;
+  }
+  .reset-modal-icon {
+    font-size: 36px;
+    text-align: center;
+    margin-bottom: 8px;
+    line-height: 1;
+  }
+  .reset-modal-title {
+    font-family: inherit;
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--navy);
+    text-align: center;
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
+  }
+  .reset-modal-body {
+    font-size: 13.5px;
+    color: var(--navy-soft);
+    text-align: center;
+    margin-bottom: 22px;
+    line-height: 1.55;
+    font-weight: 500;
+  }
+  .reset-modal-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .reset-modal-btn {
+    padding: 12px 18px;
+    border: 2px solid var(--navy);
+    border-radius: 14px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 3px 0 var(--navy);
+    transition: transform 0.08s, box-shadow 0.08s, background 0.15s;
+    text-align: center;
+    line-height: 1.3;
+    color: var(--navy);
+    background: var(--white);
+  }
+  .reset-modal-btn:hover { background: var(--cream); }
+  .reset-modal-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--navy); }
+  .reset-modal-btn .btn-sub {
+    display: block;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--navy-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-top: 3px;
+  }
+  .reset-modal-btn-primary {
+    background: var(--sky);
+    color: var(--navy);
+  }
+  .reset-modal-btn-primary:hover {
+    background: var(--sky-deep);
+    color: white;
+  }
+  .reset-modal-btn-primary:hover .btn-sub {
+    color: rgba(255, 255, 255, 0.85);
+  }
+  .reset-modal-btn-danger {
+    background: var(--red-soft);
+    color: var(--navy);
+    border-color: var(--red);
+    box-shadow: 0 3px 0 var(--red);
+  }
+  .reset-modal-btn-danger:hover {
+    background: var(--red);
+    color: white;
+  }
+  .reset-modal-btn-danger:hover .btn-sub {
+    color: rgba(255, 255, 255, 0.85);
+  }
+  .reset-modal-btn-danger:active {
+    box-shadow: 0 1px 0 var(--red);
+  }
+  .reset-modal-btn-ghost {
+    background: transparent;
+    border-color: var(--navy-soft);
+    color: var(--navy-soft);
+    box-shadow: 0 2px 0 var(--navy-soft);
+  }
+  .reset-modal-btn-ghost:hover {
+    background: var(--cream-soft);
+    color: var(--navy);
+  }
+  .reset-modal-btn-ghost:active {
+    box-shadow: 0 0 0 var(--navy-soft);
+  }
+</style>
 <link rel="icon" type="image/png" href="../assets/nemo_logo.png">
 </head>
 <body>
@@ -3325,15 +3442,15 @@ const SCENARIOS = {
       { title: 'Dispatch', fullWidth: true,
         body: '<p>"Engine 3, Medic 7 — pedestrian struck by vehicle, child involved. Crosswalk at 12th and Elm. PD on scene securing traffic. Time out: 1545."</p>' },
       { title: 'Scene & Presentation', fullWidth: true,
-        body: '<p>After-school hours, residential intersection. PD has traffic stopped both directions. Vehicle (sedan, ~25 mph per witness) is stopped, driver out and cooperative. Child was crossing in the crosswalk. Scene safe.</p><p><strong>Patient:</strong> 8-year-old female lying on the asphalt, was not moved. Backpack still on. Conscious. Crying loudly. Visible deformity to the right thigh. Some abrasions on face. Calling for her mom.</p>' },
+        body: '<p>After-school hours, residential intersection. PD has traffic stopped both directions. Vehicle (sedan, ~25 mph per witness) is stopped, driver out and cooperative. Child was crossing in the crosswalk. Scene safe.</p><p><strong>Patient:</strong> 8-year-old female lying on the asphalt, was not moved. Backpack still on. Conscious. Crying loudly. Visible open femur fracture to the right thigh. Some abrasions on face. Calling for her mom.</p>' },
       { title: 'Vitals (Reference)', type: 'vitals',
         rows: [['BP','96 / 60'],['HR','138, regular, strong radial'],['RR','28, regular, no labored breathing'],['SpO₂','97% on room air'],['Skin','Pale, warm, diaphoretic'],['Lung sounds','Clear bilaterally'],['Cap refill','2 seconds'],['BGL','110 mg/dL (if checked)'],['Pupils','PEARL, 4mm']] },
       { title: 'Hidden Findings (only if directly assessed)', type: 'hidden',
-        items: [['Head','Forehead abrasion. Mom (en route) confirms no LOC per witness. Fontanelle not applicable.'],['Neck','Mild posterior cervical tenderness, no deformity.'],['Chest','No deformity. Mild seatbelt-line bruising from backpack strap.'],['Abdomen','Soft, non-tender.'],['Pelvis','Stable.'],['Right thigh','Obvious deformity, swelling — likely femur fracture. Pulse intact.'],['Left lower leg','Abrasion only.'],['Posterior','No additional injuries on log-roll.'],['Mom','En route to scene per PD.']] },
+        items: [['Head','Forehead abrasion. Mom (en route) confirms no LOC per witness. Fontanelle not applicable.'],['Neck','Mild posterior cervical tenderness, no deformity.'],['Chest','No deformity. Mild seatbelt-line bruising from backpack strap.'],['Abdomen','Soft, non-tender.'],['Pelvis','Stable.'],['Right thigh','Obvious open fracture, swelling. Pulse intact.'],['Left lower leg','Abrasion only.'],['Posterior','No additional injuries on log-roll.'],['Mom','En route to scene per PD.']] },
       { title: 'Expected Treatment', fullWidth: true,
-        body: '<p><strong>Spinal motion restriction:</strong> peds with significant mechanism — apply C-collar (peds size), full SMR.</p><p><strong>Oxygen:</strong> SpO₂ 97% — NC 2 LPM acceptable.</p><p><strong>Splint right femur</strong> — peds traction splint or rigid splint per protocol/availability.</p><p><strong>Bandage</strong> abrasions.</p><p><strong>Treat for shock:</strong> children compensate well then crash suddenly. Tachy + cool/diaphoretic = shock until proven otherwise.</p><p><strong>Family-centered care</strong> — communicate with mom on arrival, allow brief contact if practical.</p><p><strong>Transport:</strong> UNSTABLE — load and go. Pediatric trauma center.</p>' },
+        body: '<p><strong>Spinal motion restriction:</strong> peds with significant mechanism — apply C-collar (peds size), full SMR.</p><p><strong>Oxygen:</strong> SpO₂ 97% — NC 2 LPM acceptable.</p><p><strong>Splint right femur</strong> — rigid splint per protocol/availability.</p><p><strong>Bandage</strong> abrasions.</p><p><strong>Treat for shock:</strong> children compensate well then crash suddenly. Tachy + cool/diaphoretic = shock until proven otherwise.</p><p><strong>Family-centered care</strong> — communicate with mom on arrival, allow brief contact if practical.</p><p><strong>Transport:</strong> UNSTABLE — load and go. Pediatric trauma center.</p>' },
       { title: 'Common Pitfalls', fullWidth: true,
-        body: '<p>• <strong>Underestimating pediatric shock</strong> — kids compensate then crash<br>• Forgetting age-appropriate sizing for C-collar and splints<br>• Not communicating calmly with the child<br>• Not waiting for mom (or arranging for her to follow) — family-centered care<br>• Slow scene time on a load-and-go peds trauma<br>• Skipping the posterior assessment</p>' }
+        body: '<p>• <strong>Underestimating pediatric shock</strong> — kids compensate then crash<br>• Forgetting age-appropriate sizing for C-collar and splints<br>• CRITICAL FAIL, using a traction splint, this is an open fractire<br>• Not communicating calmly with the child<br>• Not waiting for mom (or arranging for her to follow) — family-centered care<br>• Slow scene time on a load-and-go peds trauma<br>• Skipping the posterior assessment</p>' }
     ],
     itemResponses: {
       'Takes or verbalizes appropriate BSI/PPE precautions': 'Gloves, eye protection.',
@@ -3345,7 +3462,7 @@ const SCENARIOS = {
       'Determines responsiveness — AVPU': 'Alert.',
       'If alert → A&O out of 4': 'A&O x4 for age. Crying for mom.',
       'Considers spine stabilization': 'Yes — high mechanism. Manual c-spine, peds C-collar.',
-      'Determines apparent life threats': 'None that you can see, but early shock and possible femur fracture.',
+      'Determines apparent life threats': 'None that you can see.',
       'Determines chief complaint': '"Leg hurts!" Calling for mom.',
       'Identifies if there is an obstruction': 'Patent.',
       'Opens/clears airway if needed': 'Not needed.',
@@ -3366,7 +3483,7 @@ const SCENARIOS = {
       'Equality (symmetrical, asymmetrical)': 'Symmetrical.',
       'Capillary refill': '2 seconds.',
       'Identify if patient is in shock': 'Yes — early. Peds compensate then crash.',
-      'If shock → initiate shock treatment': 'Keep warm, supine, splint femur, rapid transport.',
+      'If shock → initiate shock treatment': 'Keep warm, supine, O2, rapid transport.',
       'Patient priority & transport decision': 'Unstable — load and go to peds trauma.',
       'Blood pressure': '96 / 60.',
       'Pulse rate and quality': '138, strong.',
@@ -3387,7 +3504,7 @@ const SCENARIOS = {
       'Inspect abdomen for bleeding': 'No bleeding.',
       'Inspect pelvis for DCAP-BTLS': 'No DCAP-BTLS findings.',
       'Inspect pelvis for bleeding': 'No bleeding.',
-      'Inspect lower extremities for DCAP-BTLS': 'R thigh obvious deformity and swelling. L lower leg abrasion only.',
+      'Inspect lower extremities for DCAP-BTLS': 'R thigh obvious deformity and swelling. Open femur fracture R leg. L lower leg abrasion only.',
       'Inspect lower extremities for bleeding': 'No major bleeding.',
       'Inspect upper extremities for DCAP-BTLS': 'No DCAP-BTLS findings.',
       'Inspect upper extremities for bleeding': 'No bleeding.',
@@ -3425,10 +3542,10 @@ const SCENARIOS = {
       'Treatment: control bleeding': 'No major bleeding.',
       'Treatment: correctly bandage injury': 'Bandage forehead abrasion.',
       'Treatment: bandage': 'Bandage abrasions.',
-      'Treatment: immobilize if needed': 'Full peds SMR, splint R femur.',
+      'Treatment: immobilize if needed': 'Full peds SMR, splint Open R femur.',
       'Treatment: apply C-collar if needed': 'Yes — peds size.',
-      'Treatment: splint area if fracture': 'Splint R femur.',
-      'States field impression of patient': '8F pedestrian struck — R femur fracture, early shock.',
+      'Treatment: splint area if fracture': 'Splint Open R femur.',
+      'States field impression of patient': '8F pedestrian struck — Open R femur fracture, early shock.',
       'Administers proper treatment': 'Peds C-collar + SMR, splint R femur, bandage abrasions, O2 PRN, peds trauma center.',
       'Provides accurate verbal report to receiving facility': '8F peds struck ~25mph, BP 96/60, HR 138, R femur fx, SMR + splint applied, mom en route.'
     }
@@ -3557,7 +3674,7 @@ const SCENARIOS = {
       { title: 'Dispatch', fullWidth: true,
         body: '<p>"Engine 3, Medic 7 — assault, head injury. 1100 Wabash Avenue, sidewalk. PD on scene, scene secured. Patient unconscious initially, now confused per PD. Time out: 0312."</p>' },
       { title: 'Scene & Presentation', fullWidth: true,
-        body: '<p>Late night/early morning, downtown sidewalk. Two PD units on scene. Bystanders kept back. Scene secured per PD. No suspect on scene. Possible alcohol smell on patient.</p><p><strong>Patient:</strong> 30M lying on sidewalk, did not move himself after fall. Visible head laceration to the left temporal area, dried blood. Patient is awake but confused, repeating "what happened?" multiple times. Pupils slightly unequal — left larger than right. PD reports patient was unresponsive when they arrived ~6 minutes before EMS.</p>' },
+        body: '<p>Late night/early morning, downtown sidewalk. Two PD units on scene. Bystanders kept back. Scene secured per PD. No suspect on scene. Possible alcohol smell on patient.</p><p><strong>Patient:</strong> 30M lying on sidewalk, did not move himself after fall. Visible head laceration to the left temporal area, dried blood. Patient is unconscious. Pupils slightly unequal — left larger than right. PD reports patient was unresponsive when they arrived ~6 minutes before EMS.</p>' },
       { title: 'Vitals (Reference)', type: 'vitals',
         rows: [['BP','152 / 88'],['HR','62, regular, strong radial'],['RR','14, regular, slightly irregular pattern'],['SpO₂','96% on room air'],['Skin','Pale, warm, dry'],['Lung sounds','Clear bilaterally'],['Cap refill','2 seconds'],['BGL','94 mg/dL'],['Pupils','LEFT 6mm sluggish, RIGHT 3mm reactive — UNEQUAL']] },
       { title: 'Hidden Findings (only if directly assessed)', type: 'hidden',
@@ -3574,13 +3691,13 @@ const SCENARIOS = {
       'Determines the number of patients': 'One patient.',
       'Requests additional help (ALS, PD, FD) if necessary': 'PD on scene. ALS unavailable.',
       'Patient description (age, sex assigned at birth)': '30-year-old male.',
-      'Determines responsiveness — AVPU': 'Verbal — confused, repetitive.',
-      'If alert → A&O out of 4': 'Not fully oriented — confused. GCS ~13.',
+      'Determines responsiveness — AVPU': 'Unconscious.',
+      'If alert → A&O out of 4': 'N/A',
       'Considers spine stabilization': 'Critical — assault with LOC. Full SMR.',
-      'Determines apparent life threats': 'Yes — TBI signs (unequal pupils, early Cushing\'s).',
-      'Determines chief complaint': 'Patient: "What happened?" PD: assault, unresponsive on arrival.',
-      'Identifies if there is an obstruction': 'Patent.',
-      'Opens/clears airway if needed': 'Jaw thrust if needed.',
+      'Determines apparent life threats': 'Unconscious, and TBI signs (unequal pupils, early Cushing\'s).',
+      'Determines chief complaint': 'PD: assault, unresponsive on arrival.',
+      'Identifies if there is an obstruction': 'Snoring.',
+      'Opens/clears airway if needed': 'Jaw thrust.',
       'Tidal volume': 'Adequate.',
       'Relative rate': '14, slow.',
       'Respiratory pattern': 'Slightly irregular.',
@@ -3608,7 +3725,7 @@ const SCENARIOS = {
       'Medications': 'Unknown.',
       'Past pertinent history': 'Unknown.',
       'Last oral intake': 'Unknown. Alcohol on breath.',
-      'Events leading up': 'PD: assault witnessed ~10 min ago. Patient unresponsive on arrival, gradually more responsive.',
+      'Events leading up': 'PD: assault witnessed ~10 min ago. Patient unresponsive on arrival.',
       'Inspect face & scalp for DCAP-BTLS': 'L temporal hematoma + laceration.',
       'Inspect head for bleeding': 'L temporal scalp lac controlled with pressure.',
       'Inspect neck for DCAP-BTLS': 'No DCAP-BTLS findings. Patient unreliable — maintain SMR.',
@@ -4578,7 +4695,142 @@ function watchSetup() {
 }
 
 function resetAll() {
-  if (!confirm('Clear all checkmarks and reset setup fields?')) return;
+  // Decide whether there's anything worth saving. If the sheet is empty,
+  // skip the save prompt and just confirm setup wipe.
+  const hasWork =
+    checkedItems.size > 0 ||
+    checkedCrits.size > 0 ||
+    conditionalAnswers.size > 0 ||
+    halfCreditSections.size > 0 ||
+    excludedSections.size > 0 ||
+    (document.getElementById('evaluatorComments').value || '').trim() !== '';
+
+  if (!hasWork) {
+    // Empty sheet — show the simple confirmation modal (no save option)
+    showResetModal({
+      icon: '↻',
+      title: 'Reset setup?',
+      body: 'This will clear the candidate name, evaluator, and scenario selection. No grading data has been entered.',
+      actions: [
+        {
+          label: 'Reset',
+          sub: 'Clear setup fields',
+          variant: 'primary',
+          onClick: () => { closeResetModal(); doReset(); }
+        },
+        {
+          label: 'Cancel',
+          variant: 'ghost',
+          onClick: closeResetModal
+        }
+      ]
+    });
+    return;
+  }
+
+  // Has grading data — three-option modal
+  showResetModal({
+    icon: '⚠',
+    title: 'Save before resetting?',
+    body: 'You have unsaved grading data. Choose what to do:',
+    actions: [
+      {
+        label: 'Save & Reset',
+        sub: 'Export PDF and reset for next candidate',
+        variant: 'primary',
+        onClick: () => { closeResetModal(); scoreAndExport(); }
+      },
+      {
+        label: 'Reset Without Saving',
+        sub: 'Discard everything — no PDF',
+        variant: 'danger',
+        onClick: () => {
+          closeResetModal();
+          // Second confirmation step before wiping
+          showResetModal({
+            icon: '⚠',
+            title: 'Are you sure?',
+            body: 'This will permanently clear all checkmarks, conditional answers, half-credit flags, and evaluator comments. The PDF will NOT be saved.',
+            actions: [
+              {
+                label: 'Yes, discard everything',
+                sub: 'This cannot be undone',
+                variant: 'danger',
+                onClick: () => { closeResetModal(); doReset(); }
+              },
+              {
+                label: 'Cancel',
+                variant: 'ghost',
+                onClick: closeResetModal
+              }
+            ]
+          });
+        }
+      },
+      {
+        label: 'Cancel',
+        variant: 'ghost',
+        onClick: closeResetModal
+      }
+    ]
+  });
+}
+
+function showResetModal({ icon, title, body, actions }) {
+  closeResetModal(); // remove any existing modal first
+  const overlay = document.createElement('div');
+  overlay.className = 'reset-modal-overlay';
+  overlay.id = 'resetModalOverlay';
+
+  const modal = document.createElement('div');
+  modal.className = 'reset-modal';
+
+  modal.innerHTML = `
+    <div class="reset-modal-icon">${icon}</div>
+    <div class="reset-modal-title">${title}</div>
+    <div class="reset-modal-body">${body}</div>
+    <div class="reset-modal-actions" id="resetModalActions"></div>
+  `;
+
+  overlay.appendChild(modal);
+  document.body.appendChild(overlay);
+
+  const actionsWrap = modal.querySelector('#resetModalActions');
+  actions.forEach(action => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'reset-modal-btn'
+      + (action.variant === 'primary' ? ' reset-modal-btn-primary' : '')
+      + (action.variant === 'danger' ? ' reset-modal-btn-danger' : '')
+      + (action.variant === 'ghost' ? ' reset-modal-btn-ghost' : '');
+    btn.innerHTML = action.sub
+      ? `${action.label}<span class="btn-sub">${action.sub}</span>`
+      : action.label;
+    btn.addEventListener('click', action.onClick);
+    actionsWrap.appendChild(btn);
+  });
+
+  // Click outside to cancel
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) closeResetModal();
+  });
+
+  // ESC to cancel
+  function escHandler(e) {
+    if (e.key === 'Escape') {
+      closeResetModal();
+      document.removeEventListener('keydown', escHandler);
+    }
+  }
+  document.addEventListener('keydown', escHandler);
+}
+
+function closeResetModal() {
+  const existing = document.getElementById('resetModalOverlay');
+  if (existing) existing.remove();
+}
+
+function doReset() {
   checkedItems.clear();
   checkedCrits.clear();
   conditionalAnswers.clear();
@@ -4600,7 +4852,6 @@ function resetAll() {
   document.getElementById('complaintRow').style.display = 'none';
   unlockSetup();
   updateOverrideButton();
-  
   refreshUI();
 }
 
