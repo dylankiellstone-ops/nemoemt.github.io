@@ -4702,22 +4702,24 @@ function rebuildScenarioDropdown() {
 
   const medGroup = document.createElement('optgroup');
   medGroup.label = 'Medical';
-  for (let i = 1; i <= 8; i++) {
+  Object.keys(SCENARIOS).filter(k => k.startsWith('medical-')).sort().forEach(key => {
+    const i = key.split('-')[1];
     const o = document.createElement('option');
-    o.value = `medical-${i}`; o.textContent = `Medical · Scenario ${i}`;
+    o.value = key; o.textContent = `Medical · Scenario ${i}`;
     medGroup.appendChild(o);
-  }
+  });
   select.appendChild(medGroup);
 
   const trGroup = document.createElement('optgroup');
   trGroup.label = 'Trauma';
-  for (let i = 1; i <= 8; i++) {
+  Object.keys(SCENARIOS).filter(k => k.startsWith('trauma-')).sort().forEach(key => {
+    const i = key.split('-')[1];
     const o = document.createElement('option');
-    o.value = `trauma-${i}`; o.textContent = `Trauma · Scenario ${i}`;
+    o.value = key; o.textContent = `Trauma · Scenario ${i}`;
     trGroup.appendChild(o);
-  }
+  });
   select.appendChild(trGroup);
-
+  
   // Try to keep the previous selection if it's still valid in the new list
   const stillValid = Array.from(select.options).some(o => o.value === previousValue);
   select.value = stillValid ? previousValue : '';
