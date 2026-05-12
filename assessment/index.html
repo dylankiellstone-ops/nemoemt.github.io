@@ -4058,9 +4058,11 @@ function isConditional(text) {
   if (/^Blood glucose level$/i.test(text)) return true;
   // Bleeding control only matters if there's bleeding
   if (/^Assess\/control major bleeding$/i.test(text)) return true;
-  // Trauma treatment items — only relevant when injury / bleeding is present
-  if (/^Treatment: control bleeding/i.test(text)) return true;
-  if (/^Treatment: (correctly )?bandage/i.test(text)) return true;
+  // Trauma treatment items — only relevant when injury / bleeding is present.
+  // Matches both old plain form ("Treatment: control bleeding") and new region-
+  // prefixed form ("Treatment: chest — control bleeding", "Treatment: lower ext — bandage", etc.)
+  if (/^Treatment:.*\bcontrol bleeding\b/i.test(text)) return true;
+  if (/^Treatment:.*\bbandage\b/i.test(text)) return true;
   return false;
 }
 
