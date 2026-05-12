@@ -13,7 +13,7 @@ window.addEventListener('error', function(e) {
     msg.textContent = (e.message || 'Unknown error') +
       ' — line ' + (e.lineno || '?') +
       ', col ' + (e.colno || '?');
-    banner.style.display = 'block';
+    banner.style.y = 'block';
   } else {
     // Banner not in DOM yet (error happened before body loaded).
     // Wait for it then show.
