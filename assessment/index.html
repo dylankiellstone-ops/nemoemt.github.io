@@ -1137,9 +1137,122 @@
     .section { page-break-inside: avoid; }
   }
 </style>
+<style>
+  .password-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--cream);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .password-card {
+    background: var(--white);
+    border: 2px solid var(--navy);
+    border-radius: 20px;
+    box-shadow: 0 4px 0 var(--navy);
+    padding: 32px 36px;
+    max-width: 380px;
+    width: 100%;
+    text-align: center;
+  }
+  .password-card-title {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--navy);
+    margin-bottom: 6px;
+  }
+  .password-card-sub {
+    font-size: 11px;
+    color: var(--navy-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 700;
+    margin-bottom: 20px;
+  }
+  .password-input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid var(--navy);
+    border-radius: 14px;
+    background: var(--cream-soft);
+    color: var(--navy);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 0 2px 0 var(--navy);
+    outline: none;
+    margin-bottom: 12px;
+    box-sizing: border-box;
+  }
+  .password-submit {
+    width: 100%;
+    padding: 11px 22px;
+    border: 2px solid var(--navy);
+    border-radius: 999px;
+    background: var(--sky);
+    color: var(--navy);
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 3px 0 var(--navy);
+  }
+  .password-submit:hover { background: var(--sky-deep); color: white; }
+  .password-error {
+    color: var(--red);
+    font-size: 12px;
+    font-weight: 600;
+    margin-top: 8px;
+    min-height: 14px;
+  }
+</style>
 <link rel="icon" type="image/png" href="../assets/nemo_logo.png">
 </head>
 <body>
+<div class="password-overlay" id="passwordOverlay">
+  <div class="password-card">
+    <div class="password-card-title">NEMO Assessment Tool</div>
+    <div class="password-card-sub">Evaluator access only</div>
+    <input type="password" class="password-input" id="passwordInput" placeholder="Enter password" autocomplete="off">
+    <button class="password-submit" id="passwordSubmit" type="button">Unlock</button>
+    <div class="password-error" id="passwordError"></div>
+  </div>
+</div>
+
+<script>
+const ACCESS_PASSWORD = 'dylanissosmart';
+
+(function passwordGate() {
+  const overlay = document.getElementById('passwordOverlay');
+  const input = document.getElementById('passwordInput');
+  const submit = document.getElementById('passwordSubmit');
+  const errorEl = document.getElementById('passwordError');
+  try {
+    if (sessionStorage.getItem('nemo_unlocked') === 'yes') {
+      overlay.remove();
+      return;
+    }
+  } catch (e) {}
+  setTimeout(() => input.focus(), 50);
+  function tryUnlock() {
+    if (input.value === ACCESS_PASSWORD) {
+      try { sessionStorage.setItem('nemo_unlocked', 'yes'); } catch (e) {}
+      overlay.remove();
+    } else {
+      errorEl.textContent = 'Incorrect password';
+      input.value = '';
+      input.focus();
+    }
+  }
+  submit.addEventListener('click', tryUnlock);
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); tryUnlock(); }
+  });
+})();
+</script>
 <div class="container">
 
   <header>
