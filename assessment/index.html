@@ -1356,6 +1356,13 @@ window.addEventListener('error', function(e) {
 <link rel="icon" type="image/png" href="../assets/nemo_logo.png">
 </head>
 <body>
+<div id="loadError" style="display:none;position:fixed;top:0;left:0;right:0;z-index:10000;background:#9D0208;color:white;padding:14px 22px;font-family:Inter,system-ui,sans-serif;font-size:13px;font-weight:600;line-height:1.5;box-shadow:0 4px 12px rgba(0,0,0,0.3);">
+  <div style="max-width:1100px;margin:0 auto;">
+    <strong style="font-size:14px;display:block;margin-bottom:4px;">⚠ Tool failed to load</strong>
+    <span id="loadErrorMsg" style="font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;opacity:0.95;"></span>
+    <div style="font-size:11px;opacity:0.85;margin-top:6px;">The JavaScript hit a syntax error before the page could finish loading. Fix it on GitHub, hard-refresh.</div>
+  </div>
+</div>
 <div class="password-overlay" id="passwordOverlay">
   <div class="password-card">
     <div class="password-card-title">NEMO Assessment Tool</div>
