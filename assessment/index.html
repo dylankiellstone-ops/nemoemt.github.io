@@ -4446,10 +4446,6 @@ function renderSection(section, sectionKey) {
   const progress = el('span', 'section-progress', '');
   progress.dataset.sectionKey = sectionKey;
   rightSide.appendChild(progress);
-  
-  const progress = el('span', 'section-progress', '');
-  progress.dataset.sectionKey = sectionKey;
-  rightSide.appendChild(progress);
 
   header.appendChild(rightSide);
   header.onclick = () => sec.classList.toggle('collapsed');
