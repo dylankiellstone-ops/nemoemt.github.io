@@ -5837,7 +5837,68 @@ function attachAutocomplete(inputId, listId, source) {
     Array.from(list.children).forEach((c, ci) => c.classList.toggle('active', ci === state.index));
   });
 }
+‎assessment/index.html‎
+-61
+Lines changed: 0 additions & 61 deletions
+Original file line number	Diff line number	Diff line change
+@@ -5838,67 +5838,6 @@ <h1>NEMO Psychomotor Assessment Tool</h1>
+  });
+}
 
+/* ─────────────────────────────────────────────────────────────
+   THEME (light / dark / auto-by-time)
+   Three modes cycled by the header button:
+     - 'auto' (default): dark from 7pm–7am local, light during the day.
+       The current hour is checked every minute so the theme updates as time
+       passes without needing a page reload.
+     - 'light': pinned light, ignores the clock.
+     - 'dark':  pinned dark, ignores the clock.
+   No localStorage available — preference resets per session. The button
+   shows ☀️ Auto / ☀️ Light / 🌙 Dark depending on what's active.
+   ───────────────────────────────────────────────────────────── */
+let themeMode = 'auto'; // 'auto' | 'light' | 'dark'
+const THEME_DARK_START = 19; // 7 PM
+const THEME_DARK_END   = 7;  // 7 AM
+let themeAutoTickInterval = null;
+function autoThemeForNow() {
+  const h = new Date().getHours();
+  return (h >= THEME_DARK_START || h < THEME_DARK_END) ? 'dark' : 'light';
+}
+function applyTheme() {
+  const effective = (themeMode === 'auto') ? autoThemeForNow() : themeMode;
+  if (effective === 'dark') {
+    document.body.dataset.theme = 'dark';
+  } else {
+    delete document.body.dataset.theme;
+  }
+  // Update button display
+  const icon = document.getElementById('themeIcon');
+  const label = document.getElementById('themeLabel');
+  if (icon && label) {
+    if (themeMode === 'auto') {
+      icon.textContent = effective === 'dark' ? '🌙' : '☀️';
+      label.textContent = 'Auto';
+    } else if (themeMode === 'light') {
+      icon.textContent = '☀️';
+      label.textContent = 'Light';
+    } else {
+      icon.textContent = '🌙';
+      label.textContent = 'Dark';
+    }
+  }
+}
+function cycleThemeMode() {
+  // Auto → Light → Dark → Auto
+  themeMode = themeMode === 'auto' ? 'light' : themeMode === 'light' ? 'dark' : 'auto';
+  applyTheme();
+}
+function startThemeAutoTicker() {
+  // Re-check every minute so 'auto' mode flips at the boundary hour.
+  if (themeAutoTickInterval) clearInterval(themeAutoTickInterval);
+  themeAutoTickInterval = setInterval(() => {
+    if (themeMode === 'auto') applyTheme();
+  }, 60 * 1000);
+}
 
 /* ─────────────────────────────────────────────────────────────
    SCENARIO EDITOR (triple-click the fish)
