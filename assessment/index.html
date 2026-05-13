@@ -1353,6 +1353,127 @@ window.addEventListener('error', function(e) {
     box-shadow: 0 0 0 var(--navy-soft);
   }
 </style>
+<style>
+  /* ── Evaluator section notes (sticky-note style) ── */
+  .section-note-btn {
+    background: var(--white);
+    border: 2px solid var(--navy);
+    color: var(--navy);
+    padding: 5px 10px;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 2px 0 var(--navy);
+    transition: transform 0.08s, box-shadow 0.08s;
+    line-height: 1;
+  }
+  .section-note-btn:hover { background: #FFF8C4; }
+  .section-note-btn:active { transform: translateY(1px); box-shadow: 0 1px 0 var(--navy); }
+  .section-note-btn.has-note {
+    background: #FFE873;
+    border-color: #B8860B;
+    color: #5C4A0E;
+    box-shadow: 0 2px 0 #B8860B;
+  }
+  .section-note-btn.has-note:hover { background: #FFD936; }
+  .section-note-btn.has-note:active { box-shadow: 0 1px 0 #B8860B; }
+  .section-note-display {
+    margin: 4px 12px 10px 12px;
+    padding: 10px 14px;
+    background: #FFF8C4;
+    border: 2px solid #B8860B;
+    border-radius: 10px;
+    box-shadow: 0 2px 0 #B8860B;
+    font-family: inherit;
+    font-size: 12.5px;
+    font-style: italic;
+    color: #4A3D0A;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    line-height: 1.5;
+    transform: rotate(-0.3deg);
+  }
+  .section-note-display::before {
+    content: '📝';
+    flex-shrink: 0;
+    font-style: normal;
+    line-height: 1.4;
+  }
+  .section-note-text {
+    flex: 1;
+    cursor: pointer;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .section-note-delete {
+    background: transparent;
+    border: none;
+    color: #B8860B;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 800;
+    padding: 0 4px;
+    line-height: 1;
+    flex-shrink: 0;
+    font-family: inherit;
+  }
+  .section-note-delete:hover { color: #9D0208; }
+  .section-note-editor {
+    margin: 4px 12px 10px 12px;
+    padding: 10px 12px;
+    background: #FFF8C4;
+    border: 2px solid #B8860B;
+    border-radius: 10px;
+    box-shadow: 0 2px 0 #B8860B;
+  }
+  .section-note-editor textarea {
+    width: 100%;
+    border: 1.5px solid var(--navy-soft);
+    border-radius: 6px;
+    padding: 8px;
+    font-family: inherit;
+    font-size: 12.5px;
+    color: var(--navy);
+    background: rgba(255,255,255,0.7);
+    resize: vertical;
+    min-height: 60px;
+    box-sizing: border-box;
+  }
+  .section-note-editor textarea:focus {
+    outline: 2px solid var(--navy);
+    outline-offset: -2px;
+  }
+  .section-note-editor-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    margin-top: 8px;
+  }
+  .section-note-editor-btn {
+    padding: 6px 12px;
+    border: 2px solid var(--navy);
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 2px 0 var(--navy);
+    background: var(--white);
+    color: var(--navy);
+  }
+  .section-note-editor-btn-primary {
+    background: var(--sky);
+  }
+  .section-note-editor-btn:hover { background: var(--cream); }
+  .section-note-editor-btn-primary:hover { background: var(--sky-deep); color: white; }
+  .section-note-editor-btn:active {
+    transform: translateY(1px);
+    box-shadow: 0 1px 0 var(--navy);
+  }
+</style>
 <link rel="icon" type="image/png" href="../assets/nemo_logo.png">
 </head>
 <body>
@@ -4077,6 +4198,7 @@ let checkedCrits = new Set();
 let conditionalAnswers = new Map(); // itemKey -> 'yes' | 'no'
 let halfCreditSections = new Set(); // sectionKeys flagged for half-credit
 let excludedSections = new Set(); // sectionKeys excluded from scoring entirely
+let sectionNotes = new Map(); // sectionKey -> note text (evaluator annotations)
 let setupLocked = false;
 let briefCollapsed = false; // persists across renderChecklist() rebuilds
 let overrideVerdict = null; // null = use computed, 'pass' = force pass, 'fail' = force fail
@@ -4309,7 +4431,22 @@ function renderSection(section, sectionKey) {
     };
     rightSide.appendChild(excludeBtn);
   }
+// Section note button (evaluator annotation)
+  const noteBtn = el('button', 'section-note-btn');
+  const hasNote = sectionNotes.has(sectionKey) && sectionNotes.get(sectionKey).trim() !== '';
+  if (hasNote) noteBtn.classList.add('has-note');
+  noteBtn.textContent = hasNote ? '📝' : '+ note';
+  noteBtn.title = hasNote ? 'Edit note' : 'Add evaluator note';
+  noteBtn.onclick = (e) => {
+    e.stopPropagation();
+    openSectionNoteEditor(sectionKey);
+  };
+  rightSide.appendChild(noteBtn);
 
+  const progress = el('span', 'section-progress', '');
+  progress.dataset.sectionKey = sectionKey;
+  rightSide.appendChild(progress);
+  
   const progress = el('span', 'section-progress', '');
   progress.dataset.sectionKey = sectionKey;
   rightSide.appendChild(progress);
@@ -4403,7 +4540,17 @@ function renderSection(section, sectionKey) {
       renderLeaf(item);
     }
   });
-
+  
+  // Render the section note (or editor) at the top of the section body
+  const noteText = sectionNotes.get(sectionKey);
+  const isEditing = openNoteEditorFor === sectionKey;
+  if (isEditing) {
+    const editor = buildSectionNoteEditor(sectionKey, noteText || '');
+    body.insertBefore(editor, body.firstChild);
+  } else if (noteText && noteText.trim() !== '') {
+    const display = buildSectionNoteDisplay(sectionKey, noteText);
+    body.insertBefore(display, body.firstChild);
+  }
   sec.appendChild(body);
 
   // initial progress
@@ -4411,6 +4558,86 @@ function renderSection(section, sectionKey) {
   return sec;
 }
 
+// ── Section note (evaluator annotation) helpers ──────────────
+let openNoteEditorFor = null; // sectionKey currently being edited, or null
+
+function openSectionNoteEditor(sectionKey) {
+  openNoteEditorFor = sectionKey;
+  renderChecklist();
+  setTimeout(() => {
+    const ta = document.getElementById('sectionNoteTextarea');
+    if (ta) { ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length); }
+  }, 0);
+}
+
+function closeSectionNoteEditor() {
+  openNoteEditorFor = null;
+  renderChecklist();
+}
+
+function saveSectionNote(sectionKey, text) {
+  const trimmed = (text || '').trim();
+  if (trimmed === '') {
+    sectionNotes.delete(sectionKey);
+  } else {
+    sectionNotes.set(sectionKey, trimmed);
+    lockSetup();
+  }
+  closeSectionNoteEditor();
+}
+
+function deleteSectionNote(sectionKey) {
+  sectionNotes.delete(sectionKey);
+  renderChecklist();
+}
+
+function buildSectionNoteDisplay(sectionKey, text) {
+  const wrap = el('div', 'section-note-display');
+  const span = el('div', 'section-note-text', text);
+  span.onclick = (e) => {
+    e.stopPropagation();
+    openSectionNoteEditor(sectionKey);
+  };
+  const del = el('button', 'section-note-delete', '×');
+  del.title = 'Delete note';
+  del.onclick = (e) => {
+    e.stopPropagation();
+    deleteSectionNote(sectionKey);
+  };
+  wrap.appendChild(span);
+  wrap.appendChild(del);
+  wrap.onclick = (e) => e.stopPropagation();
+  return wrap;
+}
+
+function buildSectionNoteEditor(sectionKey, currentText) {
+  const wrap = el('div', 'section-note-editor');
+  wrap.onclick = (e) => e.stopPropagation();
+  const ta = document.createElement('textarea');
+  ta.id = 'sectionNoteTextarea';
+  ta.placeholder = 'Add a note about this section (technique, hesitation, verbalization, etc.)';
+  ta.value = currentText;
+  ta.onkeydown = (e) => {
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      closeSectionNoteEditor();
+    } else if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
+      e.preventDefault();
+      saveSectionNote(sectionKey, ta.value);
+    }
+  };
+  wrap.appendChild(ta);
+  const actions = el('div', 'section-note-editor-actions');
+  const cancel = el('button', 'section-note-editor-btn', 'Cancel');
+  cancel.onclick = (e) => { e.stopPropagation(); closeSectionNoteEditor(); };
+  const save = el('button', 'section-note-editor-btn section-note-editor-btn-primary', 'Save');
+  save.onclick = (e) => { e.stopPropagation(); saveSectionNote(sectionKey, ta.value); };
+  actions.appendChild(cancel);
+  actions.appendChild(save);
+  wrap.appendChild(actions);
+  return wrap;
+}
+  
 function renderCriticalFails() {
   const sec = el('div', 'section crit-section');
   const header = el('div', 'section-header');
@@ -5110,6 +5337,7 @@ function doReset() {
   conditionalAnswers.clear();
   halfCreditSections.clear();
   excludedSections.clear();
+  sectionNotes.clear();
   briefCollapsed = false;
   currentComplaint = null;
   currentMode = null;
