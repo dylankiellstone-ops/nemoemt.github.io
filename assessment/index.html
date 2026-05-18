@@ -5924,6 +5924,17 @@ function scoreAndExport() {
     conditionalAnswers: JSON.stringify(Object.fromEntries(conditionalAnswers)),
     pdfFilename: filename
   };
+
+  // Grab the PDF as base64 so the Apps Script can save a copy to Drive.
+  // doc.output('datauristring') returns 'data:application/pdf;filename=...;base64,XXXX'
+  // — we just want the part after the comma.
+  try {
+    const dataUri = doc.output('datauristring');
+    cloudPayload.pdfBase64 = dataUri.substring(dataUri.indexOf(',') + 1);
+  } catch (e) {
+    console.warn('Could not capture PDF for cloud save:', e);
+  }
+
   saveTrialToCloud(cloudPayload); // non-blocking
 
   doc.save(filename);
