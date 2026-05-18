@@ -56,7 +56,34 @@
     text-transform: uppercase;
     border-bottom: 1px solid rgba(245,239,227,0.15);
   }
-  .topbar nav { display: flex; gap: 24px; }
+  
+  /* New wrapper to constrain the horizontal width of the announcement */
+  .topbar-marquee {
+    flex: 1;
+    max-width: 50%; 
+    overflow: hidden;
+    white-space: nowrap;
+    position: relative;
+    display: flex;
+    align-items: center;
+    mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+  }
+
+  /* New continuous scrolling animation */
+  .marquee-content {
+    display: inline-block;
+    padding-left: 100%; 
+    animation: smooth-scroll 25s linear infinite;
+    will-change: transform;
+  }
+
+  @keyframes smooth-scroll {
+    0% { transform: translate3d(0, 0, 0); }
+    100% { transform: translate3d(-100%, 0, 0); }
+  }
+
+  .topbar nav { display: flex; gap: 24px; margin-left: 24px; }
   .topbar nav a {
     color: var(--cream);
     text-decoration: none;
@@ -725,7 +752,7 @@
   }
 
   /* ---------- RESPONSIVE ---------- */
-  @media (max-width: 900px) {
+ @media (max-width: 900px) {
     .hero { padding: 60px 24px 60px; grid-template-columns: 1fr; gap: 40px; min-height: auto; }
     .hero-visual img { max-width: 280px; }
     section { padding: 60px 24px; }
@@ -735,8 +762,12 @@
     .cost-grid { grid-template-columns: 1fr; }
     .leadership-scroll .person { flex: 0 0 240px; }
     footer { grid-template-columns: 1fr; padding: 32px 24px; }
+    
+    /* --- UPDATE THESE 3 LINES WITHIN THE MEDIA QUERY --- */
     .topbar { padding: 10px 16px; font-size: 9px; }
-    .topbar nav { gap: 12px; }
+    .topbar-marquee { max-width: 60%; } 
+    .topbar nav { gap: 12px; margin-left: 12px; }
+    
     .schedule-table { font-size: 13px; }
     .schedule-table th, .schedule-table td { padding: 12px 10px; }
     .schedule-table .topic { width: auto; }
@@ -967,7 +998,11 @@
 
 <!-- TOP BAR -->
 <div class="topbar">
-  <div>NEMO · NORTHWESTERN EMERGENCY MEDICAL ORGANIZATION · EST. 2006 · CONGRATULATIONS TO THE 2026 COHORT! APPLICATIONS FOR THE 2027 COHORT WILL OPEN THIS FALL</div>
+  <div class="topbar-marquee">
+    <div class="marquee-content">
+      NEMO · NORTHWESTERN EMERGENCY MEDICAL ORGANIZATION · EST. 2006 · CONGRATULATIONS TO THE 2026 COHORT! APPLICATIONS FOR THE 2027 COHORT WILL OPEN THIS FALL
+    </div>
+  </div>
   <nav>
     <a href="#course">Course</a>
     <a href="#schedule">Schedule</a>
