@@ -68,6 +68,7 @@
   /* Marquee container that fills the middle space */
   .topbar-marquee {
     flex: 1;
+    min-width: 0; /* Allows flex item to shrink below content size so it never overflows */
     max-width: 40%; /* Keeps the scrolling area perfectly bounded in the middle */
     overflow: hidden;
     white-space: nowrap;
@@ -78,6 +79,10 @@
     mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
     -webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
   }
+
+  /* Short variants of the topbar title — swapped in via CSS at narrower widths */
+  .topbar-title .title-short,
+  .topbar-title .title-mini { display: none; }
 
   /* Moving text wrapper */
   .marquee-content {
@@ -761,6 +766,14 @@
   }
 
  /* ---------- RESPONSIVE ---------- */
+
+ /* Tablet / half-screen: shorten the title so the gold marquee survives */
+ @media (max-width: 1100px) {
+   .topbar-title .title-full { display: none; }
+   .topbar-title .title-short { display: inline; }
+   .topbar-marquee { max-width: 50%; }
+ }
+
  @media (max-width: 900px) {
     .hero { padding: 60px 24px 60px; grid-template-columns: 1fr; gap: 40px; min-height: auto; }
     .hero-visual img { max-width: 280px; }
@@ -772,10 +785,11 @@
     .leadership-scroll .person { flex: 0 0 240px; }
     footer { grid-template-columns: 1fr; padding: 32px 24px; }
     
-    /* --- UPDATED FOR STATIC BRANDING & HIDDEN MARQUEE ON MOBILE --- */
-    .topbar { padding: 10px 16px; font-size: 9px; }
-    .topbar-title { content: "NEMO"; }   /* Shortens the long string down to fit tiny screens */
-    .topbar-marquee { display: none; }    /* Hides the scrolling marquee on mobile layout */
+    /* Tighten the topbar but KEEP the gold marquee visible */
+    .topbar { padding: 10px 16px; font-size: 9px; gap: 10px; }
+    .topbar-title .title-short { display: none; }
+    .topbar-title .title-mini { display: inline; }
+    .topbar-marquee { max-width: none; flex: 1; }
     .topbar nav { gap: 12px; }
     
     .schedule-table { font-size: 13px; }
@@ -1000,6 +1014,11 @@
   @media (max-width: 600px) {
     .contact-modal-box { padding: 32px 24px 28px; }
     .contact-modal h3 { font-size: 32px; }
+
+    /* On true phones, shrink padding/nav further so the gold marquee still fits */
+    .topbar { padding: 8px 12px; font-size: 8px; gap: 8px; }
+    .topbar nav { gap: 8px; }
+    .topbar nav a:nth-child(n+4) { display: none; } /* Hide FAQ + Apply links to make room */
   }
 </style>
 </head>
@@ -1008,7 +1027,9 @@
 <!-- TOP BAR -->
 <div class="topbar">
   <div class="topbar-title">
-    NEMO · NORTHWESTERN EMERGENCY MEDICAL ORGANIZATION · EST. 2006
+    <span class="title-full">NEMO · NORTHWESTERN EMERGENCY MEDICAL ORGANIZATION · EST. 2006</span>
+    <span class="title-short">NEMO · EST. 2006</span>
+    <span class="title-mini">NEMO</span>
   </div>
   <div class="topbar-marquee">
     <div class="marquee-content">
