@@ -1391,22 +1391,22 @@
       <form id="mailingListForm" novalidate>
         <div class="contact-field">
           <label for="ml-fname">First Name</label>
-          <input type="text" id="ml-fname" name="FNAME" required autocomplete="given-name" />
+          <input type="text" id="ml-fname" name="field_1" required autocomplete="given-name" />
         </div>
         <div class="contact-field">
           <label for="ml-lname">Last Name</label>
-          <input type="text" id="ml-lname" name="LNAME" required autocomplete="family-name" />
+          <input type="text" id="ml-lname" name="field_2" required autocomplete="family-name" />
         </div>
         <div class="contact-field">
           <label for="ml-email">Email</label>
-          <input type="email" id="ml-email" name="EMAIL" required autocomplete="email" />
+          <input type="email" id="ml-email" name="field_0" required autocomplete="email" />
         </div>
         <!-- Honeypot field for spam protection — keep hidden -->
         <div style="position: absolute; left: -5000px;" aria-hidden="true">
-          <input type="text" name="b_d00f280bcac5c1728f596be6f_6350fd3c05" tabindex="-1" value="" />
+          <input type="text" name="hpc4b27b6e-eb38-11e9-be00-06b4694bee2a" tabindex="-1" value="" autocomplete="nope" />
         </div>
         <button type="submit" class="contact-submit" id="mailingListSubmit">Join the List</button>
-        <p class="contact-fineprint">Unsubscribe anytime · Powered by Mailchimp</p>
+        <p class="contact-fineprint">Unsubscribe anytime · Powered by EmailOctopus</p>
       </form>
     </div>
 
@@ -1526,11 +1526,12 @@
     });
   })();
 
-  // Mailing list modal — submits to Mailchimp in the background
+  // Mailing list modal — submits to EmailOctopus in the background
   (function() {
-    // Use /post-json endpoint with JSONP-like approach; modern Mailchimp also accepts /post
-    // We use no-cors fetch like the contact form — Mailchimp records the submission either way.
-    const FORM_ACTION = 'https://github.us12.list-manage.com/subscribe/post?u=d00f280bcac5c1728f596be6f&id=6350fd3c05&f_id=00a88ce3f0';
+    // EmailOctopus accepts form-encoded POSTs at the website-subscribe endpoint.
+    // We use no-cors fetch like the contact form — EmailOctopus records the
+    // submission and sends a confirmation email even though we can't read the response.
+    const FORM_ACTION = 'https://emailoctopus.com/lists/website-subscribe/3e786224-5494-11f1-8d42-d5bdeebf1e0f';
 
     const modal     = document.getElementById('mailingListModal');
     const form      = document.getElementById('mailingListForm');
@@ -1582,7 +1583,7 @@
       // Build form-encoded data from all fields including honeypot
       const data = new FormData(form);
 
-      // Mailchimp blocks CORS; submission still records on their server.
+      // EmailOctopus blocks CORS; submission still records on their server.
       fetch(FORM_ACTION, {
         method: 'POST',
         mode: 'no-cors',
