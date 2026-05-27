@@ -1528,10 +1528,11 @@
 
   // Mailing list modal — submits to EmailOctopus in the background
   (function() {
-    // EmailOctopus accepts form-encoded POSTs at the website-subscribe endpoint.
+    // EmailOctopus accepts form-encoded POSTs at the eocampaign1.com form endpoint
+    // (same URL as the embed script, minus the .js extension).
     // We use no-cors fetch like the contact form — EmailOctopus records the
     // submission and sends a confirmation email even though we can't read the response.
-    const FORM_ACTION = 'https://emailoctopus.com/lists/website-subscribe/3e786224-5494-11f1-8d42-d5bdeebf1e0f';
+    const FORM_ACTION = 'https://eocampaign1.com/form/3e786224-5494-11f1-8d42-d5bdeebf1e0f';
 
     const modal     = document.getElementById('mailingListModal');
     const form      = document.getElementById('mailingListForm');
