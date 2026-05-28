@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>NEMO · Medical Protocols</title>
+<link rel="icon" type="image/x-icon" href="../assets/favicon.ico" />
+<link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="../assets/apple-touch-icon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,800;1,9..144,400&family=JetBrains+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --purple: #4E2A84; --purple-deep: #2E1855; --purple-ink: #1A0E33;
+    --cream: #F5EFE3; --paper: #FAF6EC; --rule: #2E1855;
+    --accent: #E8A33D; --red: #B83A2A; --ink: #18121F;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Fraunces', Georgia, serif;
+    background: var(--paper); color: var(--ink); line-height: 1.5;
+    overflow-x: hidden;
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(78,42,132,0.025) 0%, transparent 40%),
+      radial-gradient(circle at 80% 70%, rgba(232,163,61,0.025) 0%, transparent 40%);
+  }
+
+  /* TOP BAR */
+  .topbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: var(--purple); color: var(--cream);
+    padding: 10px 32px; display: flex;
+    justify-content: space-between; align-items: center;
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    border-bottom: 1px solid rgba(245,239,227,0.15); gap: 16px;
+  }
+  .topbar-title { font-weight: 500; white-space: nowrap; flex-shrink: 0; }
+  .topbar nav { display: flex; gap: 24px; flex-shrink: 0; align-items: center; }
+  .topbar nav a { color: var(--cream); text-decoration: none; transition: color 0.2s; }
+  .topbar nav a:hover { color: var(--accent); }
+  .topbar nav a.nav-pill {
+    background: var(--accent); color: var(--purple-ink);
+    padding: 6px 14px; border: 1px solid var(--accent);
+    font-weight: 600; transition: background 0.2s, color 0.2s;
+  }
+  .topbar nav a.nav-pill:hover { background: transparent; color: var(--accent); }
+
+  /* HERO */
+  .module-hero {
+    padding: 130px 48px 60px;
+    border-bottom: 1px solid var(--purple);
+    position: relative;
+  }
+  .module-hero .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--purple); margin-bottom: 20px;
+    display: flex; align-items: center; gap: 12px; max-width: 920px;
+  }
+  .module-hero .eyebrow::after {
+    content: ''; flex: 1; height: 1px; background: var(--purple); opacity: 0.4;
+  }
+  .module-hero h1 {
+    font-family: 'Fraunces', serif; font-weight: 800;
+    font-size: clamp(48px, 7vw, 104px); line-height: 0.95;
+    color: var(--purple-ink); letter-spacing: -0.03em; margin-bottom: 28px;
+    max-width: 1100px;
+  }
+  .module-hero h1 em { font-style: italic; font-weight: 400; color: var(--purple); }
+  .module-hero p.lede {
+    font-size: 19px; line-height: 1.5; color: var(--ink);
+    max-width: 760px; margin-bottom: 0;
+  }
+
+  /* WARNING BANNER */
+  .study-warning {
+    background: var(--cream);
+    border-top: 1px solid var(--purple);
+    border-bottom: 1px solid var(--purple);
+    padding: 18px 48px;
+    display: flex; align-items: center; gap: 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; letter-spacing: 0.1em; color: var(--purple-ink);
+    line-height: 1.6;
+  }
+  .study-warning .badge {
+    background: var(--red); color: var(--cream);
+    padding: 5px 10px;
+    font-size: 10px; font-weight: 600;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    flex-shrink: 0;
+  }
+  .study-warning a { color: var(--purple); font-weight: 500; }
+
+  /* SECTION */
+  .protocol-section {
+    padding: 80px 48px 60px;
+    border-bottom: 1px solid var(--purple);
+    position: relative;
+  }
+  .protocol-section .section-num {
+    position: absolute; top: 32px; right: 48px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 0.2em; color: var(--purple); opacity: 0.6;
+  }
+  .protocol-section .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--purple); margin-bottom: 18px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .protocol-section .eyebrow::before { content: '◆'; color: var(--accent); }
+  .protocol-section h2 {
+    font-family: 'Fraunces', serif; font-weight: 800;
+    font-size: clamp(32px, 4vw, 52px); line-height: 1;
+    color: var(--purple-ink); letter-spacing: -0.025em; margin-bottom: 36px;
+    max-width: 900px;
+  }
+  .protocol-section h2 em { font-style: italic; font-weight: 400; color: var(--purple); }
+
+  /* PROTOCOL LIST */
+  .protocol-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    background: var(--purple);
+    border: 1px solid var(--purple);
+  }
+  .protocol-row {
+    background: var(--paper);
+    padding: 22px 28px;
+    transition: background 0.2s;
+    text-decoration: none;
+    color: var(--ink);
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 16px;
+  }
+  .protocol-row:hover { background: var(--cream); }
+  .protocol-row .label {
+    font-family: 'Fraunces', serif;
+    font-size: 18px; font-weight: 600;
+    color: var(--purple-ink); letter-spacing: -0.01em;
+    line-height: 1.2;
+  }
+  .protocol-row .meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 0.15em;
+    color: var(--purple); opacity: 0.7;
+    white-space: nowrap;
+  }
+  .protocol-row .meta::after { content: ' →'; transition: transform 0.2s; }
+  .protocol-row:hover .meta { color: var(--accent); opacity: 1; }
+
+  /* FOOTER */
+  footer {
+    background: var(--paper); padding: 64px 48px;
+    border-top: 4px double var(--purple);
+    display: grid; grid-template-columns: 1.4fr 1fr 1fr 1.2fr;
+    gap: 48px; font-size: 13px;
+  }
+  footer h5 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--purple); margin-bottom: 16px;
+  }
+  footer p, footer a {
+    color: var(--ink); text-decoration: none; line-height: 1.6; display: block;
+  }
+  footer a:hover { color: var(--purple); }
+  .footer-mark {
+    font-family: 'Fraunces', serif; font-size: 56px; font-weight: 800;
+    color: var(--purple); line-height: 0.9; letter-spacing: -0.04em;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .protocol-grid { grid-template-columns: 1fr; }
+    .module-hero { padding: 110px 28px 50px; }
+    .protocol-section { padding: 60px 28px 40px; }
+    .study-warning { padding: 16px 28px; flex-direction: column; align-items: flex-start; }
+    footer { grid-template-columns: 1fr; padding: 32px 24px; }
+  }
+  @media (max-width: 640px) {
+    .topbar { padding: 8px 16px; }
+    .topbar nav { gap: 10px; }
+    .topbar nav a:not(.nav-pill):not([href="../training.html"]) { display: none; }
+    .protocol-row { padding: 18px 20px; }
+    .protocol-row .label { font-size: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-title">NEMO · MEDICAL SCENARIOS</div>
+  <nav>
+    <a href="../index.html#apply" class="nav-pill">Apply</a>
+    <a href="../index.html">Home</a>
+    <a href="../training.html">Training</a>
+  </nav>
+</div>
+
+<!-- HERO -->
+<header class="module-hero">
+  <div class="eyebrow">Training · Medical Protocols</div>
+  <h1>Medical <em>protocols.</em></h1>
+  <p class="lede">
+    Topic-by-topic access to the Region X Standard Operating Procedures for medical emergencies. Click any protocol to open the exact page in the official IDPH-approved SOP document. Categories mirror Region X's own organization.
+  </p>
+</header>
+
+<!-- STUDY-AID NOTICE -->
+<div class="study-warning">
+  <span class="badge">Study Aid</span>
+  <span>This page is a navigation tool for NEMO students. The authoritative document is the Region X SOP itself, maintained by the EMS Medical Directors of Region X. Always defer to the current PDF and your Medical Director for clinical decisions.</span>
+</div>
+
+<!-- 01 / CARDIAC -->
+<section class="protocol-section">
+  <div class="section-num">§ 01 / CARDIAC</div>
+  <div class="eyebrow">Adult & pediatric cardiac</div>
+  <h2>Cardiac <em>emergencies.</em></h2>
+  <div class="protocol-grid">
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=16" target="_blank" rel="noopener">
+      <span class="label">Acute Coronary Syndrome</span>
+      <span class="meta">P. 16</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=17" target="_blank" rel="noopener">
+      <span class="label">Adult Rapid Atrial Flutter / Fibrillation</span>
+      <span class="meta">P. 17</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=18" target="_blank" rel="noopener">
+      <span class="label">Adult Bradycardia / AV Blocks</span>
+      <span class="meta">P. 18</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=19" target="_blank" rel="noopener">
+      <span class="label">Adult Cardiogenic Shock</span>
+      <span class="meta">P. 19</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=20" target="_blank" rel="noopener">
+      <span class="label">Adult Supraventricular Tachycardia</span>
+      <span class="meta">P. 20</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=21" target="_blank" rel="noopener">
+      <span class="label">Adult Ventricular Tachycardia (with pulse)</span>
+      <span class="meta">P. 21</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=22" target="_blank" rel="noopener">
+      <span class="label">AED Pulseless Arrest</span>
+      <span class="meta">P. 22</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=23" target="_blank" rel="noopener">
+      <span class="label">Adult Asystole / PEA</span>
+      <span class="meta">P. 23</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=24" target="_blank" rel="noopener">
+      <span class="label">Adult V-Fib / Pulseless V-Tach</span>
+      <span class="meta">P. 24</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=26" target="_blank" rel="noopener">
+      <span class="label">Return of Spontaneous Circulation (ROSC)</span>
+      <span class="meta">P. 26</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=27" target="_blank" rel="noopener">
+      <span class="label">Termination of Resuscitative Efforts</span>
+      <span class="meta">P. 27</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=28" target="_blank" rel="noopener">
+      <span class="label">Withholding Resuscitative Efforts</span>
+      <span class="meta">P. 28</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=79" target="_blank" rel="noopener">
+      <span class="label">Pediatric Bradycardia</span>
+      <span class="meta">P. 79</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=80" target="_blank" rel="noopener">
+      <span class="label">Pediatric Cardiogenic Shock</span>
+      <span class="meta">P. 80</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=81" target="_blank" rel="noopener">
+      <span class="label">Stable Pediatric Tachycardia</span>
+      <span class="meta">P. 81</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=82" target="_blank" rel="noopener">
+      <span class="label">Unstable Pediatric Tachycardia</span>
+      <span class="meta">P. 82</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=83" target="_blank" rel="noopener">
+      <span class="label">Pediatric Asystole / PEA</span>
+      <span class="meta">P. 83</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=84" target="_blank" rel="noopener">
+      <span class="label">Pediatric V-Fib / Pulseless V-Tach</span>
+      <span class="meta">P. 84</span>
+    </a>
+  </div>
+</section>
+
+<!-- 02 / RESPIRATORY -->
+<section class="protocol-section">
+  <div class="section-num">§ 02 / RESPIRATORY</div>
+  <div class="eyebrow">Adult & pediatric respiratory</div>
+  <h2>Respiratory <em>emergencies.</em></h2>
+  <div class="protocol-grid">
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=29" target="_blank" rel="noopener">
+      <span class="label">Adult Airway Obstruction</span>
+      <span class="meta">P. 29</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=30" target="_blank" rel="noopener">
+      <span class="label">Adult Asthma / COPD with Wheezing</span>
+      <span class="meta">P. 30</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=31" target="_blank" rel="noopener">
+      <span class="label">Carbon Monoxide / Smoke Inhalation</span>
+      <span class="meta">P. 31</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=32" target="_blank" rel="noopener">
+      <span class="label">Acute Heart Failure / Pulmonary Edema</span>
+      <span class="meta">P. 32</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=39" target="_blank" rel="noopener">
+      <span class="label">Severe Febrile Respiratory Illness</span>
+      <span class="meta">P. 39</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=85" target="_blank" rel="noopener">
+      <span class="label">Pediatric Airway Obstruction</span>
+      <span class="meta">P. 85</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=86" target="_blank" rel="noopener">
+      <span class="label">Pediatric Asthma / Respiratory Distress</span>
+      <span class="meta">P. 86</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=87" target="_blank" rel="noopener">
+      <span class="label">Pediatric Croup</span>
+      <span class="meta">P. 87</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=90" target="_blank" rel="noopener">
+      <span class="label">Pediatric Epiglottitis</span>
+      <span class="meta">P. 90</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=94" target="_blank" rel="noopener">
+      <span class="label">BRUE (Brief Resolved Unexplained Event)</span>
+      <span class="meta">P. 94</span>
+    </a>
+  </div>
+</section>
+
+<!-- 03 / NEUROLOGICAL -->
+<section class="protocol-section">
+  <div class="section-num">§ 03 / NEUROLOGICAL</div>
+  <div class="eyebrow">Stroke, AMS, seizure</div>
+  <h2>Neurological <em>emergencies.</em></h2>
+  <div class="protocol-grid">
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=35" target="_blank" rel="noopener">
+      <span class="label">Adult Altered Mental Status / Syncope</span>
+      <span class="meta">P. 35</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=49" target="_blank" rel="noopener">
+      <span class="label">Adult Seizures / Status Epilepticus</span>
+      <span class="meta">P. 49</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=51" target="_blank" rel="noopener">
+      <span class="label">Stroke / TIA</span>
+      <span class="meta">P. 51</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=91" target="_blank" rel="noopener">
+      <span class="label">Pediatric Altered Mental Status / Syncope</span>
+      <span class="meta">P. 91</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=99" target="_blank" rel="noopener">
+      <span class="label">Pediatric Seizures</span>
+      <span class="meta">P. 99</span>
+    </a>
+  </div>
+</section>
+
+<!-- 04 / ALLERGIC / ENDOCRINE -->
+<section class="protocol-section">
+  <div class="section-num">§ 04 / ENDO / ALLERGIC</div>
+  <div class="eyebrow">Anaphylaxis, diabetes, sepsis</div>
+  <h2>Allergic, endocrine & <em>infectious.</em></h2>
+  <div class="protocol-grid">
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=36" target="_blank" rel="noopener">
+      <span class="label">Adult Allergic Reaction / Anaphylaxis</span>
+      <span class="meta">P. 36</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=38" target="_blank" rel="noopener">
+      <span class="label">Adult Diabetic Emergencies</span>
+      <span class="meta">P. 38</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=40" target="_blank" rel="noopener">
+      <span class="label">Adult Nausea / Vomiting</span>
+      <span class="meta">P. 40</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=50" target="_blank" rel="noopener">
+      <span class="label">Adult Sepsis</span>
+      <span class="meta">P. 50</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=92" target="_blank" rel="noopener">
+      <span class="label">Pediatric Allergic Reaction / Anaphylaxis</span>
+      <span class="meta">P. 92</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=95" target="_blank" rel="noopener">
+      <span class="label">Pediatric Diabetic Emergencies</span>
+      <span class="meta">P. 95</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=96" target="_blank" rel="noopener">
+      <span class="label">Pediatric Nausea / Vomiting</span>
+      <span class="meta">P. 96</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=100" target="_blank" rel="noopener">
+      <span class="label">Pediatric Sepsis</span>
+      <span class="meta">P. 100</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=101" target="_blank" rel="noopener">
+      <span class="label">Pediatric Shock</span>
+      <span class="meta">P. 101</span>
+    </a>
+  </div>
+</section>
+
+<!-- 05 / TOXICOLOGY -->
+<section class="protocol-section">
+  <div class="section-num">§ 05 / TOXICOLOGY</div>
+  <div class="eyebrow">Poisoning, overdose, exposures</div>
+  <h2>Toxicology & <em>overdose.</em></h2>
+  <div class="protocol-grid">
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=41" target="_blank" rel="noopener">
+      <span class="label">Acetylcholinesterase Inhibitor Exposure</span>
+      <span class="meta">P. 41</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=43" target="_blank" rel="noopener">
+      <span class="label">Adult Beta Blocker Overdose</span>
+      <span class="meta">P. 43</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=44" target="_blank" rel="noopener">
+      <span class="label">Adult Calcium Channel Blocker Overdose</span>
+      <span class="meta">P. 44</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=45" target="_blank" rel="noopener">
+      <span class="label">Adult Poisoning / Overdose — Opiates</span>
+      <span class="meta">P. 45</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=46" target="_blank" rel="noopener">
+      <span class="label">Adult Stimulant Overdose</span>
+      <span class="meta">P. 46</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=71" target="_blank" rel="noopener">
+      <span class="label">Toxic Exposure / Ingestions</span>
+      <span class="meta">P. 71</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=97" target="_blank" rel="noopener">
+      <span class="label">Pediatric Poisoning / Overdose</span>
+      <span class="meta">P. 97</span>
+    </a>
+  </div>
+</section>
+
+<!-- 06 / BEHAVIORAL & PAIN -->
+<section class="protocol-section">
+  <div class="section-num">§ 06 / BEHAVIORAL</div>
+  <div class="eyebrow">Behavioral, pain management</div>
+  <h2>Behavioral & <em>pain.</em></h2>
+  <div class="protocol-grid">
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=13" target="_blank" rel="noopener">
+      <span class="label">Behavioral Emergencies</span>
+      <span class="meta">P. 13</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=14" target="_blank" rel="noopener">
+      <span class="label">Severely Agitated, Aggressive, or Violent Behavior</span>
+      <span class="meta">P. 14</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=48" target="_blank" rel="noopener">
+      <span class="label">Adult Pain Management</span>
+      <span class="meta">P. 48</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=98" target="_blank" rel="noopener">
+      <span class="label">Pediatric Pain Management</span>
+      <span class="meta">P. 98</span>
+    </a>
+  </div>
+</section>
+
+<!-- 07 / OB / NEONATAL -->
+<section class="protocol-section">
+  <div class="section-num">§ 07 / OB / NEONATAL</div>
+  <div class="eyebrow">Obstetric & neonatal</div>
+  <h2>OB & <em>neonatal.</em></h2>
+  <div class="protocol-grid">
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=72" target="_blank" rel="noopener">
+      <span class="label">Emergency Childbirth</span>
+      <span class="meta">P. 72</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=74" target="_blank" rel="noopener">
+      <span class="label">Neonate Resuscitation</span>
+      <span class="meta">P. 74</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=75" target="_blank" rel="noopener">
+      <span class="label">Delivery Complications — Breech / Shoulder Dystocia</span>
+      <span class="meta">P. 75</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=76" target="_blank" rel="noopener">
+      <span class="label">Delivery Complications — Prolapsed / Nuchal Cord</span>
+      <span class="meta">P. 76</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=77" target="_blank" rel="noopener">
+      <span class="label">Obstetrical Complications — Bleeding</span>
+      <span class="meta">P. 77</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=78" target="_blank" rel="noopener">
+      <span class="label">Hypertensive Disorders / Pre-Eclampsia / Eclampsia</span>
+      <span class="meta">P. 78</span>
+    </a>
+  </div>
+</section>
+
+<!-- 08 / ENVIRONMENTAL -->
+<section class="protocol-section">
+  <div class="section-num">§ 08 / ENVIRONMENTAL</div>
+  <div class="eyebrow">Heat, cold, drowning</div>
+  <h2>Environmental <em>emergencies.</em></h2>
+  <div class="protocol-grid">
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=66" target="_blank" rel="noopener">
+      <span class="label">Adult Drowning / Submersion / SCUBA Injury</span>
+      <span class="meta">P. 66</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=68" target="_blank" rel="noopener">
+      <span class="label">Exertional Heat Stroke</span>
+      <span class="meta">P. 68</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=69" target="_blank" rel="noopener">
+      <span class="label">Adult Hyperthermia / Heat Emergencies</span>
+      <span class="meta">P. 69</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=70" target="_blank" rel="noopener">
+      <span class="label">Adult Hypothermia / Cold Emergencies</span>
+      <span class="meta">P. 70</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=65" target="_blank" rel="noopener">
+      <span class="label">Bites & Envenomations</span>
+      <span class="meta">P. 65</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=105" target="_blank" rel="noopener">
+      <span class="label">Pediatric Drowning</span>
+      <span class="meta">P. 105</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=108" target="_blank" rel="noopener">
+      <span class="label">Pediatric Hyperthermia</span>
+      <span class="meta">P. 108</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=109" target="_blank" rel="noopener">
+      <span class="label">Pediatric Hypothermia</span>
+      <span class="meta">P. 109</span>
+    </a>
+  </div>
+</section>
+
+<!-- 09 / ROUTINE CARE -->
+<section class="protocol-section">
+  <div class="section-num">§ 09 / ROUTINE</div>
+  <div class="eyebrow">Standard care foundations</div>
+  <h2>Routine <em>care.</em></h2>
+  <div class="protocol-grid">
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=7" target="_blank" rel="noopener">
+      <span class="label">Pre-Arrival Report</span>
+      <span class="meta">P. 7</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=8" target="_blank" rel="noopener">
+      <span class="label">Aeromedical Transportation</span>
+      <span class="meta">P. 8</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=9" target="_blank" rel="noopener">
+      <span class="label">Adult Routine Medical Care</span>
+      <span class="meta">P. 9</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=12" target="_blank" rel="noopener">
+      <span class="label">Pediatric Routine Medical Care</span>
+      <span class="meta">P. 12</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=110" target="_blank" rel="noopener">
+      <span class="label">Pediatric Reference Charts</span>
+      <span class="meta">P. 110</span>
+    </a>
+    <a class="protocol-row" href="../assets/region-x-protocols.pdf#page=182" target="_blank" rel="noopener">
+      <span class="label">High Risk Refusal</span>
+      <span class="meta">P. 182</span>
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="footer-mark">NEMO</div>
+    <p style="margin-top: 14px; font-family: 'Fraunces', serif; font-size: 15px; color: var(--purple-ink); line-height: 1.4;">Northwestern Emergency<br>Medical Organization</p>
+    <p style="margin-top: 12px; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.2em; color: var(--purple); text-transform: uppercase;">Est. 2006 · Evanston, IL</p>
+  </div>
+  <div>
+    <h5>Course</h5>
+    <a href="../index.html#course">Overview</a>
+    <a href="../index.html#schedule">Schedule</a>
+    <a href="../index.html#cost">Tuition</a>
+    <a href="../index.html#faq">FAQ</a>
+  </div>
+  <div>
+    <h5>Training</h5>
+    <a href="../training.html">Training Portal</a>
+    <a href="medical-protocols.html">Medical Protocols</a>
+    <a href="trauma-protocols.html">Trauma Protocols</a>
+    <a href="resource-vault.html">Resource Vault</a>
+  </div>
+  <div>
+    <h5>Connect</h5>
+    <a href="mailto:nemo@u.northwestern.edu">nemo@u.northwestern.edu</a>
+    <a href="https://catsoncampus.northwestern.edu/" target="_blank" rel="noopener">Cats on Campus</a>
+    <a href="https://www.instagram.com/nemo.northwestern/" target="_blank" rel="noopener">Instagram · @nemo.northwestern</a>
+  </div>
+</footer>
+
+</body>
+</html>
