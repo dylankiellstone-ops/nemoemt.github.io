@@ -97,13 +97,27 @@
     100% { transform: translate3d(-100%, 0, 0); }
   }
 
-  .topbar nav { display: flex; gap: 24px; flex-shrink: 0; }
+  .topbar nav { display: flex; gap: 24px; flex-shrink: 0; align-items: center; }
   .topbar nav a {
     color: var(--cream);
     text-decoration: none;
     transition: color 0.2s;
   }
   .topbar nav a:hover { color: var(--accent); }
+
+  /* Gold pill buttons in the topbar (Training + Apply) */
+  .topbar nav a.nav-pill {
+    background: var(--accent);
+    color: var(--purple-ink);
+    padding: 6px 14px;
+    border: 1px solid var(--accent);
+    font-weight: 600;
+    transition: background 0.2s, color 0.2s;
+  }
+  .topbar nav a.nav-pill:hover {
+    background: transparent;
+    color: var(--accent);
+  }
 
   /* ---------- HERO ---------- */
   .hero {
@@ -1018,7 +1032,7 @@
     /* On true phones, shrink padding/nav further so the gold marquee still fits */
     .topbar { padding: 8px 12px; font-size: 8px; gap: 8px; }
     .topbar nav { gap: 8px; }
-    .topbar nav a:nth-child(n+4) { display: none; } /* Hide FAQ + Apply links to make room */
+    .topbar nav a:not(.nav-pill) { display: none; } /* Keep gold pills (Training + Apply) visible on phones; hide other nav links */
   }
 </style>
 </head>
@@ -1041,7 +1055,8 @@
     <a href="#schedule">Schedule</a>
     <a href="#cost">Cost</a>
     <a href="#faq">FAQ</a>
-    <a href="#apply">Apply</a>
+    <a href="training.html" class="nav-pill">Training</a>
+    <a href="#apply" class="nav-pill">Apply</a>
   </nav>
 </div>
 
