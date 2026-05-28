@@ -1032,7 +1032,8 @@
     /* On true phones, shrink padding/nav further so the gold marquee still fits */
     .topbar { padding: 8px 12px; font-size: 8px; gap: 8px; }
     .topbar nav { gap: 8px; }
-    .topbar nav a:not(.nav-pill) { display: none; } /* Keep gold pills (Training + Apply) visible on phones; hide other nav links */
+    /* Keep Apply (gold pill) and Training visible on phones; hide other nav links */
+    .topbar nav a:not(.nav-pill):not([href="training.html"]) { display: none; }
   }
 </style>
 </head>
@@ -1056,7 +1057,7 @@
     <a href="#schedule">Schedule</a>
     <a href="#cost">Cost</a>
     <a href="#faq">FAQ</a>
-    <a href="training.html" class="nav-pill">Training</a>
+    <a href="training.html">Training</a>
   </nav>
 </div>
 
