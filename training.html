@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>NEMO · Training Portal</title>
+<link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,800;1,9..144,400&family=JetBrains+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --purple: #4E2A84;
+    --purple-deep: #2E1855;
+    --purple-ink: #1A0E33;
+    --cream: #F5EFE3;
+    --paper: #FAF6EC;
+    --rule: #2E1855;
+    --accent: #E8A33D;
+    --red: #B83A2A;
+    --ink: #18121F;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Fraunces', Georgia, serif;
+    background: var(--paper);
+    color: var(--ink);
+    line-height: 1.5;
+    overflow-x: hidden;
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(78,42,132,0.025) 0%, transparent 40%),
+      radial-gradient(circle at 80% 70%, rgba(232,163,61,0.025) 0%, transparent 40%);
+  }
+
+  /* ---------- TOP BAR ---------- */
+  .topbar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: var(--purple);
+    color: var(--cream);
+    padding: 10px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-bottom: 1px solid rgba(245,239,227,0.15);
+    gap: 16px;
+  }
+  .topbar-title { font-weight: 500; white-space: nowrap; flex-shrink: 0; }
+  .topbar-marquee {
+    flex: 1;
+    min-width: 0;
+    max-width: 40%;
+    overflow: hidden;
+    white-space: nowrap;
+    position: relative;
+    display: flex;
+    align-items: center;
+    color: var(--accent);
+    mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+  }
+  .topbar-title .title-short, .topbar-title .title-mini { display: none; }
+  .marquee-content {
+    display: inline-block;
+    padding-left: 100%;
+    animation: smooth-scroll 20s linear infinite;
+    will-change: transform;
+  }
+  @keyframes smooth-scroll {
+    0% { transform: translate3d(0, 0, 0); }
+    100% { transform: translate3d(-100%, 0, 0); }
+  }
+  .topbar nav { display: flex; gap: 24px; flex-shrink: 0; align-items: center; }
+  .topbar nav a {
+    color: var(--cream);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .topbar nav a:hover { color: var(--accent); }
+
+  /* Gold pill buttons in the topbar (Apply + Training) */
+  .topbar nav a.nav-pill {
+    background: var(--accent);
+    color: var(--purple-ink);
+    padding: 6px 14px;
+    border: 1px solid var(--accent);
+    font-weight: 600;
+    transition: background 0.2s, color 0.2s;
+  }
+  .topbar nav a.nav-pill:hover {
+    background: transparent;
+    color: var(--accent);
+  }
+
+  /* ---------- HERO ---------- */
+  .training-hero {
+    min-height: 70vh;
+    padding: 140px 48px 80px;
+    border-bottom: 1px solid var(--purple);
+    position: relative;
+  }
+  .training-hero .hero-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--purple);
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    max-width: 920px;
+  }
+  .training-hero .hero-eyebrow::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--purple);
+    opacity: 0.4;
+  }
+  .training-hero h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 800;
+    font-size: clamp(56px, 8vw, 132px);
+    line-height: 0.95;
+    color: var(--purple-ink);
+    letter-spacing: -0.03em;
+    margin-bottom: 32px;
+    max-width: 1100px;
+  }
+  .training-hero h1 em {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--purple);
+  }
+  .training-hero .hero-lede {
+    font-size: 22px;
+    line-height: 1.5;
+    color: var(--ink);
+    max-width: 760px;
+    margin-bottom: 40px;
+  }
+  .training-hero .hero-meta {
+    display: flex;
+    gap: 48px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--purple-deep);
+    flex-wrap: wrap;
+  }
+  .training-hero .hero-meta span { display: block; white-space: nowrap; }
+  .training-hero .hero-meta b {
+    display: block;
+    font-family: 'Fraunces', serif;
+    font-size: 28px;
+    color: var(--purple);
+    margin-top: 6px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  /* ---------- SECTION FRAME ---------- */
+  section {
+    padding: 100px 48px;
+    border-bottom: 1px solid var(--purple);
+    position: relative;
+  }
+  .section-num {
+    position: absolute;
+    top: 32px;
+    right: 48px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--purple);
+    opacity: 0.6;
+  }
+  .section-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--purple);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-eyebrow::before {
+    content: '◆';
+    color: var(--accent);
+  }
+  .section-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 800;
+    font-size: clamp(40px, 5vw, 72px);
+    line-height: 1;
+    color: var(--purple-ink);
+    letter-spacing: -0.025em;
+    margin-bottom: 48px;
+    max-width: 900px;
+  }
+  .section-title em {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--purple);
+  }
+  .section-lede {
+    font-size: 17px;
+    max-width: 720px;
+    line-height: 1.6;
+    color: var(--ink);
+    margin-bottom: 48px;
+  }
+
+  /* ---------- MODULE CARDS ---------- */
+  .modules {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--purple);
+    border: 1px solid var(--purple);
+    margin-top: 32px;
+  }
+  .module {
+    background: var(--paper);
+    padding: 40px 32px;
+    transition: background 0.3s;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 280px;
+  }
+  .module:hover { background: var(--cream); }
+  .module .mod-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    color: var(--accent);
+    margin-bottom: 14px;
+  }
+  .module h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--purple-ink);
+    margin-bottom: 14px;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+  }
+  .module p {
+    font-size: 14.5px;
+    line-height: 1.55;
+    opacity: 0.85;
+    margin-bottom: 28px;
+    flex-grow: 1;
+  }
+  .module .mod-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--purple);
+    text-decoration: none;
+    border-top: 1px solid rgba(78,42,132,0.3);
+    padding-top: 18px;
+    transition: color 0.2s, gap 0.2s;
+    align-self: flex-start;
+  }
+  .module .mod-cta::after { content: '→'; transition: transform 0.2s; }
+  .module:hover .mod-cta { color: var(--accent); }
+  .module:hover .mod-cta::after { transform: translateX(4px); }
+
+  /* ---------- GALLERY BAND ---------- */
+  .gallery-band {
+    background: var(--cream);
+  }
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-top: 32px;
+  }
+  .gallery .tile {
+    aspect-ratio: 1 / 1;
+    background: var(--purple);
+    border: 1px solid var(--purple-deep);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+    padding: 16px;
+  }
+  .gallery .tile img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s;
+  }
+  .gallery .tile:hover img { transform: scale(1.04); }
+  .gallery .tile .tile-label {
+    position: relative;
+    z-index: 2;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--cream);
+    background: rgba(46,24,85,0.85);
+    padding: 6px 10px;
+  }
+
+  /* ---------- CTA CLOSER ---------- */
+  .training-closer {
+    background: var(--purple);
+    color: var(--cream);
+    text-align: center;
+    padding: 100px 48px;
+  }
+  .training-closer .section-eyebrow {
+    color: var(--accent);
+    justify-content: center;
+    margin-bottom: 24px;
+  }
+  .training-closer .section-eyebrow::before { color: var(--cream); }
+  .training-closer h2 {
+    font-family: 'Fraunces', serif;
+    font-weight: 800;
+    font-size: clamp(40px, 5vw, 64px);
+    line-height: 1;
+    color: var(--cream);
+    letter-spacing: -0.025em;
+    margin-bottom: 24px;
+  }
+  .training-closer h2 em {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--accent);
+  }
+  .training-closer p {
+    font-size: 18px;
+    max-width: 620px;
+    margin: 0 auto 40px;
+    line-height: 1.5;
+    opacity: 0.85;
+  }
+  .btn {
+    display: inline-block;
+    padding: 20px 44px;
+    background: var(--accent);
+    color: var(--purple-ink);
+    text-decoration: none;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-weight: 500;
+    border: 2px solid var(--accent);
+    transition: all 0.3s;
+  }
+  .btn:hover { background: transparent; color: var(--accent); }
+
+  /* ---------- FOOTER ---------- */
+  footer {
+    background: var(--paper);
+    padding: 64px 48px;
+    border-top: 4px double var(--purple);
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr 1.2fr;
+    gap: 48px;
+    font-size: 13px;
+  }
+  footer h5 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--purple);
+    margin-bottom: 16px;
+  }
+  footer p, footer a {
+    color: var(--ink);
+    text-decoration: none;
+    line-height: 1.6;
+    display: block;
+  }
+  footer a:hover { color: var(--purple); }
+  .footer-mark {
+    font-family: 'Fraunces', serif;
+    font-size: 56px;
+    font-weight: 800;
+    color: var(--purple);
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+  }
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width: 1100px) {
+    .topbar-title .title-full { display: none; }
+    .topbar-title .title-short { display: inline; }
+    .topbar-marquee { max-width: 50%; }
+  }
+  @media (max-width: 900px) {
+    .modules { grid-template-columns: repeat(2, 1fr); }
+    .gallery { grid-template-columns: repeat(2, 1fr); }
+    section { padding: 72px 28px; }
+    .training-hero { padding: 120px 28px 60px; }
+    footer { grid-template-columns: 1fr; padding: 32px 24px; }
+  }
+  @media (max-width: 640px) {
+    .topbar { padding: 8px 16px; }
+    .topbar-title .title-short { display: none; }
+    .topbar-title .title-mini { display: inline; }
+    .topbar-marquee { display: none; }
+    .topbar nav { gap: 10px; }
+    .topbar nav a:not(.nav-pill) { display: none; }
+    .modules { grid-template-columns: 1fr; }
+    .gallery { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-title">
+    <span class="title-full">NEMO · TRAINING PORTAL · EST. 2006</span>
+    <span class="title-short">NEMO · TRAINING</span>
+    <span class="title-mini">NEMO</span>
+  </div>
+  <div class="topbar-marquee">
+    <div class="marquee-content">
+      · ACCESS ALL YOUR NEMO TRAINING RESOURCES · FLASHCARDS · GUIDES · SCENARIOS · VIDEO VAULT ·
+    </div>
+  </div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="index.html#schedule">Course</a>
+    <a href="index.html#faq">FAQ</a>
+    <a href="training.html" class="nav-pill">Training</a>
+    <a href="index.html#apply" class="nav-pill">Apply</a>
+  </nav>
+</div>
+
+<!-- HERO -->
+<header class="training-hero">
+  <div class="hero-eyebrow">Training Portal · For NEMO Students</div>
+  <h1>Practice, drill, and <em>repeat.</em></h1>
+  <p class="hero-lede">
+    A working library for Northwestern's student EMTs — flashcards, study guides, medical and trauma scenarios, and a curated video vault. Built to reinforce what's taught in lecture and Sunday skills, and to keep skills sharp once you're on the rig.
+  </p>
+  <div class="hero-meta">
+    <span>Audience<b>NEMO Students</b></span>
+    <span>Format<b>Self-paced</b></span>
+    <span>Updated<b>Continuously</b></span>
+  </div>
+</header>
+
+<!-- MODULES -->
+<section id="modules">
+  <div class="section-num">§ 01 / MODULES</div>
+  <div class="section-eyebrow">Explore training resources</div>
+  <h2 class="section-title">Choose a module to <em>start drilling.</em></h2>
+  <p class="section-lede">
+    Five core modules cover the same competencies you'll see on the NREMT cognitive and psychomotor exams. Use flashcards and the guide for recall, scenarios for clinical reasoning, and the video vault for skills review before Sunday lab.
+  </p>
+
+  <div class="modules">
+
+    <div class="module">
+      <div class="mod-num">MOD 01 · RECALL</div>
+      <h3>Flashcards</h3>
+      <p>Spaced-repetition decks covering anatomy, pharmacology, signs and symptoms, vitals norms, and protocols. Tagged by chapter so you can drill exactly what's coming up next.</p>
+      <a class="mod-cta" href="training/flashcards.html">Go to Flashcards</a>
+    </div>
+
+    <div class="module">
+      <div class="mod-num">MOD 02 · REFERENCE</div>
+      <h3>Guide</h3>
+      <p>A working field guide — chapter summaries, mnemonics, assessment flow charts, and quick-reference protocols. Built for review the night before lab.</p>
+      <a class="mod-cta" href="training/guide.html">Go to Guide</a>
+    </div>
+
+    <div class="module">
+      <div class="mod-num">MOD 03 · CLINICAL</div>
+      <h3>Medical Scenarios</h3>
+      <p>Branching case scenarios across cardiac, respiratory, neurological, endocrine, and behavioral calls. Work through scene size-up, assessment, and treatment decisions at your own pace.</p>
+      <a class="mod-cta" href="training/medical-scenarios.html">Go to Medical Scenarios</a>
+    </div>
+
+    <div class="module">
+      <div class="mod-num">MOD 04 · TRAUMA</div>
+      <h3>Trauma Scenarios</h3>
+      <p>Hemorrhage, blunt and penetrating injury, head and spine, MCIs, and environmental emergencies. Pairs with Stop the Bleed and the c-spine practical.</p>
+      <a class="mod-cta" href="training/trauma-scenarios.html">Go to Trauma Scenarios</a>
+    </div>
+
+    <div class="module">
+      <div class="mod-num">MOD 05 · VISUAL</div>
+      <h3>Video Vault</h3>
+      <p>Curated skills demonstrations — airway, BVM, splinting, KED, traction, OPA/NPA sizing, and full psychomotor walkthroughs. Watch before lab, rewatch before the practical.</p>
+      <a class="mod-cta" href="training/video-vault.html">Go to Video Vault</a>
+    </div>
+
+    <div class="module" style="background: var(--purple); color: var(--cream);">
+      <div class="mod-num" style="color: var(--accent);">MOD 06 · CPR / BLS</div>
+      <h3 style="color: var(--cream);">CPR & AED Resources</h3>
+      <p style="opacity: 0.9;">For the Northwestern community at large — AHA-aligned CPR and AED quick references, plus links to upcoming open BLS certification classes hosted by NEMO each quarter.</p>
+      <a class="mod-cta" href="https://www.redcross.org/take-a-class/cpr" target="_blank" rel="noopener" style="color: var(--accent); border-top-color: rgba(232,163,61,0.4);">Learn more</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section class="gallery-band" id="gallery">
+  <div class="section-num">§ 02 / IN ACTION</div>
+  <div class="section-eyebrow">Training in action</div>
+  <h2 class="section-title">Snapshots from <em>workshops, drills, and outreach.</em></h2>
+  <p class="section-lede">
+    A look at what training looks like on the ground — Sunday skills sessions, full-scale MCI drills, community CPR teach-ins, and outreach events across Northwestern and Evanston.
+  </p>
+
+  <div class="gallery">
+    <div class="tile">
+      <img src="assets/mci1.jpeg" alt="NEMO CPR training session" />
+      <span class="tile-label">CPR Session</span>
+    </div>
+    <div class="tile">
+      <img src="assets/mci1.jpeg" alt="NEMO outreach booth" />
+      <span class="tile-label">Outreach Booth</span>
+    </div>
+    <div class="tile">
+      <img src="assets/mci1.jpeg" alt="NEMO emergency drill practice" />
+      <span class="tile-label">MCI Drill</span>
+    </div>
+    <div class="tile">
+      <img src="assets/mci1.jpeg" alt="NEMO peer-led workshop" />
+      <span class="tile-label">Peer Workshop</span>
+    </div>
+  </div>
+</section>
+
+<!-- CTA CLOSER -->
+<section class="training-closer">
+  <div class="section-eyebrow">Not enrolled yet?</div>
+  <h2>Run the <em>course first.</em></h2>
+  <p>The training portal supports active NEMO students. If you're not enrolled, applications for the Winter 2027 cohort open in fall quarter — 150 seats.</p>
+  <a class="btn" href="index.html#apply">View Application</a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="footer-mark">NEMO</div>
+    <p style="margin-top: 14px; font-family: 'Fraunces', serif; font-size: 15px; color: var(--purple-ink); line-height: 1.4;">Northwestern Emergency<br>Medical Organization</p>
+    <p style="margin-top: 12px; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.2em; color: var(--purple); text-transform: uppercase;">Est. 2006 · Evanston, IL</p>
+  </div>
+  <div>
+    <h5>Course</h5>
+    <a href="index.html#course">Overview</a>
+    <a href="index.html#schedule">Schedule</a>
+    <a href="index.html#cost">Tuition</a>
+    <a href="index.html#faq">FAQ</a>
+  </div>
+  <div>
+    <h5>Training</h5>
+    <a href="training/flashcards.html">Flashcards</a>
+    <a href="training/guide.html">Guide</a>
+    <a href="training/medical-scenarios.html">Medical Scenarios</a>
+    <a href="training/trauma-scenarios.html">Trauma Scenarios</a>
+    <a href="training/video-vault.html">Video Vault</a>
+  </div>
+  <div>
+    <h5>Connect</h5>
+    <a href="mailto:nemo@u.northwestern.edu">nemo@u.northwestern.edu</a>
+    <a href="https://catsoncampus.northwestern.edu/" target="_blank" rel="noopener">Cats on Campus</a>
+    <a href="https://www.instagram.com/nemo.northwestern/" target="_blank" rel="noopener">Instagram · @nemo.northwestern</a>
+  </div>
+</footer>
+
+</body>
+</html>
