@@ -45,6 +45,8 @@
     font-weight: 600; transition: background 0.2s, color 0.2s;
   }
   .topbar nav a.nav-pill:hover { background: transparent; color: var(--accent); }
+  .topbar nav a.nav-pill.nav-back { background: transparent; color: var(--accent); }
+  .topbar nav a.nav-pill.nav-back:hover { background: var(--accent); color: var(--purple-ink); }
   .module-hero {
     padding: 130px 48px 60px;
     border-bottom: 1px solid var(--purple);
@@ -171,7 +173,7 @@
   @media (max-width: 640px) {
     .topbar { padding: 8px 16px; }
     .topbar nav { gap: 10px; }
-    .topbar nav a:not(.nav-pill):not([href="training.html"]) { display: none; }
+    .topbar nav a:not(.nav-pill) { display: none; }
     .protocol-row { padding: 18px 20px; }
     .protocol-row .label { font-size: 16px; }
   }
@@ -182,9 +184,9 @@
 <div class="topbar">
   <div class="topbar-title">NEMO · TRAUMA SCENARIOS</div>
   <nav>
-    <a href="index.html#apply" class="nav-pill">Apply</a>
-    <a href="index.html">Home</a>
     <a href="training.html">Training</a>
+    <a href="index.html" class="nav-pill nav-back">← Back to Main</a>
+    <a href="index.html#apply" class="nav-pill">Apply</a>
   </nav>
 </div>
 

@@ -4,9 +4,9 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>NEMO · Resource Vault</title>
-<link rel="icon" type="image/x-icon" href="../assets/favicon.ico" />
-<link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png" />
-<link rel="apple-touch-icon" sizes="180x180" href="../assets/apple-touch-icon.png" />
+<link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,800;1,9..144,400&family=JetBrains+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -45,6 +45,8 @@
     font-weight: 600; transition: background 0.2s, color 0.2s;
   }
   .topbar nav a.nav-pill:hover { background: transparent; color: var(--accent); }
+  .topbar nav a.nav-pill.nav-back { background: transparent; color: var(--accent); }
+  .topbar nav a.nav-pill.nav-back:hover { background: var(--accent); color: var(--purple-ink); }
 
   .module-hero {
     padding: 130px 48px 60px;
@@ -205,7 +207,7 @@
   @media (max-width: 640px) {
     .topbar { padding: 8px 16px; }
     .topbar nav { gap: 10px; }
-    .topbar nav a:not(.nav-pill):not([href="../training.html"]) { display: none; }
+    .topbar nav a:not(.nav-pill) { display: none; }
   }
 </style>
 </head>
@@ -214,9 +216,9 @@
 <div class="topbar">
   <div class="topbar-title">NEMO · RESOURCE VAULT</div>
   <nav>
-    <a href="../index.html#apply" class="nav-pill">Apply</a>
-    <a href="../index.html">Home</a>
-    <a href="../training.html">Training</a>
+    <a href="training.html">Training</a>
+    <a href="index.html" class="nav-pill nav-back">← Back to Main</a>
+    <a href="index.html#apply" class="nav-pill">Apply</a>
   </nav>
 </div>
 
@@ -275,14 +277,14 @@
   </div>
   <div>
     <h5>Course</h5>
-    <a href="../index.html#course">Overview</a>
-    <a href="../index.html#schedule">Schedule</a>
-    <a href="../index.html#cost">Tuition</a>
-    <a href="../index.html#faq">FAQ</a>
+    <a href="index.html#course">Overview</a>
+    <a href="index.html#schedule">Schedule</a>
+    <a href="index.html#cost">Tuition</a>
+    <a href="index.html#faq">FAQ</a>
   </div>
   <div>
     <h5>Training</h5>
-    <a href="../training.html">Training Portal</a>
+    <a href="training.html">Training Portal</a>
     <a href="medical-protocols.html">Medical Protocols</a>
     <a href="trauma-protocols.html">Trauma Protocols</a>
     <a href="resource-vault.html">Resource Vault</a>

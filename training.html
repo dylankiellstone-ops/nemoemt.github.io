@@ -100,6 +100,15 @@
     background: transparent;
     color: var(--accent);
   }
+  /* Back-to-Main: outlined gold pill, distinct from the solid Apply pill */
+  .topbar nav a.nav-pill.nav-back {
+    background: transparent;
+    color: var(--accent);
+  }
+  .topbar nav a.nav-pill.nav-back:hover {
+    background: var(--accent);
+    color: var(--purple-ink);
+  }
 
   /* ---------- HERO ---------- */
   .training-hero {
@@ -611,10 +620,9 @@
     </div>
   </div>
   <nav>
-    <a href="index.html">Home</a>
     <a href="index.html#schedule">Course</a>
     <a href="index.html#faq">FAQ</a>
-    <a href="training.html" class="nav-pill">Training</a>
+    <a href="index.html" class="nav-pill nav-back">← Back to Main</a>
     <a href="index.html#apply" class="nav-pill">Apply</a>
   </nav>
 </div>
@@ -662,7 +670,7 @@
       <div class="mod-num">MOD 03 · VAULT</div>
       <h3>Resource Vault</h3>
       <p>NEMO's shared Google Drive of practice scenarios, skills videos, and reference material — the same files instructors pull from during lecture and Sunday skills.</p>
-      <a class="mod-cta" href="training/resource-vault.html">Go to Resource Vault</a>
+      <a class="mod-cta" href="resource-vault.html">Go to Resource Vault</a>
     </div>
 
   </div>
@@ -723,7 +731,7 @@
     <h5>Training</h5>
     <a href="medical-protocols.html">Medical Protocols</a>
     <a href="trauma-protocols.html">Trauma Protocols</a>
-    <a href="training/resource-vault.html">Resource Vault</a>
+    <a href="resource-vault.html">Resource Vault</a>
   </div>
   <div>
     <h5>Connect</h5>
