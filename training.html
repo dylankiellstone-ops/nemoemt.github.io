@@ -70,14 +70,16 @@
   }
   .topbar-title .title-short, .topbar-title .title-mini { display: none; }
   .marquee-content {
-    display: inline-block;
-    padding-left: 100%;
-    animation: smooth-scroll 20s linear infinite;
+    display: inline-flex;
+    flex-shrink: 0;
+    white-space: nowrap;
+    animation: smooth-scroll 30s linear infinite;
     will-change: transform;
   }
+  .marquee-content span { padding-right: 3em; }
   @keyframes smooth-scroll {
     0% { transform: translate3d(0, 0, 0); }
-    100% { transform: translate3d(-100%, 0, 0); }
+    100% { transform: translate3d(-50%, 0, 0); }
   }
   .topbar nav { display: flex; gap: 24px; flex-shrink: 0; align-items: center; }
   .topbar nav a {
@@ -295,46 +297,6 @@
   .module:hover .mod-cta::after { transform: translateX(4px); }
 
   /* ---------- GALLERY BAND ---------- */
-  .gallery-band {
-    background: var(--cream);
-  }
-  .gallery {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 16px;
-    margin-top: 32px;
-  }
-  .gallery .tile {
-    aspect-ratio: 1 / 1;
-    background: var(--purple);
-    border: 1px solid var(--purple-deep);
-    position: relative;
-    overflow: hidden;
-    display: flex;
-    align-items: flex-end;
-    padding: 16px;
-  }
-  .gallery .tile img {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.4s;
-  }
-  .gallery .tile:hover img { transform: scale(1.04); }
-  .gallery .tile .tile-label {
-    position: relative;
-    z-index: 2;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--cream);
-    background: rgba(46,24,85,0.85);
-    padding: 6px 10px;
-  }
-
   /* ---------- CTA CLOSER ---------- */
   .training-closer {
     background: var(--purple);
@@ -427,7 +389,6 @@
   }
   @media (max-width: 900px) {
     .modules { grid-template-columns: repeat(2, 1fr); }
-    .gallery { grid-template-columns: repeat(2, 1fr); }
     section { padding: 72px 28px; }
     .training-hero { padding: 120px 28px 60px; }
     footer { grid-template-columns: 1fr; padding: 32px 24px; }
@@ -440,172 +401,11 @@
     .topbar nav { gap: 10px; }
     .topbar nav a:not(.nav-pill) { display: none; }
     .modules { grid-template-columns: 1fr; }
-    .gallery { grid-template-columns: 1fr 1fr; }
   }
 
-  /* ---------- PASSWORD GATE ---------- */
-  .gate {
-    position: fixed;
-    inset: 0;
-    z-index: 9999;
-    background: var(--purple);
-    color: var(--cream);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 32px;
-    background-image:
-      radial-gradient(circle at 20% 30%, rgba(232,163,61,0.08) 0%, transparent 40%),
-      radial-gradient(circle at 80% 70%, rgba(245,239,227,0.04) 0%, transparent 40%);
-  }
-  .gate-inner {
-    max-width: 480px;
-    width: 100%;
-    text-align: center;
-  }
-  .gate-mark {
-    font-family: 'Fraunces', serif;
-    font-size: 88px;
-    font-weight: 800;
-    color: var(--cream);
-    line-height: 0.9;
-    letter-spacing: -0.04em;
-    margin-bottom: 8px;
-  }
-  .gate-eyebrow {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-  }
-  .gate-eyebrow::before { content: '◆'; }
-  .gate h1 {
-    font-family: 'Fraunces', serif;
-    font-weight: 800;
-    font-size: clamp(36px, 5vw, 52px);
-    line-height: 1;
-    color: var(--cream);
-    letter-spacing: -0.025em;
-    margin-bottom: 16px;
-  }
-  .gate h1 em {
-    font-style: italic;
-    font-weight: 400;
-    color: var(--accent);
-  }
-  .gate p {
-    font-size: 16px;
-    line-height: 1.5;
-    opacity: 0.85;
-    margin-bottom: 36px;
-    max-width: 380px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-  .gate-form {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    max-width: 340px;
-    margin: 0 auto;
-  }
-  .gate input {
-    width: 100%;
-    padding: 16px 18px;
-    background: rgba(245,239,227,0.08);
-    border: 1px solid rgba(245,239,227,0.3);
-    color: var(--cream);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 14px;
-    letter-spacing: 0.1em;
-    text-align: center;
-    transition: border 0.2s, background 0.2s;
-  }
-  .gate input::placeholder {
-    color: rgba(245,239,227,0.4);
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    font-size: 11px;
-  }
-  .gate input:focus {
-    outline: none;
-    border-color: var(--accent);
-    background: rgba(245,239,227,0.12);
-  }
-  .gate input.error {
-    border-color: var(--red);
-    animation: shake 0.4s;
-  }
-  @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-6px); }
-    75% { transform: translateX(6px); }
-  }
-  .gate button {
-    padding: 18px 32px;
-    background: var(--accent);
-    color: var(--purple-ink);
-    border: 2px solid var(--accent);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s;
-  }
-  .gate button:hover {
-    background: transparent;
-    color: var(--accent);
-  }
-  .gate-error {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--red);
-    margin-top: 14px;
-    opacity: 0;
-    transition: opacity 0.2s;
-  }
-  .gate-error.show { opacity: 1; }
-  .gate-fineprint {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 9px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: rgba(245,239,227,0.4);
-    margin-top: 48px;
-  }
-  body.locked { overflow: hidden; }
-  body.locked .site-content { display: none; }
 </style>
 </head>
-<body class="locked">
-
-<!-- PASSWORD GATE -->
-<div class="gate" id="gate">
-  <div class="gate-inner">
-    <div class="gate-mark">NEMO</div>
-    <div class="gate-eyebrow">Training Portal · Members Only</div>
-    <h1>For <em>NEMO students.</em></h1>
-    <p>Enter the cohort password to access protocols, scenarios, and the resource vault.</p>
-    <form class="gate-form" id="gateForm" autocomplete="off">
-      <input type="password" id="gateInput" placeholder="Password" autocomplete="off" spellcheck="false" />
-      <button type="submit">Unlock</button>
-    </form>
-    <div class="gate-error" id="gateError">Incorrect password. Try again.</div>
-    <div class="gate-fineprint">Password distributed at orientation · Ask your TA</div>
-  </div>
-</div>
-
-<div class="site-content">
+<body>
 
 <!-- TOP BAR -->
 <div class="topbar">
@@ -616,7 +416,8 @@
   </div>
   <div class="topbar-marquee">
     <div class="marquee-content">
-      · ACCESS ALL YOUR NEMO TRAINING RESOURCES · MEDICAL PROTOCOLS · TRAUMA PROTOCOLS · RESOURCE VAULT ·
+      <span>· ACCESS ALL YOUR NEMO TRAINING RESOURCES · MEDICAL PROTOCOLS · TRAUMA PROTOCOLS · RESOURCE VAULT ·</span>
+      <span aria-hidden="true">· ACCESS ALL YOUR NEMO TRAINING RESOURCES · MEDICAL PROTOCOLS · TRAUMA PROTOCOLS · RESOURCE VAULT ·</span>
     </div>
   </div>
   <nav>
@@ -677,34 +478,6 @@
 </section>
 
 <!-- GALLERY -->
-<section class="gallery-band" id="gallery">
-  <div class="section-num">§ 02 / IN ACTION</div>
-  <div class="section-eyebrow">Training in action</div>
-  <h2 class="section-title">Snapshots from <em>workshops, drills, and outreach.</em></h2>
-  <p class="section-lede">
-    A look at what training looks like on the ground — Sunday skills sessions, full-scale MCI drills, community CPR teach-ins, and outreach events across Northwestern and Evanston.
-  </p>
-
-  <div class="gallery">
-    <div class="tile">
-      <img src="assets/mci1.jpeg" alt="NEMO CPR training session" />
-      <span class="tile-label">CPR Session</span>
-    </div>
-    <div class="tile">
-      <img src="assets/mci1.jpeg" alt="NEMO outreach booth" />
-      <span class="tile-label">Outreach Booth</span>
-    </div>
-    <div class="tile">
-      <img src="assets/mci1.jpeg" alt="NEMO emergency drill practice" />
-      <span class="tile-label">MCI Drill</span>
-    </div>
-    <div class="tile">
-      <img src="assets/mci1.jpeg" alt="NEMO peer-led workshop" />
-      <span class="tile-label">Peer Workshop</span>
-    </div>
-  </div>
-</section>
-
 <!-- CTA CLOSER -->
 <section class="training-closer">
   <div class="section-eyebrow">Not enrolled yet?</div>
@@ -740,61 +513,6 @@
     <a href="https://www.instagram.com/nemo.northwestern/" target="_blank" rel="noopener">Instagram · @nemo.northwestern</a>
   </div>
 </footer>
-
-</div><!-- /site-content -->
-
-<script>
-  // SHA-256 hash of the password. Soft gate only — anyone who can read source
-  // can extract this hash and crack it offline. Don't use this for anything sensitive.
-  const PASSWORD_HASH = '91355b3bc874307d43ed1b1a1f50ebca97337bd598e0eb5554408f3e2ab0612d';
-  const STORAGE_KEY = 'nemo_training_unlock';
-
-  async function sha256(text) {
-    const buf = new TextEncoder().encode(text);
-    const hash = await crypto.subtle.digest('SHA-256', buf);
-    return Array.from(new Uint8Array(hash))
-      .map(b => b.toString(16).padStart(2, '0'))
-      .join('');
-  }
-
-  function unlockSite() {
-    document.body.classList.remove('locked');
-    const gate = document.getElementById('gate');
-    if (gate) gate.style.display = 'none';
-  }
-
-  // Auto-unlock if already authed this session
-  if (sessionStorage.getItem(STORAGE_KEY) === '1') {
-    unlockSite();
-  }
-
-  const form = document.getElementById('gateForm');
-  const input = document.getElementById('gateInput');
-  const errorEl = document.getElementById('gateError');
-
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const attempt = input.value.trim();
-    if (!attempt) return;
-    const hash = await sha256(attempt);
-    if (hash === PASSWORD_HASH) {
-      sessionStorage.setItem(STORAGE_KEY, '1');
-      errorEl.classList.remove('show');
-      unlockSite();
-    } else {
-      errorEl.classList.add('show');
-      input.classList.add('error');
-      input.value = '';
-      setTimeout(() => input.classList.remove('error'), 500);
-      input.focus();
-    }
-  });
-
-  // Auto-focus the input when gate is showing
-  if (document.body.classList.contains('locked')) {
-    setTimeout(() => input.focus(), 50);
-  }
-</script>
 
 </body>
 </html>
