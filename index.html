@@ -518,11 +518,12 @@
   }
   .cost-card .amount {
     font-family: 'Fraunces', serif;
-    font-size: 96px;
+    font-size: clamp(56px, 13vw, 96px);
     font-weight: 800;
     line-height: 1;
     letter-spacing: -0.04em;
     margin-bottom: 16px;
+    word-break: break-word;
   }
   .cost-card.feature .amount { color: var(--purple); }
   .cost-card .strike {
@@ -1028,6 +1029,21 @@
   @media (max-width: 600px) {
     .contact-modal-box { padding: 32px 24px 28px; }
     .contact-modal h3 { font-size: 32px; }
+
+    /* Roomier side padding so content isn't jammed against the edge */
+    .hero { padding: 48px 22px 48px; }
+    section { padding: 56px 22px; }
+
+    /* Let the hero headline shrink to fit narrow screens instead of bleeding off-edge */
+    .hero h1 { font-size: clamp(44px, 12vw, 64px); margin-bottom: 28px; }
+    .hero-lede { font-size: 20px; margin-bottom: 36px; }
+
+    /* Section titles were sized for desktop; rein them in */
+    .section-title { font-size: clamp(32px, 8vw, 48px); }
+
+    /* Cost cards: tighter inner padding, let the note span full width */
+    .cost-card { padding: 32px 24px; }
+    .cost-card .note { max-width: 100%; }
 
     /* On true phones, shrink padding/nav further so the gold marquee still fits */
     .topbar { padding: 8px 12px; font-size: 8px; gap: 8px; }
