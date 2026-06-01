@@ -1,0 +1,1893 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AHA BLS Practice Quiz — Exam A / B</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"
+  onerror="var s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js';s.onerror=function(){window.__jspdfFailed=true;};document.head.appendChild(s);"></script>
+<style>
+  :root {
+    /* === NEMO palette — matches the live site (nemoemt.github.io) ===
+       Cream paper, Northwestern purple as the primary brand color, warm gold
+       as the signal accent, and a separate red reserved for wrong/incorrect
+       states only. */
+    --bg: #F5EFE3;           /* page background — site cream */
+    --paper: #FAF6EC;        /* lifted paper surface */
+    --ink: #18121F;          /* near-black purple-tinted ink */
+    --ink-soft: #4E2A84;     /* Northwestern purple — secondary text */
+    --muted: #6E5C84;        /* muted lilac-grey */
+    --rule: #2E1855;         /* purple-deep rules/borders */
+    --accent: #4E2A84;       /* Northwestern purple — primary brand */
+    --accent-deep: #2E1855;  /* purple-deep */
+    --gold: #E8A33D;         /* warm signal amber */
+    --good: #1f6f43;
+    --good-bg: #e6f1ea;
+    --bad: #B83A2A;          /* emergency red — wrong answers */
+    --bad-bg: #fbeae9;
+    --warn-bg: #FCEFD3;
+    --shadow: 0 1px 0 rgba(46,24,85,0.05), 0 8px 24px rgba(46,24,85,0.08);
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 17px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(rgba(0,0,0,0.025) 1px, transparent 1px);
+    background-size: 4px 4px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 48px 24px 96px;
+  }
+
+  /* ---------- Header ---------- */
+  header.masthead {
+    border-top: 4px solid var(--ink);
+    border-bottom: 1px solid var(--ink);
+    padding: 18px 0 22px;
+    margin-bottom: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .eyebrow .dot {
+    display: inline-block;
+    width: 8px; height: 8px;
+    background: var(--gold);
+    border-radius: 50%;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+
+  h1.title {
+    font-family: 'Fraunces', serif;
+    font-weight: 800;
+    font-size: clamp(36px, 6vw, 56px);
+    line-height: 1.0;
+    letter-spacing: -0.02em;
+    margin: 6px 0 0;
+  }
+  h1.title em {
+    font-style: italic;
+    color: var(--accent-deep);
+    font-weight: 600;
+  }
+
+  .subtitle {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-soft);
+    margin-top: 14px;
+    letter-spacing: 0.04em;
+  }
+
+  .info-block {
+    margin-top: 20px;
+    padding-top: 18px;
+    border-top: 1px solid rgba(0,0,0,0.08);
+  }
+  .info-instruction {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--ink-soft);
+    margin: 0 0 14px;
+    line-height: 1.5;
+    letter-spacing: 0.02em;
+  }
+  .info-instruction a {
+    color: var(--accent-deep);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .info-grid {
+    display: grid;
+    grid-template-columns: 2fr 1.2fr 0.6fr;
+    gap: 12px;
+  }
+  .info-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .info-field label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .info-field label .req {
+    color: var(--accent);
+    margin-left: 2px;
+  }
+  .info-field input {
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+    padding: 10px 12px;
+    border: 1px solid rgba(0,0,0,0.2);
+    background: var(--paper);
+    color: var(--ink);
+    outline: none;
+    transition: border-color 140ms;
+    width: 100%;
+  }
+  .info-field input:focus {
+    border-color: var(--accent);
+  }
+  .info-field input.invalid {
+    border-color: var(--accent);
+    background: #fff5f5;
+  }
+
+  /* A/B version toggle — segmented control in the NEMO palette */
+  .version-toggle {
+    display: inline-flex;
+    border: 1px solid var(--rule);
+    overflow: hidden;
+    width: 100%;
+  }
+  .version-btn {
+    flex: 1;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    padding: 9px 0;
+    border: none;
+    background: var(--paper);
+    color: var(--ink-soft);
+    cursor: pointer;
+    transition: background 140ms, color 140ms;
+  }
+  .version-btn + .version-btn {
+    border-left: 1px solid var(--rule);
+  }
+  .version-btn:hover {
+    background: var(--warn-bg);
+  }
+  .version-btn.active {
+    background: var(--accent);
+    color: #fff;
+  }
+  .version-btn.active:hover {
+    background: var(--accent-deep);
+  }
+  @media (max-width: 600px) {
+    .info-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+    .info-field:first-child {
+      grid-column: 1 / -1;
+    }
+  }
+
+  /* ---------- Progress ---------- */
+  .progress-bar {
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    padding: 14px 0 12px;
+    z-index: 10;
+    margin: -14px 0 28px;
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+  }
+  .progress-track {
+    height: 4px;
+    background: rgba(0,0,0,0.08);
+    border-radius: 0;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--accent);
+    width: 0%;
+    transition: width 280ms ease;
+  }
+  .progress-meta {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-top: 8px;
+  }
+
+  /* ---------- Scenario blocks ---------- */
+  .scenario {
+    background: var(--paper);
+    border-left: 3px solid var(--accent);
+    padding: 18px 22px;
+    margin: 32px 0 8px;
+    box-shadow: var(--shadow);
+    font-style: italic;
+    color: var(--ink-soft);
+    position: relative;
+  }
+  .scenario::before {
+    content: "Scenario";
+    position: absolute;
+    top: -10px;
+    left: 16px;
+    background: var(--bg);
+    padding: 0 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--accent);
+  }
+
+  /* ---------- Question card ---------- */
+  .question {
+    background: var(--paper);
+    padding: 26px 28px 24px;
+    margin: 16px 0 28px;
+    box-shadow: var(--shadow);
+    position: relative;
+  }
+  .q-number {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .q-number .num {
+    background: var(--ink);
+    color: var(--bg);
+    padding: 3px 8px;
+    font-weight: 700;
+  }
+  .q-number .status {
+    margin-left: auto;
+    font-size: 10px;
+    opacity: 0;
+    transition: opacity 200ms;
+  }
+  .q-number .status.show { opacity: 1; }
+  .q-number .status.correct { color: var(--good); }
+  .q-number .status.incorrect { color: var(--bad); }
+
+  .q-text {
+    font-size: 19px;
+    line-height: 1.45;
+    margin: 0 0 18px;
+    font-weight: 400;
+  }
+
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 12px 14px;
+    border: 1px solid rgba(0,0,0,0.12);
+    background: #fafafa;
+    cursor: pointer;
+    transition: all 140ms ease;
+    font-size: 16px;
+    line-height: 1.4;
+    user-select: none;
+  }
+  .option:hover:not(.locked) {
+    border-color: var(--ink);
+    background: #fff;
+    transform: translateX(2px);
+  }
+  .option .letter {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    background: var(--ink);
+    color: var(--bg);
+    width: 24px;
+    height: 24px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 140ms ease;
+  }
+  .option.selected {
+    border-color: var(--ink);
+    background: #fff;
+  }
+
+  .option.correct {
+    background: var(--good-bg);
+    border-color: var(--good);
+    color: var(--good);
+  }
+  .option.correct .letter {
+    background: var(--good);
+  }
+  .option.incorrect {
+    background: var(--bad-bg);
+    border-color: var(--bad);
+    color: var(--bad);
+  }
+  .option.incorrect .letter {
+    background: var(--bad);
+  }
+  .option.locked {
+    cursor: default;
+    pointer-events: none;
+  }
+
+  /* ---------- Rationale ---------- */
+  .rationale {
+    margin-top: 16px;
+    padding: 14px 16px;
+    background: var(--warn-bg);
+    border-left: 3px solid #d4a017;
+    font-size: 14.5px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    display: none;
+  }
+  .rationale.show { display: block; }
+  .rationale .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent-deep);
+    display: block;
+    margin-bottom: 6px;
+  }
+  .rationale cite {
+    display: block;
+    margin-top: 8px;
+    font-size: 12px;
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  /* ---------- Submit & results ---------- */
+  .actions {
+    margin-top: 40px;
+    text-align: center;
+  }
+  .validation-msg {
+    margin: 12px 0 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--accent-deep);
+    min-height: 16px;
+    transition: opacity 200ms;
+  }
+  button.submit {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    background: var(--ink);
+    color: var(--bg);
+    border: none;
+    padding: 18px 40px;
+    cursor: pointer;
+    transition: all 180ms ease;
+  }
+  button.submit:hover:not(:disabled) {
+    background: var(--accent);
+    transform: translateY(-1px);
+  }
+  button.submit:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  button.reset {
+    margin-top: 16px;
+    background: transparent;
+    border: 1px solid var(--ink);
+    color: var(--ink);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    padding: 10px 22px;
+    cursor: pointer;
+    transition: all 140ms;
+  }
+  button.reset:hover {
+    background: var(--ink);
+    color: var(--bg);
+  }
+
+  .results-actions {
+    margin-top: 28px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .submit-notice {
+    margin: 28px auto 0;
+    max-width: 480px;
+    padding: 18px 22px;
+    background: #fafaf6;
+    border: 1px dashed var(--ink);
+    text-align: left;
+    position: relative;
+  }
+  .submit-notice-label {
+    position: absolute;
+    top: -9px;
+    left: 14px;
+    background: var(--paper);
+    padding: 0 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--accent-deep);
+  }
+  .submit-notice p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+  }
+  .submit-notice a {
+    color: var(--accent-deep);
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    word-break: break-all;
+  }
+
+  button.download {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 14px 28px;
+    cursor: pointer;
+    transition: all 160ms;
+  }
+  button.download:hover {
+    background: var(--accent-deep);
+    transform: translateY(-1px);
+  }
+  button.download:disabled {
+    opacity: 0.5;
+    cursor: wait;
+  }
+
+  .results {
+    background: var(--paper);
+    padding: 36px 32px;
+    margin: 32px 0;
+    box-shadow: var(--shadow);
+    text-align: center;
+    display: none;
+    border-top: 4px solid var(--accent);
+  }
+  .results.show { display: block; }
+  .results .score {
+    font-family: 'Fraunces', serif;
+    font-weight: 800;
+    font-size: 96px;
+    line-height: 1;
+    margin: 0;
+    letter-spacing: -0.04em;
+  }
+  .results .score em {
+    font-style: italic;
+    color: var(--accent-deep);
+    font-weight: 600;
+  }
+  .results .score-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 8px;
+  }
+  .results .verdict {
+    font-size: 22px;
+    margin: 20px 0 0;
+    font-style: italic;
+  }
+  .results .verdict.pass { color: var(--good); }
+  .results .verdict.fail { color: var(--bad); }
+  .results .breakdown {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--ink-soft);
+    margin-top: 12px;
+    letter-spacing: 0.04em;
+  }
+  .results .results-headline {
+    font-family: 'Fraunces', serif;
+    font-size: 34px;
+    font-weight: 600;
+    font-style: italic;
+    margin: 14px 0 0;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+
+  /* ---------- Misc ---------- */
+  .footer-note {
+    margin-top: 40px;
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  @media (max-width: 600px) {
+    .wrap { padding: 28px 16px 80px; }
+    .question { padding: 20px; }
+    .scenario { padding: 16px; }
+    .results .score { font-size: 72px; }
+  }
+  /* ---------- PDF Modal ---------- */
+  #pdfModal {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+  #pdfModal.open { display: flex; }
+  .pdf-modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(20, 15, 10, 0.7);
+  }
+  .pdf-modal-panel {
+    position: relative;
+    background: var(--paper);
+    width: min(900px, 95vw);
+    height: min(90vh, 1100px);
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  }
+  .pdf-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+    background: var(--bg);
+  }
+  .pdf-modal-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+  .pdf-modal-actions {
+    display: flex;
+    gap: 8px;
+  }
+  .pdf-modal-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 8px 14px;
+    border: 1px solid var(--ink);
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    transition: all 140ms;
+  }
+  .pdf-modal-btn:hover {
+    background: var(--ink);
+    color: var(--bg);
+  }
+  .pdf-modal-btn.primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  .pdf-modal-btn.primary:hover {
+    background: var(--accent-deep);
+    border-color: var(--accent-deep);
+  }
+  .pdf-modal-instruction {
+    padding: 10px 18px;
+    font-size: 13px;
+    background: #fff4d6;
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+    color: var(--ink-soft);
+  }
+  .pdf-modal-instruction a {
+    color: var(--accent-deep);
+    font-weight: 600;
+  }
+  .pdf-modal-frame {
+    flex: 1;
+    width: 100%;
+    border: none;
+    background: #525252;
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="eyebrow">
+      <span><span class="dot"></span>American Heart Association</span>
+      <span>Oct 22, 2025</span>
+    </div>
+    <h1 class="title">Basic Life Support<br><em id="examLabel">Exam A</em></h1>
+    <div class="subtitle">25 questions · Passing score: 84% (21 / 25) · Self-scored practice</div>
+    <div class="info-block">
+      <p class="info-instruction">All fields below are required. Once complete, submit your answer sheet to <a href="mailto:nemo@u.northwestern.edu">nemo@u.northwestern.edu</a>.</p>
+      <div class="info-grid">
+        <div class="info-field">
+          <label for="studentName">Name <span class="req">*</span></label>
+          <input type="text" id="studentName" placeholder="First Last" autocomplete="name" required />
+        </div>
+        <div class="info-field">
+          <label for="examDate">Date <span class="req">*</span></label>
+          <input type="date" id="examDate" required />
+        </div>
+        <div class="info-field info-field--small">
+          <label for="examVersion">Version <span class="req">*</span></label>
+          <div class="version-toggle" role="group" aria-label="Select exam version">
+            <button type="button" class="version-btn active" id="verBtnA" data-ver="A">A</button>
+            <button type="button" class="version-btn" id="verBtnB" data-ver="B">B</button>
+          </div>
+          <input type="hidden" id="examVersion" value="A" />
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="progress-bar">
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-meta">
+      <span id="progressLabel">0 / 25 answered</span>
+      <span id="progressPct">0%</span>
+    </div>
+  </div>
+
+  <div id="quiz"></div>
+
+  <div class="actions">
+    <button class="submit" id="submitBtn" disabled>Submit Exam</button>
+    <p class="validation-msg" id="validationMsg"></p>
+  </div>
+
+  <div class="results" id="results">
+    <p class="score-label">Exam Submitted</p>
+    <p class="results-headline">Your answer sheet is ready.</p>
+    <div class="submit-notice">
+      <span class="submit-notice-label">Next Step</span>
+      <p>Open your answer sheet below, save it from the browser PDF viewer, and email it to <a id="resultMailLink" href="mailto:nemo@u.northwestern.edu?subject=BLS%20Exam%20A%20Answer%20Sheet">nemo@u.northwestern.edu</a>.</p>
+    </div>
+    <div class="results-actions">
+      <button class="download" id="downloadBtn">⬇ View Answer Sheet (PDF)</button>
+    </div>
+  </div>
+
+  <p class="footer-note">© 2025 American Heart Association · Practice format</p>
+
+</div>
+
+<script>
+// ============================================================
+// Exam data — questions, options, correct answer, rationale
+// Scenarios are attached to the question they precede
+// ============================================================
+const EXAM_A = [
+  {
+    q: "What compression-to-ventilation ratio should be used for infant 1-rescuer CPR?",
+    options: [
+      "5 compressions to 1 ventilation",
+      "15 compressions to 2 ventilations",
+      "20 compressions to 2 ventilations",
+      "30 compressions to 2 ventilations"
+    ],
+    correct: 3,
+    rationale: "The compression-to-ventilation ratio for single rescuers is the same in adults, children, and infants: 30:2.",
+    cite: "BLS Provider Manual, Part 6, p. 59"
+  },
+  {
+    q: "What should you do if you need to use an AED on someone who is submerged in water?",
+    options: [
+      "Pull the person out of the water, but do not use the AED",
+      "Do not pull the person out of the water, and wipe their chest",
+      "Pull the person out of the water, and wipe their chest",
+      "Do not move the person, and do not use the AED"
+    ],
+    correct: 2,
+    rationale: "Water and other liquids conduct electricity. Pull the person out of the water, then quickly wipe the chest before attaching AED pads.",
+    cite: "BLS Provider Manual, Part 4, p. 42"
+  },
+  {
+    scenario: "A 9-year-old child suddenly collapsed. After confirming that the scene is safe, you determine that the child is in cardiac arrest, you shout for nearby help, and you activate the emergency response system by using your mobile device. You immediately begin performing high-quality CPR.",
+    q: "A second rescuer arrives to help. What should you do next?",
+    options: [
+      "Tell the second rescuer to call 911",
+      "Tell the second rescuer to take over compressions",
+      "Tell the second rescuer to go get the AED",
+      "Tell the second rescuer to deliver breaths"
+    ],
+    correct: 2,
+    rationale: "Early defibrillation increases the chance of survival from cardiac arrest caused by an arrhythmia. The shock resets the heart's electrical system so a normal rhythm can return.",
+    cite: "BLS Provider Manual, Part 4, p. 35–36"
+  },
+  {
+    q: "The second rescuer returned with the AED. One shock was delivered, and the AED prompted you to immediately resume CPR. What is the compression-to-ventilation ratio for child 2-rescuer CPR?",
+    options: [
+      "5 compressions to 1 ventilation",
+      "15 compressions to 2 ventilations",
+      "20 compressions to 2 ventilations",
+      "30 compressions to 2 ventilations"
+    ],
+    correct: 1,
+    rationale: "Pediatric arrests are commonly respiratory in origin, so ventilations matter more. With 2 rescuers, use 15:2 for children and infants.",
+    cite: "BLS Provider Manual, Part 6, pp. 62, 64"
+  },
+  {
+    q: "You witness someone suddenly collapse. The person is unresponsive, you hear agonal gasps, and there is no pulse. You call 911. What should you do next?",
+    options: [
+      "Begin CPR; the gasps are not considered normal breathing",
+      "Go get the AED; the gasps are considered normal breathing",
+      "Monitor the person; the gasps are considered normal breathing",
+      "Give breaths only; the gasps are not considered normal breathing"
+    ],
+    correct: 0,
+    rationale: "Gasping is not normal breathing — it's a sign of cardiac arrest. Begin high-quality CPR.",
+    cite: "BLS Provider Manual, Part 3, p. 16"
+  },
+  {
+    q: "Defibrillation is a link in the Chain of Survival. Why is early defibrillation important to survival?",
+    options: [
+      "It leads to a 100% success rate",
+      "It identifies the person's heart rate",
+      "It prevents cardiac arrest from reoccurring",
+      "It may restore a regular heart rhythm"
+    ],
+    correct: 3,
+    rationale: "The AED's shock stops the abnormal rhythm and resets the heart's electrical system so a normal (organized) rhythm can return.",
+    cite: "BLS Provider Manual, Part 4, p. 35"
+  },
+  {
+    scenario: "A 53-year-old woman collapses at a sporting event. She is unresponsive, so you shout for help. She is not breathing and does not have a pulse. You start CPR, and emergency responders arrive with an AED.",
+    q: "What is the first step you should take when using the AED?",
+    options: [
+      "Turn on the AED and press the Shock button",
+      "Apply the pads to the patient's bare chest",
+      "Turn on the AED and follow the prompts",
+      "Turn on the AED and shout, \"Clear!\""
+    ],
+    correct: 2,
+    rationale: "Open and power on the AED, then follow its voice or screen prompts throughout the resuscitation attempt.",
+    cite: "BLS Provider Manual, Part 4, p. 37"
+  },
+  {
+    q: "After the AED pads are attached to the patient, the AED detects a shockable rhythm. You hear the AED prompt that a shock is advised. What should you do next?",
+    options: [
+      "Check for a carotid pulse",
+      "Clear the patient by shouting, \"Clear!\"",
+      "Resume CPR",
+      "Press the Shock button"
+    ],
+    correct: 1,
+    rationale: "Before delivering the shock, clear the person — make sure no one is touching them and loudly state a clear message such as \"Everybody clear!\"",
+    cite: "BLS Provider Manual, Part 4, p. 37"
+  },
+  {
+    q: "\"The team functions well when all team members know their positions, functions, and tasks during a resuscitation attempt.\" Match this statement with the most appropriate element of team dynamics listed.",
+    options: [
+      "Clear roles and responsibilities",
+      "Constructive intervention",
+      "Knowing your limitations",
+      "Mutual respect"
+    ],
+    correct: 0,
+    rationale: "When team members know their jobs and responsibilities, the team functions more smoothly. Roles should be defined early and delegated by skill level.",
+    cite: "BLS Provider Manual, Part 5, p. 46"
+  },
+  {
+    q: "\"Members of the team know their boundaries and ask for help before the resuscitation attempt worsens.\" Match this statement with the most appropriate element of team dynamics listed.",
+    options: [
+      "Summarizing and reevaluation",
+      "Constructive intervention",
+      "Knowledge sharing",
+      "Knowing your limitations"
+    ],
+    correct: 3,
+    rationale: "All team members should know their limitations and ask for help early — before a situation gets worse.",
+    cite: "BLS Provider Manual, Part 5, p. 47"
+  },
+  {
+    q: "A person with a foreign-body airway obstruction becomes unresponsive. What should you do first?",
+    options: [
+      "Start CPR, beginning with chest compressions",
+      "Perform abdominal thrusts",
+      "Roll the person over and perform back blows",
+      "Perform blind finger sweeps"
+    ],
+    correct: 0,
+    rationale: "If the person becomes unresponsive, give CPR until advanced care arrives. Start with compressions.",
+    cite: "BLS Provider Manual, Part 11, p. 102"
+  },
+  {
+    q: "When performing high-quality CPR on an adult, what action should you ensure is being accomplished?",
+    options: [
+      "Allowing the chest to recoil to at least 1 inch",
+      "Maintaining a compression rate of 90 to 120/min",
+      "Placing hands on the upper third of the sternum",
+      "Compressing to a depth of at least 2 inches"
+    ],
+    correct: 3,
+    rationale: "Compress the adult chest at least 2 inches (5 cm).",
+    cite: "BLS Provider Manual, Part 3, p. 18"
+  },
+  {
+    q: "Which action is most likely to positively impact the survival of a person with sudden cardiac arrest?",
+    options: [
+      "Performing high-quality CPR",
+      "Checking the pulse frequently",
+      "Providing rescue breaths",
+      "Ensuring scene safety"
+    ],
+    correct: 0,
+    rationale: "High-quality CPR improves a person's chances of survival.",
+    cite: "BLS Provider Manual, Part 1, p. 3"
+  },
+  {
+    q: "You and another rescuer just switched roles, and you notice that your partner's chest compression rate is inconsistent. What could you say to ensure that your partner performs high-quality CPR?",
+    options: [
+      "\"Remember to compress at a rate of at least 100 per minute.\"",
+      "\"Remember to compress at a rate of at least 120 per minute.\"",
+      "\"Remember to compress at a rate of 100 to 120 per minute.\"",
+      "\"Remember to compress at a rate of 80 to 120 per minute.\""
+    ],
+    correct: 2,
+    rationale: "The correct compression rate is 100 to 120/min. Anyone on the team should speak up to prevent a mistake — that's constructive intervention.",
+    cite: "BLS Provider Manual, Part 5, p. 47"
+  },
+  {
+    q: "Which of the following actions represents the Recognition and Emergency Activation link in the Chain of Survival?",
+    options: [
+      "Applying AED pads to the patient's bare chest",
+      "Assessing the underlying causes of cardiac arrest",
+      "Providing chest compressions and breaths",
+      "Identifying the signs of cardiac arrest and calling 911"
+    ],
+    correct: 3,
+    rationale: "Recognition and Emergency Activation means identifying cardiac arrest and activating the emergency response system (calling 911 or local emergency number).",
+    cite: "BLS Provider Manual, Part 2, pp. 6–7"
+  },
+  {
+    q: "What special circumstance should a rescuer consider when they are using an AED?",
+    options: [
+      "You should not remove a transdermal medication patch from the chest before applying AED pads",
+      "You may need to remove chest hair before applying AED pads",
+      "You should not use an AED on someone with an implanted pacemaker",
+      "You may need to use the AED while a person is submerged in water"
+    ],
+    correct: 1,
+    rationale: "AED pads may stick to chest hair instead of skin, preventing rhythm analysis. Use a razor (often in the AED case) or use a first set of pads to strip the hair before applying the second set.",
+    cite: "BLS Provider Manual, Part 4, p. 42"
+  },
+  {
+    q: "Which person requires high-quality CPR?",
+    options: [
+      "Someone who has a pulse and is not breathing normally",
+      "Someone who doesn't have a pulse and is not breathing normally",
+      "Someone who has a pulse and is breathing normally",
+      "Someone who is choking but is able to talk to you"
+    ],
+    correct: 1,
+    rationale: "Assess breathing and pulse simultaneously. If there's no pulse and the person isn't breathing (or is only gasping), begin high-quality CPR.",
+    cite: "BLS Provider Manual, Part 3, p. 16"
+  },
+  {
+    q: "What is the correct depth of chest compressions for high-quality CPR on a child?",
+    options: [
+      "At least one third the depth of the chest, approximately 2 inches (5 cm)",
+      "At least one fourth the depth of the chest, approximately 1½ inches (4 cm)",
+      "At least one half the depth of the chest, approximately 3 inches (8 cm)",
+      "At least two thirds the depth of the chest, approximately 4 inches (10 cm)"
+    ],
+    correct: 0,
+    rationale: "For a child, compress at least one third the AP diameter of the chest — about 2 inches (5 cm).",
+    cite: "BLS Provider Manual, Part 6, p. 59"
+  },
+  {
+    q: "Why is allowing complete chest recoil important when you are performing high-quality CPR?",
+    options: [
+      "The rate of chest compressions will increase",
+      "It will reduce the risk of rib fractures",
+      "The heart will adequately refill between compressions",
+      "There will be a reduction of rescuer fatigue"
+    ],
+    correct: 2,
+    rationale: "Chest recoil allows blood to flow back into the heart. Incomplete recoil reduces filling between compressions and reduces the blood flow CPR creates.",
+    cite: "BLS Provider Manual, Part 3, p. 18"
+  },
+  {
+    q: "When you are performing CPR on an unresponsive person who you know is choking, what modification should you incorporate?",
+    options: [
+      "You should attempt a jaw thrust instead of a head tilt–chin lift",
+      "You do not give breaths to an unresponsive choking person",
+      "Each time you open the airway, you should look for the obstructing object",
+      "There are no modifications to CPR for an unresponsive choking person"
+    ],
+    correct: 2,
+    rationale: "Each time you open the airway, check for a visible object before giving breaths. Removing a visible object may eventually allow effective ventilation.",
+    cite: "BLS Provider Manual, Part 11, pp. 103, 111"
+  },
+  {
+    scenario: "An 8-month-old infant is eating and suddenly begins to cough. After a moment, the infant is unable to make any noise but is responsive. You pick up the infant and shout for help.",
+    q: "The infant has a severe airway obstruction. What should you do next?",
+    options: [
+      "Begin chest compressions using the 2 thumb–encircling hands technique",
+      "Alternate giving sets of 5 back blows and 5 chest thrusts",
+      "Encourage the infant to cough, and look in the mouth for the object",
+      "Monitor the infant until emergency responders arrive"
+    ],
+    correct: 1,
+    rationale: "Start repeated cycles of 5 back blows (slaps) followed by 5 chest thrusts until the object is expelled or the infant becomes unresponsive.",
+    cite: "BLS Provider Manual, Part 11, p. 108"
+  },
+  {
+    q: "The infant becomes unresponsive. What should you do next?",
+    options: [
+      "Perform CPR, looking in the mouth for the obstructing object before you give each breath",
+      "Alternate giving sets of 5 back blows and 5 chest thrusts and looking for the obstructing object",
+      "Attempt a blind finger sweep to remove the obstructing object",
+      "Leave the infant in a safe place and go get the AED"
+    ],
+    correct: 0,
+    rationale: "If the infant becomes unresponsive, start CPR immediately with chest compressions. No pulse check. Each time you open the airway, look for the object — remove it only if visible and easily reachable. Never blind sweep.",
+    cite: "BLS Provider Manual, Part 11, p. 110"
+  },
+  {
+    scenario: "A 67-year-old man is found unresponsive, not breathing, and without a pulse in his hospital bed. You activate the emergency response system and send someone to get the AED. You begin chest compressions, and a second rescuer prepares to give ventilations with a bag-mask device.",
+    q: "When should you switch Compressor and Airway roles during high-quality CPR?",
+    options: [
+      "When placing the AED pads",
+      "At 5-minute intervals",
+      "About every 2 minutes",
+      "Never"
+    ],
+    correct: 2,
+    rationale: "To reduce rescuer fatigue, switch compressors about every 5 cycles (or every 2 minutes), or sooner if needed.",
+    cite: "BLS Provider Manual, Part 3, p. 34"
+  },
+  {
+    q: "You switched roles, and you notice that the second rescuer is not allowing for complete chest recoil while giving compressions. What is your next course of action?",
+    options: [
+      "Immediately take over chest compressions",
+      "Tell them that the compressions are wrong",
+      "Stand back and await direction from the second rescuer",
+      "Remind them to allow for complete chest recoil"
+    ],
+    correct: 3,
+    rationale: "Constructive intervention means tactfully pointing out an incorrect action — in this case, reminding the rescuer to allow full chest recoil.",
+    cite: "BLS Provider Manual, Part 5, p. 47"
+  },
+  {
+    q: "How can rescuers ensure that they are providing effective ventilations when using a bag-mask device?",
+    options: [
+      "By observing chest rise with each ventilation",
+      "By always having oxygen attached to the bag",
+      "By allowing air to release around the mask",
+      "By delivering ventilations quickly and forcefully"
+    ],
+    correct: 0,
+    rationale: "Squeeze the bag while watching for visible chest rise. Each ventilation should take 1 second, with or without supplemental oxygen.",
+    cite: "BLS Provider Manual, Part 3, p. 29"
+  }
+];
+const EXAM_B = [
+  {
+    q: "When performing high-quality CPR on an adult, what action should you ensure is being accomplished?",
+    options: [
+      "Allowing the chest to recoil to at least 1 inch",
+      "Maintaining a compression rate of 90 to 120/min",
+      "Placing hands on the upper third of the sternum",
+      "Compressing to a depth of at least 2 inches"
+    ],
+    correct: 3,
+    rationale: "Compress the adult chest at least 2 inches (5 cm).",
+    cite: "BLS Provider Manual, Part 3, p. 18"
+  },
+  {
+    scenario: "An 8-month-old infant is eating and suddenly begins to cough. After a moment, the infant is unable to make any noise but is responsive. You pick up the infant and shout for help.",
+    q: "The infant has a severe airway obstruction. What should you do next?",
+    options: [
+      "Begin chest compressions using the 2 thumb–encircling hands technique",
+      "Alternate giving sets of 5 back blows and 5 chest thrusts",
+      "Encourage the infant to cough, and look in the mouth for the object",
+      "Monitor the infant until emergency responders arrive"
+    ],
+    correct: 1,
+    rationale: "Start repeated cycles of 5 back blows (slaps) followed by 5 chest thrusts until the object is expelled or the infant becomes unresponsive.",
+    cite: "BLS Provider Manual, Part 11, p. 108"
+  },
+  {
+    q: "The infant becomes unresponsive. What should you do next?",
+    options: [
+      "Perform CPR, looking in the mouth for the obstructing object before you give each breath",
+      "Alternate giving sets of 5 back blows and 5 chest thrusts and looking for the obstructing object",
+      "Attempt a blind finger sweep to remove the obstructing object",
+      "Leave the infant in a safe place and go get the AED"
+    ],
+    correct: 0,
+    rationale: "If the infant becomes unresponsive, start CPR immediately with chest compressions. No pulse check. Each time you open the airway, look for the object — remove it only if visible and easily reachable. Never blind sweep.",
+    cite: "BLS Provider Manual, Part 11, p. 110"
+  },
+  {
+    q: "What should you do if you need to use an AED on someone who is submerged in water?",
+    options: [
+      "Pull the person out of the water, but do not use the AED",
+      "Do not pull the person out of the water, and wipe their chest",
+      "Pull the person out of the water, and wipe their chest",
+      "Do not move the person, and do not use the AED"
+    ],
+    correct: 2,
+    rationale: "Water and other liquids conduct electricity. Pull the person out of the water, then quickly wipe the chest before attaching AED pads.",
+    cite: "BLS Provider Manual, Part 4, p. 42"
+  },
+  {
+    q: "Which person requires high-quality CPR?",
+    options: [
+      "Someone who has a pulse and is not breathing normally",
+      "Someone who doesn't have a pulse and is not breathing normally",
+      "Someone who has a pulse and is breathing normally",
+      "Someone who is choking but is able to talk to you"
+    ],
+    correct: 1,
+    rationale: "Assess breathing and pulse simultaneously. If there's no pulse and the person isn't breathing (or is only gasping), begin high-quality CPR.",
+    cite: "BLS Provider Manual, Part 3, p. 16"
+  },
+  {
+    q: "Defibrillation is a link in the Chain of Survival. Why is early defibrillation important to survival?",
+    options: [
+      "It leads to a 100% success rate",
+      "It identifies the person's heart rate",
+      "It prevents cardiac arrest from reoccurring",
+      "It may restore a regular heart rhythm"
+    ],
+    correct: 3,
+    rationale: "The AED's shock stops the abnormal rhythm and resets the heart's electrical system so a normal (organized) rhythm can return.",
+    cite: "BLS Provider Manual, Part 4, p. 35"
+  },
+  {
+    scenario: "A 67-year-old man is found unresponsive, not breathing, and without a pulse in his hospital bed. You activate the emergency response system and send someone to get the AED. You begin chest compressions, and a second rescuer prepares to give ventilations with a bag-mask device.",
+    q: "When should you switch Compressor and Airway roles during high-quality CPR?",
+    options: [
+      "When placing the AED pads",
+      "At 5-minute intervals",
+      "About every 2 minutes",
+      "Never"
+    ],
+    correct: 2,
+    rationale: "To reduce rescuer fatigue, switch compressors about every 5 cycles (or every 2 minutes), or sooner if needed.",
+    cite: "BLS Provider Manual, Part 3, p. 34"
+  },
+  {
+    q: "You switched roles, and you notice that the second rescuer is not allowing for complete chest recoil while giving compressions. What is your next course of action?",
+    options: [
+      "Immediately take over chest compressions",
+      "Tell them that the compressions are wrong",
+      "Stand back and await direction from the second rescuer",
+      "Remind them to allow for complete chest recoil"
+    ],
+    correct: 3,
+    rationale: "Constructive intervention means tactfully pointing out an incorrect action — in this case, reminding the rescuer to allow full chest recoil.",
+    cite: "BLS Provider Manual, Part 5, p. 47"
+  },
+  {
+    q: "What is the correct depth of chest compressions for high-quality CPR on a child?",
+    options: [
+      "At least one third the depth of the chest, approximately 2 inches (5 cm)",
+      "At least one fourth the depth of the chest, approximately 1½ inches (4 cm)",
+      "At least one half the depth of the chest, approximately 3 inches (8 cm)",
+      "At least two thirds the depth of the chest, approximately 4 inches (10 cm)"
+    ],
+    correct: 0,
+    rationale: "For a child, compress at least one third the AP diameter of the chest — about 2 inches (5 cm).",
+    cite: "BLS Provider Manual, Part 6, p. 59"
+  },
+  {
+    scenario: "A 53-year-old woman collapses at a sporting event. She is unresponsive, so you shout for help. She is not breathing and does not have a pulse. You start CPR, and emergency responders arrive with an AED.",
+    q: "What is the first step you should take when using the AED?",
+    options: [
+      "Turn on the AED and press the Shock button",
+      "Apply the pads to the patient's bare chest",
+      "Turn on the AED and follow the prompts",
+      "Turn on the AED and shout, \"Clear!\""
+    ],
+    correct: 2,
+    rationale: "Open and power on the AED, then follow its voice or screen prompts throughout the resuscitation attempt.",
+    cite: "BLS Provider Manual, Part 4, p. 37"
+  },
+  {
+    q: "After the AED pads are attached to the patient, the AED detects a shockable rhythm. You hear the AED prompt that a shock is advised. What should you do next?",
+    options: [
+      "Check for a carotid pulse",
+      "Clear the patient by shouting, \"Clear!\"",
+      "Resume CPR",
+      "Press the Shock button"
+    ],
+    correct: 1,
+    rationale: "Before delivering the shock, clear the person — make sure no one is touching them and loudly state a clear message such as \"Everybody clear!\"",
+    cite: "BLS Provider Manual, Part 4, p. 37"
+  },
+  {
+    q: "What compression-to-ventilation ratio should be used for infant 1-rescuer CPR?",
+    options: [
+      "5 compressions to 1 ventilation",
+      "15 compressions to 2 ventilations",
+      "20 compressions to 2 ventilations",
+      "30 compressions to 2 ventilations"
+    ],
+    correct: 3,
+    rationale: "The compression-to-ventilation ratio for single rescuers is the same in adults, children, and infants: 30:2.",
+    cite: "BLS Provider Manual, Part 6, p. 59"
+  },
+  {
+    scenario: "A 9-year-old child suddenly collapsed. After confirming that the scene is safe, you determine that the child is in cardiac arrest, you shout for nearby help, and you activate the emergency response system by using your mobile device. You immediately begin performing high-quality CPR.",
+    q: "A second rescuer arrives to help. What should you do next?",
+    options: [
+      "Tell the second rescuer to call 911",
+      "Tell the second rescuer to take over compressions",
+      "Tell the second rescuer to go get the AED",
+      "Tell the second rescuer to deliver breaths"
+    ],
+    correct: 2,
+    rationale: "Early defibrillation increases the chance of survival from cardiac arrest caused by an arrhythmia. The shock resets the heart's electrical system so a normal rhythm can return.",
+    cite: "BLS Provider Manual, Part 4, p. 35–36"
+  },
+  {
+    q: "The second rescuer returned with the AED. One shock was delivered, and the AED prompted you to immediately resume CPR. What is the compression-to-ventilation ratio for child 2-rescuer CPR?",
+    options: [
+      "5 compressions to 1 ventilation",
+      "15 compressions to 2 ventilations",
+      "20 compressions to 2 ventilations",
+      "30 compressions to 2 ventilations"
+    ],
+    correct: 1,
+    rationale: "Pediatric arrests are commonly respiratory in origin, so ventilations matter more. With 2 rescuers, use 15:2 for children and infants.",
+    cite: "BLS Provider Manual, Part 6, pp. 62, 64"
+  },
+  {
+    q: "\"The team functions well when all team members know their positions, functions, and tasks during a resuscitation attempt.\" Match this statement with the most appropriate element of team dynamics listed.",
+    options: [
+      "Clear roles and responsibilities",
+      "Constructive intervention",
+      "Knowing your limitations",
+      "Mutual respect"
+    ],
+    correct: 0,
+    rationale: "When team members know their jobs and responsibilities, the team functions more smoothly. Roles should be defined early and delegated by skill level.",
+    cite: "BLS Provider Manual, Part 5, p. 46"
+  },
+  {
+    q: "How can rescuers ensure that they are providing effective ventilations when using a bag-mask device?",
+    options: [
+      "By observing chest rise with each ventilation",
+      "By always having oxygen attached to the bag",
+      "By allowing air to release around the mask",
+      "By delivering ventilations quickly and forcefully"
+    ],
+    correct: 0,
+    rationale: "Squeeze the bag while watching for visible chest rise. Each ventilation should take 1 second, with or without supplemental oxygen.",
+    cite: "BLS Provider Manual, Part 3, p. 29"
+  },
+  {
+    q: "When you are performing CPR on an unresponsive person who you know is choking, what modification should you incorporate?",
+    options: [
+      "You should attempt a jaw thrust instead of a head tilt–chin lift",
+      "You do not give breaths to an unresponsive choking person",
+      "Each time you open the airway, you should look for the obstructing object",
+      "There are no modifications to CPR for an unresponsive choking person"
+    ],
+    correct: 2,
+    rationale: "Each time you open the airway, check for a visible object before giving breaths. Removing a visible object may eventually allow effective ventilation.",
+    cite: "BLS Provider Manual, Part 11, pp. 103, 111"
+  },
+  {
+    q: "Why is allowing complete chest recoil important when you are performing high-quality CPR?",
+    options: [
+      "The rate of chest compressions will increase",
+      "It will reduce the risk of rib fractures",
+      "The heart will adequately refill between compressions",
+      "There will be a reduction of rescuer fatigue"
+    ],
+    correct: 2,
+    rationale: "Chest recoil allows blood to flow back into the heart. Incomplete recoil reduces filling between compressions and reduces the blood flow CPR creates.",
+    cite: "BLS Provider Manual, Part 3, p. 18"
+  },
+  {
+    q: "\"Members of the team know their boundaries and ask for help before the resuscitation attempt worsens.\" Match this statement with the most appropriate element of team dynamics listed.",
+    options: [
+      "Summarizing and reevaluation",
+      "Constructive intervention",
+      "Knowledge sharing",
+      "Knowing your limitations"
+    ],
+    correct: 3,
+    rationale: "All team members should know their limitations and ask for help early — before a situation gets worse.",
+    cite: "BLS Provider Manual, Part 5, p. 47"
+  },
+  {
+    q: "What special circumstance should a rescuer consider when they are using an AED?",
+    options: [
+      "You should not remove a transdermal medication patch from the chest before applying AED pads",
+      "You may need to remove chest hair before applying AED pads",
+      "You should not use an AED on someone with an implanted pacemaker",
+      "You may need to use the AED while a person is submerged in water"
+    ],
+    correct: 1,
+    rationale: "AED pads may stick to chest hair instead of skin, preventing rhythm analysis. Use a razor (often in the AED case) or use a first set of pads to strip the hair before applying the second set.",
+    cite: "BLS Provider Manual, Part 4, p. 42"
+  },
+  {
+    q: "Which action is most likely to positively impact the survival of a person with sudden cardiac arrest?",
+    options: [
+      "Performing high-quality CPR",
+      "Checking the pulse frequently",
+      "Providing rescue breaths",
+      "Ensuring scene safety"
+    ],
+    correct: 0,
+    rationale: "High-quality CPR improves a person's chances of survival.",
+    cite: "BLS Provider Manual, Part 1, p. 3"
+  },
+  {
+    q: "A person with a foreign-body airway obstruction becomes unresponsive. What should you do first?",
+    options: [
+      "Start CPR, beginning with chest compressions",
+      "Perform abdominal thrusts",
+      "Roll the person over and perform back blows",
+      "Perform blind finger sweeps"
+    ],
+    correct: 0,
+    rationale: "If the person becomes unresponsive, give CPR until advanced care arrives. Start with compressions.",
+    cite: "BLS Provider Manual, Part 11, p. 102"
+  },
+  {
+    q: "You and another rescuer just switched roles, and you notice that your partner's chest compression rate is inconsistent. What could you say to ensure that your partner performs high-quality CPR?",
+    options: [
+      "\"Remember to compress at a rate of at least 100 per minute.\"",
+      "\"Remember to compress at a rate of at least 120 per minute.\"",
+      "\"Remember to compress at a rate of 100 to 120 per minute.\"",
+      "\"Remember to compress at a rate of 80 to 120 per minute.\""
+    ],
+    correct: 2,
+    rationale: "The correct compression rate is 100 to 120/min. Anyone on the team should speak up to prevent a mistake — that's constructive intervention.",
+    cite: "BLS Provider Manual, Part 5, p. 47"
+  },
+  {
+    q: "You witness someone suddenly collapse. The person is unresponsive, you hear agonal gasps, and there is no pulse. You call 911. What should you do next?",
+    options: [
+      "Begin CPR; the gasps are not considered normal breathing",
+      "Go get the AED; the gasps are considered normal breathing",
+      "Monitor the person; the gasps are considered normal breathing",
+      "Give breaths only; the gasps are not considered normal breathing"
+    ],
+    correct: 0,
+    rationale: "Gasping is not normal breathing — it's a sign of cardiac arrest. Begin high-quality CPR.",
+    cite: "BLS Provider Manual, Part 3, p. 16"
+  },
+  {
+    q: "Which of the following actions represents the Recognition and Emergency Activation link in the Chain of Survival?",
+    options: [
+      "Applying AED pads to the patient's bare chest",
+      "Assessing the underlying causes of cardiac arrest",
+      "Providing chest compressions and breaths",
+      "Identifying the signs of cardiac arrest and calling 911"
+    ],
+    correct: 3,
+    rationale: "Recognition and Emergency Activation means identifying cardiac arrest and activating the emergency response system (calling 911 or local emergency number).",
+    cite: "BLS Provider Manual, Part 2, pp. 6–7"
+  }
+];
+
+// Active exam — swapped by the A/B selector. Defaults to A.
+let exam = EXAM_A;
+
+// ============================================================
+// Render the quiz
+// ============================================================
+const quizEl = document.getElementById('quiz');
+let userAnswers = new Array(exam.length).fill(null);
+let submitted = false;
+
+// Pre-fill today's date in YYYY-MM-DD
+(function setToday() {
+  const d = new Date();
+  const iso = d.getFullYear() + '-' +
+              String(d.getMonth() + 1).padStart(2, '0') + '-' +
+              String(d.getDate()).padStart(2, '0');
+  document.getElementById('examDate').value = iso;
+})();
+
+// Validate required info fields, return list of empty field IDs
+function getMissingInfoFields() {
+  const fields = ['studentName', 'examDate', 'examVersion'];
+  return fields.filter(id => !document.getElementById(id).value.trim());
+}
+
+// Wire info fields to re-check submit gate as user types
+['studentName', 'examDate', 'examVersion'].forEach(id => {
+  document.getElementById(id).addEventListener('input', () => {
+    document.getElementById(id).classList.remove('invalid');
+    updateProgress();
+  });
+});
+
+function renderQuiz() {
+  quizEl.innerHTML = '';
+  exam.forEach((item, qIdx) => {
+  // scenario block (if present, before the question)
+  if (item.scenario) {
+    const sc = document.createElement('div');
+    sc.className = 'scenario';
+    sc.textContent = item.scenario;
+    quizEl.appendChild(sc);
+  }
+
+  const card = document.createElement('div');
+  card.className = 'question';
+  card.id = `q-${qIdx}`;
+
+  card.innerHTML = `
+    <div class="q-number">
+      <span class="num">Q${String(qIdx + 1).padStart(2, '0')}</span>
+      <span>Question ${qIdx + 1} of ${exam.length}</span>
+      <span class="status" id="status-${qIdx}"></span>
+    </div>
+    <p class="q-text">${item.q}</p>
+    <ul class="options" id="opts-${qIdx}"></ul>
+    <div class="rationale" id="rat-${qIdx}">
+      <span class="label">Rationale</span>
+      <span>${item.rationale}</span>
+      <cite>${item.cite}</cite>
+    </div>
+  `;
+
+  quizEl.appendChild(card);
+
+  const optsEl = card.querySelector(`#opts-${qIdx}`);
+  const letters = ['A', 'B', 'C', 'D'];
+  item.options.forEach((opt, oIdx) => {
+    const li = document.createElement('li');
+    li.className = 'option';
+    li.dataset.q = qIdx;
+    li.dataset.o = oIdx;
+    li.innerHTML = `<span class="letter">${letters[oIdx]}</span><span>${opt}</span>`;
+    li.addEventListener('click', () => selectOption(qIdx, oIdx));
+    optsEl.appendChild(li);
+  });
+  });
+}
+renderQuiz();
+
+// ============================================================
+// Exam A / B switching
+// Swaps the active question set, fully resets answer + grade state,
+// re-renders, and updates the version label, hidden field, and mailto.
+// ============================================================
+let currentVersion = 'A';
+function switchExam(version) {
+  if (version === currentVersion) return;
+  currentVersion = version;
+  exam = (version === 'B') ? EXAM_B : EXAM_A;
+
+  // Reset state
+  userAnswers = new Array(exam.length).fill(null);
+  submitted = false;
+  finalScore = 0;
+
+  // Reset submit button + results panel
+  const submitBtn = document.getElementById('submitBtn');
+  submitBtn.disabled = true;
+  submitBtn.style.display = '';
+  document.getElementById('results').classList.remove('show');
+  const valMsg = document.getElementById('validationMsg');
+  if (valMsg) valMsg.textContent = '';
+
+  // Update version-dependent chrome
+  document.getElementById('examLabel').textContent = 'Exam ' + version;
+  document.getElementById('examVersion').value = version;
+  const mailLink = document.getElementById('resultMailLink');
+  if (mailLink) {
+    mailLink.href = 'mailto:nemo@u.northwestern.edu?subject=BLS%20Exam%20'
+      + version + '%20Answer%20Sheet';
+  }
+  document.title = 'AHA BLS Practice Quiz — Exam ' + version;
+
+  // Toggle button active states
+  document.getElementById('verBtnA').classList.toggle('active', version === 'A');
+  document.getElementById('verBtnB').classList.toggle('active', version === 'B');
+
+  // Re-render and refresh progress
+  renderQuiz();
+  updateProgress();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+document.getElementById('verBtnA').addEventListener('click', () => switchExam('A'));
+document.getElementById('verBtnB').addEventListener('click', () => switchExam('B'));
+
+// ============================================================
+// Selection handling
+// ============================================================
+function selectOption(qIdx, oIdx) {
+  if (submitted) return;
+  userAnswers[qIdx] = oIdx;
+
+  // visual update for this question's options
+  const opts = document.querySelectorAll(`#opts-${qIdx} .option`);
+  opts.forEach((el, i) => {
+    el.classList.toggle('selected', i === oIdx);
+  });
+
+  updateProgress();
+}
+
+function updateProgress() {
+  const answered = userAnswers.filter(a => a !== null).length;
+  const pct = Math.round((answered / exam.length) * 100);
+  document.getElementById('progressFill').style.width = `${pct}%`;
+  document.getElementById('progressLabel').textContent = `${answered} / ${exam.length} answered`;
+  document.getElementById('progressPct').textContent = `${pct}%`;
+
+  const missing = getMissingInfoFields();
+  const allAnswered = answered === exam.length;
+  const canSubmit = allAnswered && missing.length === 0;
+
+  document.getElementById('submitBtn').disabled = !canSubmit;
+
+  // helpful inline message
+  const msgEl = document.getElementById('validationMsg');
+  if (allAnswered && missing.length > 0) {
+    const labels = { studentName: 'Name', examDate: 'Date', examVersion: 'Version' };
+    msgEl.textContent = `Required: ${missing.map(id => labels[id]).join(', ')} (top of page)`;
+  } else if (!allAnswered) {
+    msgEl.textContent = '';
+  } else {
+    msgEl.textContent = '';
+  }
+}
+
+// ============================================================
+// Submit & grade
+// ============================================================
+let finalScore = 0;
+
+document.getElementById('submitBtn').addEventListener('click', () => {
+  // Hard guard: re-check all info fields and answers
+  const missing = getMissingInfoFields();
+  const allAnswered = userAnswers.filter(a => a !== null).length === exam.length;
+  if (missing.length > 0 || !allAnswered) {
+    missing.forEach(id => document.getElementById(id).classList.add('invalid'));
+    if (missing.length > 0) {
+      document.getElementById(missing[0]).scrollIntoView({ behavior: 'smooth', block: 'center' });
+      document.getElementById(missing[0]).focus();
+    }
+    return;
+  }
+
+  submitted = true;
+  let correctCount = 0;
+
+  exam.forEach((item, qIdx) => {
+    const opts = document.querySelectorAll(`#opts-${qIdx} .option`);
+    const userPick = userAnswers[qIdx];
+    const correctIdx = item.correct;
+    const isCorrect = userPick === correctIdx;
+    if (isCorrect) correctCount++;
+
+    opts.forEach((el, i) => {
+      el.classList.add('locked');
+      el.classList.remove('selected');
+      if (i === correctIdx) el.classList.add('correct');
+      if (i === userPick && !isCorrect) el.classList.add('incorrect');
+    });
+
+    document.getElementById(`rat-${qIdx}`).classList.add('show');
+
+    const statusEl = document.getElementById(`status-${qIdx}`);
+    statusEl.classList.add('show');
+    statusEl.classList.add(isCorrect ? 'correct' : 'incorrect');
+    statusEl.textContent = isCorrect ? '✓ Correct' : '✗ Incorrect';
+  });
+
+  finalScore = correctCount;
+
+  // results panel
+  const resultsEl = document.getElementById('results');
+  resultsEl.classList.add('show');
+
+  document.getElementById('submitBtn').disabled = true;
+  document.getElementById('submitBtn').style.display = 'none';
+
+  // smooth scroll to results
+  resultsEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+});
+
+// ============================================================
+// PDF Modal — embed PDF inline for sandbox-safe display
+// ============================================================
+function showPdfModal(blobUrl, dataUri, filename) {
+  // Build modal once, reuse on subsequent opens
+  let modal = document.getElementById('pdfModal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'pdfModal';
+    modal.innerHTML = `
+      <div class="pdf-modal-backdrop" onclick="closePdfModal()"></div>
+      <div class="pdf-modal-panel">
+        <div class="pdf-modal-header">
+          <span class="pdf-modal-title">Your Answer Sheet</span>
+          <div class="pdf-modal-actions">
+            <a id="pdfDownloadLink" class="pdf-modal-btn primary" download="">⬇ Save PDF</a>
+            <button class="pdf-modal-btn" onclick="closePdfModal()">Close</button>
+          </div>
+        </div>
+        <div class="pdf-modal-instruction">
+          Use <strong>Save PDF</strong> above to keep a copy, then email it to <a href="mailto:nemo@u.northwestern.edu">nemo@u.northwestern.edu</a>.
+        </div>
+        <iframe id="pdfModalFrame" class="pdf-modal-frame"></iframe>
+      </div>
+    `;
+    document.body.appendChild(modal);
+  }
+  const frame = document.getElementById('pdfModalFrame');
+  const link = document.getElementById('pdfDownloadLink');
+  // Try blob URL first; fall back to data URI if iframe rejects it
+  frame.src = blobUrl;
+  link.href = dataUri;
+  link.download = filename;
+  modal.classList.add('open');
+}
+
+function closePdfModal() {
+  const modal = document.getElementById('pdfModal');
+  if (modal) modal.classList.remove('open');
+}
+
+// ============================================================
+// PDF Answer Sheet generation — mirrors AHA Student Answer Sheet
+// ============================================================
+document.getElementById('downloadBtn').addEventListener('click', () => {
+  // Check that jsPDF actually loaded
+  if (typeof window.jspdf === 'undefined' || !window.jspdf.jsPDF) {
+    alert(
+      "PDF library couldn't load (likely a network or CSP block).\n\n" +
+      "Workaround: take a screenshot of this results page and email it to nemo@u.northwestern.edu, " +
+      "or open this quiz directly in your browser (not in an embedded preview) and try again."
+    );
+    return;
+  }
+
+  try {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit: 'pt', format: 'letter' });
+
+    const pageW = doc.internal.pageSize.getWidth();   // 612
+    const pageH = doc.internal.pageSize.getHeight();  // 792
+    const margin = 54;
+
+    const studentName = document.getElementById('studentName').value.trim();
+    const dateInput = document.getElementById('examDate').value;
+    const versionInput = document.getElementById('examVersion').value.trim().toUpperCase() || 'A';
+
+    let examDateStr = '';
+  if (dateInput) {
+    const [yy, mm, dd] = dateInput.split('-').map(Number);
+    const d = new Date(yy, mm - 1, dd);
+    examDateStr = d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  }
+
+  const correctCount = finalScore;
+  const total = exam.length;
+  const pct = Math.round((correctCount / total) * 100);
+  const passed = correctCount >= 21;
+  const letters = ['A', 'B', 'C', 'D'];
+
+  // ============================================================
+  // HEADER — mirrors AHA original layout
+  // ============================================================
+
+  // AHA red heart mark, top-left
+  doc.setFillColor(200, 32, 46);
+  doc.circle(margin + 5, margin + 4, 5, 'F');
+  doc.circle(margin + 13, margin + 4, 5, 'F');
+  doc.triangle(margin, margin + 6, margin + 18, margin + 6, margin + 9, margin + 18, 'F');
+
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(8);
+  doc.setTextColor(20);
+  doc.text('American Heart', margin + 24, margin + 3);
+  doc.text('Association.', margin + 24, margin + 12);
+
+  // Centered title block (matches AHA original)
+  let y = margin + 36;
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(13);
+  doc.setTextColor(0);
+  doc.text('Student Answer Sheet', pageW / 2, y, { align: 'center' });
+  y += 14;
+  doc.text('Basic Life Support Exam', pageW / 2, y, { align: 'center' });
+
+  // Name / Date / Version line — underline style
+  y += 24;
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(11);
+  doc.setTextColor(0);
+
+  const nameLabelX = margin;
+  const nameValueX = nameLabelX + 38;
+  const nameValueW = 220;
+  const dateLabelX = nameValueX + nameValueW + 14;
+  const dateValueX = dateLabelX + 32;
+  const dateValueW = 110;
+  const verLabelX = dateValueX + dateValueW + 14;
+  const verValueX = verLabelX + 50;
+  const verValueW = 30;
+
+  doc.text('Name:', nameLabelX, y);
+  doc.text('Date:', dateLabelX, y);
+  doc.text('Version:', verLabelX, y);
+
+  doc.setLineWidth(0.5);
+  doc.setDrawColor(0);
+  doc.line(nameValueX, y + 2, nameValueX + nameValueW, y + 2);
+  doc.line(dateValueX, y + 2, dateValueX + dateValueW, y + 2);
+  doc.line(verValueX, y + 2, verValueX + verValueW, y + 2);
+
+  if (studentName) doc.text(studentName, nameValueX + 4, y);
+  if (examDateStr) doc.text(examDateStr, dateValueX + 4, y);
+  doc.text(versionInput, verValueX + 4, y);
+
+  // ============================================================
+  // SUBMIT-TO line (small, right under the name row)
+  // ============================================================
+  y += 14;
+  doc.setFont('helvetica', 'italic');
+  doc.setFontSize(9);
+  doc.setTextColor(120);
+  doc.text('Submit to: nemo@u.northwestern.edu', pageW / 2, y, { align: 'center' });
+
+  y += 14;
+
+  // ============================================================
+  // ANSWER GRID — mirrors AHA Question / Answer table
+  // ============================================================
+
+  const gridW = 360;
+  const gridX = (pageW - gridW) / 2;
+  const qColW = 100;
+  const aColW = gridW - qColW;
+
+  // Column headers
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(12);
+  doc.setTextColor(0);
+  doc.text('Question', gridX + qColW / 2, y, { align: 'center' });
+  doc.text('Answer', gridX + qColW + aColW / 2, y, { align: 'center' });
+
+  y += 6;
+  doc.setLineWidth(0.6);
+  doc.setDrawColor(0);
+  doc.line(gridX, y, gridX + gridW, y);
+  y += 16;
+
+  // Rows
+  const rowH = 20;
+  const bubbleSpacing = aColW / 4;
+  const bubbleR = 7;
+
+  exam.forEach((item, qIdx) => {
+    const userPick = userAnswers[qIdx];
+    const correctIdx = item.correct;
+    const isCorrect = userPick === correctIdx;
+
+    // Alternating gray row background (like the AHA original)
+    if (qIdx % 2 === 1) {
+      doc.setFillColor(220, 220, 220);
+      doc.rect(gridX, y - rowH / 2 - 2, gridW, rowH, 'F');
+    }
+
+    // Question number
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(11);
+    doc.setTextColor(0);
+    doc.text(`${qIdx + 1}.`, gridX + qColW - 30, y);
+
+    // Four answer letters with mark over user's pick
+    doc.setFontSize(12);
+    for (let i = 0; i < 4; i++) {
+      const cx = gridX + qColW + bubbleSpacing * i + bubbleSpacing / 2;
+      const cy = y;
+
+      if (userPick === i) {
+        // Filled colored bubble behind user's chosen letter
+        if (isCorrect) {
+          doc.setFillColor(31, 111, 67);   // green
+        } else {
+          doc.setFillColor(179, 38, 30);   // red
+        }
+        doc.circle(cx, cy - 3, bubbleR, 'F');
+        doc.setTextColor(255, 255, 255);   // white letter on colored fill
+        doc.setFont('helvetica', 'bold');
+      } else if (i === correctIdx && userPick !== null && !isCorrect) {
+        // Green ring around correct answer when user got it wrong
+        doc.setDrawColor(31, 111, 67);
+        doc.setLineWidth(1.2);
+        doc.circle(cx, cy - 3, bubbleR, 'S');
+        doc.setTextColor(31, 111, 67);
+        doc.setFont('helvetica', 'bold');
+      } else {
+        doc.setTextColor(0);
+        doc.setFont('helvetica', 'bold');
+      }
+
+      doc.text(letters[i], cx, cy, { align: 'center' });
+    }
+
+    y += rowH;
+  });
+
+  // ============================================================
+  // SCORE STAMP — upper right corner
+  // ============================================================
+  doc.setPage(1);
+
+  const stampW = 130;
+  const stampH = 70;
+  const stampX = pageW - margin - stampW;
+  const stampY = margin - 10;
+
+  // Stamp background
+  if (passed) {
+    doc.setFillColor(31, 111, 67);   // green
+    doc.setDrawColor(20, 80, 48);
+  } else {
+    doc.setFillColor(179, 38, 30);   // red
+    doc.setDrawColor(130, 25, 20);
+  }
+  doc.setLineWidth(1.5);
+  doc.roundedRect(stampX, stampY, stampW, stampH, 6, 6, 'FD');
+
+  // Inner border for "stamped" feel
+  doc.setDrawColor(255, 255, 255);
+  doc.setLineWidth(0.8);
+  doc.roundedRect(stampX + 4, stampY + 4, stampW - 8, stampH - 8, 4, 4, 'S');
+
+  // Score text
+  doc.setTextColor(255, 255, 255);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(26);
+  doc.text(`${correctCount} / ${total}`, stampX + stampW / 2, stampY + 32, { align: 'center' });
+
+  doc.setFontSize(13);
+  doc.text(passed ? 'PASS' : 'FAIL', stampX + stampW / 2, stampY + 50, { align: 'center' });
+
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(8);
+  doc.text(`${pct}%`, stampX + stampW / 2, stampY + 62, { align: 'center' });
+
+  // ---- Output: embed inline in a modal (works inside sandboxed iframes)
+  const safeName = (studentName || 'student').replace(/[^a-z0-9]+/gi, '_');
+  const filename = `BLS_Exam_${versionInput}_AnswerSheet_${safeName}.pdf`;
+
+  const blob = doc.output('blob');
+  const blobUrl = URL.createObjectURL(blob);
+  const dataUri = doc.output('datauristring', { filename });
+
+  showPdfModal(blobUrl, dataUri, filename);
+  } catch (err) {
+    console.error('PDF generation failed:', err);
+    alert(
+      "Sorry — PDF generation failed.\n\nError: " + (err && err.message ? err.message : 'Unknown') +
+      "\n\nWorkaround: take a screenshot of this results page and email it to nemo@u.northwestern.edu."
+    );
+  }
+});
+</script>
+
+</body>
+</html>
