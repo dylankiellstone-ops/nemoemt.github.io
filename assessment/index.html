@@ -33,37 +33,39 @@ window.addEventListener('error', function(e) {
 <title>NEMO Psychomotor Assessment Tool</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,800;1,9..144,400&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
   :root {
     /* === LIGHT THEME (default) ===
-       Cream + navy + sky — matches the NEMO Skills Draw fish-tool theme.
-       Variables are named by *role*, not color: --cream means "page bg",
-       --navy means "primary ink/border". Dark mode swaps the values, not
-       the names, so the rest of the stylesheet doesn't change. */
-    --cream: #FBF6DC;
-    --cream-soft: #FDFAEA;
+       Northwestern purple + cream + warm gold — matches the live NEMO site
+       (nemoemt.github.io). Variables are named by *role*, not color: --cream
+       means "page bg", --navy means "primary ink/border". Dark mode swaps the
+       values, not the names, so the rest of the stylesheet doesn't change.
+       (The --navy / --sky names are legacy; they now carry the purple/gold
+       palette.) */
+    --cream: #F5EFE3;        /* page background — site cream */
+    --cream-soft: #FAF6EC;   /* lifted paper surface */
     --white: #FFFFFF;
-    --sky: #7FCBE8;
-    --sky-light: #B5E1F0;
-    --sky-deep: #4FA8CD;
-    --navy: #2D2A6E;
-    --navy-soft: #4A4794;
+    --sky: #E8A33D;          /* warm signal amber (accent) */
+    --sky-light: #F3E2C4;    /* pale gold tint for header fills */
+    --sky-deep: #C9852A;     /* deeper gold for emphasis/hover */
+    --navy: #2E1855;         /* primary ink/border — purple-deep */
+    --navy-soft: #4E2A84;    /* Northwestern purple — secondary */
 
     /* Old names mapped to new palette so the rest of the stylesheet still works */
-    --nu-purple: #2D2A6E;
-    --nu-purple-deep: #1F1D52;
-    --nu-purple-soft: #B5E1F0;
-    --ink: #2D2A6E;
-    --ink-soft: #4A4794;
-    --ink-faint: #6A678D;
-    --paper: #FBF6DC;
-    --rule: #E8E2C2;
-    --rule-strong: #2D2A6E;
+    --nu-purple: #4E2A84;
+    --nu-purple-deep: #2E1855;
+    --nu-purple-soft: #F3E2C4;
+    --ink: #18121F;
+    --ink-soft: #4E2A84;
+    --ink-faint: #6E5C84;
+    --paper: #F5EFE3;
+    --rule: #E3D8C2;
+    --rule-strong: #2E1855;
     --green: #4A8B6C;
     --green-soft: #C8E5D5;
-    --red: #C75555;
+    --red: #B83A2A;
     --red-soft: #F2C7C7;
     --amber: #B86A2C;
     --amber-soft: #FFE8D4;
@@ -75,24 +77,24 @@ window.addEventListener('error', function(e) {
      contrast against the dark background. Status colors (green/red/amber)
      get muted dark-mode variants so they don't glow. */
   [data-theme="dark"] {
-    --cream: #16143B;        /* page background — deep navy */
-    --cream-soft: #1F1D4F;   /* slightly lifted surface */
-    --white: #2A2862;        /* card surface */
-    --sky: #7FCBE8;          /* same — pops on dark */
-    --sky-light: #3B4E80;    /* darker sky tint for header backgrounds */
-    --sky-deep: #9AD8EF;     /* lighter for emphasis on dark */
-    --navy: #F4EDD3;         /* primary "ink" — warm cream */
-    --navy-soft: #C9C2A8;    /* secondary text */
+    --cream: #1A0E33;        /* page background — purple-ink */
+    --cream-soft: #241544;   /* slightly lifted surface */
+    --white: #2E1855;        /* card surface — purple-deep */
+    --sky: #E8A33D;          /* gold accent — pops on dark */
+    --sky-light: #3A2A5E;    /* muted purple tint for header backgrounds */
+    --sky-deep: #F0B85A;     /* brighter gold for emphasis on dark */
+    --navy: #F5EFE3;         /* primary "ink" — warm cream */
+    --navy-soft: #CDBFE0;    /* secondary text — pale lilac */
 
-    --nu-purple: #F4EDD3;
+    --nu-purple: #F5EFE3;
     --nu-purple-deep: #FFFFFF;
-    --nu-purple-soft: #3B4E80;
-    --ink: #F4EDD3;
-    --ink-soft: #C9C2A8;
-    --ink-faint: #9A9580;
-    --paper: #16143B;
-    --rule: #3B3870;
-    --rule-strong: #F4EDD3;
+    --nu-purple-soft: #3A2A5E;
+    --ink: #F5EFE3;
+    --ink-soft: #CDBFE0;
+    --ink-faint: #9A8AB5;
+    --paper: #1A0E33;
+    --rule: #3A2A5E;
+    --rule-strong: #F5EFE3;
     --green: #6AB48A;
     --green-soft: #2A4838;
     --red: #E08585;
@@ -282,8 +284,8 @@ window.addEventListener('error', function(e) {
   .brand-fish:active { transform: scale(0.92); transition-duration: 0.08s; }
 
   .brand-text h1 {
-    font-family: 'Inter', system-ui, sans-serif;
-    font-size: 24px;
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 26px;
     font-weight: 800;
     letter-spacing: -0.01em;
     line-height: 1.1;
@@ -681,7 +683,7 @@ window.addEventListener('error', function(e) {
     border-radius: 12px;
     background: var(--cream-soft);
     color: var(--navy);
-    font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    font-family: 'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
     font-size: 12px;
     line-height: 1.5;
     resize: vertical;
@@ -792,8 +794,8 @@ window.addEventListener('error', function(e) {
   }
   .section-header:hover { background: var(--sky); }
   .section-header h2 {
-    font-family: inherit;
-    font-size: 16px;
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 17px;
     font-weight: 800;
     color: var(--navy);
     letter-spacing: -0.01em;
