@@ -1,0 +1,42 @@
+name: Build leadership pages
+
+# Regenerates the leadership row on index.html and every people/<slug>.html
+# whenever the board CSV (or the generator) changes on the main branch.
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - "people/board.csv"
+      - "build_leadership.py"
+      - ".github/workflows/build-leadership.yml"
+  workflow_dispatch:        # lets you run it manually from the Actions tab
+
+permissions:
+  contents: write           # needed so the action can commit the generated files
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Generate pages from board.csv
+        run: python3 build_leadership.py
+
+      - name: Commit regenerated files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add index.html people/*.html
+          if git diff --cached --quiet; then
+            echo "Nothing changed."
+          else
+            git commit -m "Auto-build leadership pages from board.csv"
+            git push
+          fi
