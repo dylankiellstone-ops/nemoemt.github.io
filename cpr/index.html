@@ -514,6 +514,22 @@
     word-break: break-all;
   }
 
+  /* Drive-upload status line under the results notice */
+  .upload-status {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    line-height: 1.5;
+    margin: 14px 0 0;
+    padding: 10px 12px;
+    border-left: 3px solid var(--muted);
+    background: var(--paper);
+    color: var(--ink-soft);
+  }
+  .upload-status:empty { display: none; }
+  .upload-status.pending { border-left-color: var(--gold); }
+  .upload-status.ok { border-left-color: var(--good); color: var(--good); background: var(--good-bg); }
+  .upload-status.warn { border-left-color: var(--bad); color: var(--bad); background: var(--bad-bg); }
+
   button.download {
     background: var(--accent);
     color: #fff;
@@ -746,7 +762,7 @@
   <div id="quiz"></div>
 
   <div class="actions">
-    <button class="submit" id="submitBtn" disabled>Submit Exam</button>
+    <button class="submit" id="submitBtn" disabled>Submit Test</button>
     <p class="validation-msg" id="validationMsg"></p>
   </div>
 
@@ -754,11 +770,12 @@
     <p class="score-label">Exam Submitted</p>
     <p class="results-headline">Your answer sheet is ready.</p>
     <div class="submit-notice">
-      <span class="submit-notice-label">Next Step</span>
-      <p>Open your answer sheet below, save it from the browser PDF viewer, and email it to <a id="resultMailLink" href="mailto:nemo@u.northwestern.edu?subject=BLS%20Exam%20A%20Answer%20Sheet">nemo@u.northwestern.edu</a>.</p>
+      <span class="submit-notice-label">What happens now</span>
+      <p>Your answer sheet PDF has downloaded to your device and been sent to NEMO automatically. If the upload didn't go through, you can email your copy to <a id="resultMailLink" href="mailto:nemo@u.northwestern.edu?subject=BLS%20Exam%20A%20Answer%20Sheet">nemo@u.northwestern.edu</a>.</p>
     </div>
+    <p class="upload-status" id="uploadStatus"></p>
     <div class="results-actions">
-      <button class="download" id="downloadBtn">⬇ View Answer Sheet (PDF)</button>
+      <button class="download" id="downloadBtn">⬇ View / Re-download Answer Sheet (PDF)</button>
     </div>
   </div>
 
@@ -771,6 +788,14 @@
 // Exam data — questions, options, correct answer, rationale
 // Scenarios are attached to the question they precede
 // ============================================================
+// ============================================================
+// CONFIG — paste your deployed Google Apps Script web-app URL here.
+// The script emails each answer sheet to NEMO. (Deploy > New deployment >
+// Web app > Execute as: Me, Access: Anyone.)
+// It should look like: https://script.google.com/macros/s/AKfy.../exec
+// ============================================================
+const DRIVE_UPLOAD_URL = 'PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE';
+
 const EXAM_A = [
   {
     q: "What compression-to-ventilation ratio should be used for infant 1-rescuer CPR?",
@@ -1603,6 +1628,13 @@ document.getElementById('submitBtn').addEventListener('click', () => {
   document.getElementById('submitBtn').disabled = true;
   document.getElementById('submitBtn').style.display = 'none';
 
+  // Build the answer sheet once, download it to the student, and send to Drive.
+  const sheet = buildAnswerSheet();
+  if (sheet) {
+    downloadBlob(sheet.blob, sheet.filename);
+    uploadToDrive(sheet);
+  }
+
   // smooth scroll to results
   resultsEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
 });
@@ -1651,7 +1683,10 @@ function closePdfModal() {
 // ============================================================
 // PDF Answer Sheet generation — mirrors AHA Student Answer Sheet
 // ============================================================
-document.getElementById('downloadBtn').addEventListener('click', () => {
+// Builds the answer-sheet PDF and returns
+//   { doc, blob, dataUri, filename, base64, versionInput, correctCount, total }
+// or null if jsPDF is unavailable / generation throws.
+function buildAnswerSheet() {
   // Check that jsPDF actually loaded
   if (typeof window.jspdf === 'undefined' || !window.jspdf.jsPDF) {
     alert(
@@ -1659,7 +1694,7 @@ document.getElementById('downloadBtn').addEventListener('click', () => {
       "Workaround: take a screenshot of this results page and email it to nemo@u.northwestern.edu, " +
       "or open this quiz directly in your browser (not in an embedded preview) and try again."
     );
-    return;
+    return null;
   }
 
   try {
@@ -1870,22 +1905,89 @@ document.getElementById('downloadBtn').addEventListener('click', () => {
   doc.setFontSize(8);
   doc.text(`${pct}%`, stampX + stampW / 2, stampY + 62, { align: 'center' });
 
-  // ---- Output: embed inline in a modal (works inside sandboxed iframes)
+  // ---- Output objects
   const safeName = (studentName || 'student').replace(/[^a-z0-9]+/gi, '_');
   const filename = `BLS_Exam_${versionInput}_AnswerSheet_${safeName}.pdf`;
 
   const blob = doc.output('blob');
   const blobUrl = URL.createObjectURL(blob);
   const dataUri = doc.output('datauristring', { filename });
+  // base64 payload (strip the "data:application/pdf;...;base64," prefix)
+  const base64 = dataUri.substring(dataUri.indexOf(',') + 1);
 
-  showPdfModal(blobUrl, dataUri, filename);
+  return { doc, blob, blobUrl, dataUri, base64, filename, safeName, versionInput, correctCount, total };
   } catch (err) {
     console.error('PDF generation failed:', err);
     alert(
       "Sorry — PDF generation failed.\n\nError: " + (err && err.message ? err.message : 'Unknown') +
       "\n\nWorkaround: take a screenshot of this results page and email it to nemo@u.northwestern.edu."
     );
+    return null;
   }
+}
+
+// Trigger a real browser download of the given blob.
+function downloadBlob(blob, filename) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  // Revoke after a tick so the download has time to start.
+  setTimeout(() => URL.revokeObjectURL(url), 4000);
+}
+
+// Fire-and-forget upload of the PDF to the Google Apps Script Drive endpoint.
+// Uses no-cors + text/plain so the request reliably lands from a static page;
+// the response can't be read, so we optimistically report "sent."
+function uploadToDrive(sheet) {
+  const statusEl = document.getElementById('uploadStatus');
+  if (!DRIVE_UPLOAD_URL || DRIVE_UPLOAD_URL.indexOf('PASTE_YOUR') !== -1) {
+    if (statusEl) {
+      statusEl.textContent = 'Auto-send not configured — your PDF downloaded locally only.';
+      statusEl.className = 'upload-status warn';
+    }
+    return;
+  }
+  if (statusEl) {
+    statusEl.textContent = 'Sending your answer sheet to NEMO…';
+    statusEl.className = 'upload-status pending';
+  }
+  const payload = JSON.stringify({
+    filename: sheet.filename,
+    version: sheet.versionInput,
+    student: document.getElementById('studentName').value.trim(),
+    date: document.getElementById('examDate').value,
+    score: sheet.correctCount,
+    total: sheet.total,
+    pdfBase64: sheet.base64
+  });
+  fetch(DRIVE_UPLOAD_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: payload
+  }).then(() => {
+    if (statusEl) {
+      statusEl.textContent = '✓ Answer sheet sent to NEMO and downloaded to your device.';
+      statusEl.className = 'upload-status ok';
+    }
+  }).catch((err) => {
+    console.error('Drive upload failed:', err);
+    if (statusEl) {
+      statusEl.textContent = 'Upload may have failed — your PDF downloaded locally. Please email it to nemo@u.northwestern.edu.';
+      statusEl.className = 'upload-status warn';
+    }
+  });
+}
+
+// Manual re-view button: rebuild and show the inline modal (and re-download).
+document.getElementById('downloadBtn').addEventListener('click', () => {
+  const sheet = buildAnswerSheet();
+  if (!sheet) return;
+  showPdfModal(sheet.blobUrl, sheet.dataUri, sheet.filename);
 });
 </script>
 
