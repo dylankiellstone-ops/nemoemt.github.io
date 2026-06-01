@@ -1067,9 +1067,12 @@
     <span class="title-mini">NEMO</span>
   </div>
   <div class="topbar-marquee">
-    <div class="marquee-content">
-      <span>· CONGRATULATIONS TO THE 2026 COHORT! APPLICATIONS FOR THE 2027 COHORT WILL OPEN THIS FALL</span>
-      <span aria-hidden="true">· CONGRATULATIONS TO THE 2026 COHORT! APPLICATIONS FOR THE 2027 COHORT WILL OPEN THIS FALL</span>
+    <div class="marquee-content" id="marqueeContent">
+      <!-- These two spans are filled automatically by the status-banner script
+           at the bottom of this file, based on the dates in BANNER_CONFIG.
+           The text below is only a fallback if JavaScript is off. -->
+      <span id="marqueeText1">· WELCOME TO NEMO</span>
+      <span id="marqueeText2" aria-hidden="true">· WELCOME TO NEMO</span>
     </div>
   </div>
   <nav>
@@ -1344,12 +1347,12 @@
 
 <!-- APPLY / CTA -->
 <section class="apply" id="apply">
-  <div class="section-eyebrow">Next cohort: Winter 2027</div>
+  <div class="section-eyebrow" id="applyEyebrow">Next cohort: Winter 2027</div>
   <h2>Get on <em>the rig.</em></h2>
-  <p>Applications open in fall quarter. Capacity is 150 seats.</p>
+  <p id="applyBlurb">Applications open in fall quarter. Capacity is 150 seats.</p>
   <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 12px;">
     <!-- APPLICATION FORM: replace href with your Google Form URL when ready -->
-    <a class="btn" href="https://docs.google.com/forms/d/e/1FAIpQLSeM-ljrgdJ4vfgUBzIKiPcJtHCsWEryOoh6pcTabnWJoQ5TOA/viewform?usp=header" target="_blank" rel="noopener">Application</a>
+    <a class="btn" id="applyBtn" href="https://docs.google.com/forms/d/e/1FAIpQLSeM-ljrgdJ4vfgUBzIKiPcJtHCsWEryOoh6pcTabnWJoQ5TOA/viewform?usp=header" target="_blank" rel="noopener">Application</a>
     <a class="btn btn-secondary" href="#" data-mailinglist-open>Join the interest list</a>
     <a class="btn btn-secondary" href="#" data-contact-open>Email NEMO</a>
   </div>
@@ -1636,6 +1639,124 @@
       });
     });
   })();
+</script>
+
+
+<!-- ============================================================
+     STATUS BANNER  —  EDIT THESE DATES ONCE PER YEAR
+     ============================================================
+     The gold scrolling banner at the top of the page, the application
+     button, and the "next cohort" text all update themselves based on
+     today's date compared to the dates below. You do NOT edit the banner
+     wording by hand — just keep these dates current.
+
+     HOW IT WORKS — the year has four phases, in order:
+       1. BEFORE apps open ...... "applications open <date>"
+       2. Apps OPEN ............. "applications are open — apply by <date>"  (button enabled)
+       3. Class IN SESSION ...... "the <year> cohort is currently in training"
+       4. AFTER class ends ...... "congratulations to the <year> cohort!"
+     ...then it loops back to phase 1 for next year's dates.
+
+     TO UPDATE (once a year, usually at spring turnover):
+       - Change cohortYear to the cohort currently being recruited/taught.
+       - Set the four dates below. Use the format "YYYY-MM-DD".
+       - Commit. The banner takes care of the rest all year.
+
+     Dates use Year-Month-Day, e.g. 2027-03-03 = March 3, 2027.
+     ============================================================ -->
+<script>
+(function statusBanner() {
+  // ----------------------------------------------------------
+  // EDIT THIS BLOCK ONCE A YEAR
+  // ----------------------------------------------------------
+  const BANNER_CONFIG = {
+    cohortYear: 2027,                // the cohort being recruited / taught now
+
+    applicationsOpen:  "2026-10-01", // apps OPEN on this date
+    applicationsClose: "2026-11-15", // apps CLOSE (deadline) on this date
+    classStarts:       "2027-01-06", // first day of the EMT course
+    classEnds:         "2027-03-14"  // last day of the course / graduation
+  };
+  // ----------------------------------------------------------
+  // No need to edit anything below this line.
+  // ----------------------------------------------------------
+
+  // Parse "YYYY-MM-DD" as a LOCAL date (midnight), avoiding timezone drift.
+  function d(str) {
+    const parts = str.split("-").map(Number);
+    return new Date(parts[0], parts[1] - 1, parts[2]);
+  }
+
+  const now = new Date();
+  const open = d(BANNER_CONFIG.applicationsOpen);
+  const close = d(BANNER_CONFIG.applicationsClose);
+  const start = d(BANNER_CONFIG.classStarts);
+  const end = d(BANNER_CONFIG.classEnds);
+  // "graduation" message runs for ~30 days after the course ends, then the
+  // banner reverts to pointing at the next cycle.
+  const gradUntil = new Date(end.getTime());
+  gradUntil.setDate(gradUntil.getDate() + 30);
+
+  const yr = BANNER_CONFIG.cohortYear;
+
+  function fmt(date) {
+    return date.toLocaleDateString("en-US", { month: "long", day: "numeric" });
+  }
+
+  let message, applyEnabled = false, eyebrow, blurb;
+
+  if (now < open) {
+    message = "\u00b7 APPLICATIONS FOR THE " + yr + " COHORT OPEN " + fmt(open).toUpperCase() + " ";
+    eyebrow = "Next cohort: " + yr;
+    blurb = "Applications open " + fmt(open) + ". Capacity is 150 seats.";
+  } else if (now >= open && now < close) {
+    message = "\u00b7 APPLICATIONS ARE OPEN \u2014 APPLY BY " + fmt(close).toUpperCase() + " ";
+    applyEnabled = true;
+    eyebrow = "Now accepting applications: " + yr + " cohort";
+    blurb = "Applications are open through " + fmt(close) + ". Capacity is 150 seats.";
+  } else if (now >= close && now < start) {
+    message = "\u00b7 APPLICATIONS ARE CLOSED \u2014 THE " + yr + " COHORT BEGINS " + fmt(start).toUpperCase() + " ";
+    eyebrow = yr + " cohort selected";
+    blurb = "Applications for " + yr + " are closed. The course begins " + fmt(start) + ".";
+  } else if (now >= start && now <= end) {
+    message = "\u00b7 THE " + yr + " COHORT IS CURRENTLY IN TRAINING ";
+    eyebrow = yr + " cohort in session";
+    blurb = "The " + yr + " cohort is currently in training. Applications are closed.";
+  } else if (now > end && now <= gradUntil) {
+    message = "\u00b7 CONGRATULATIONS TO THE " + yr + " COHORT! ";
+    eyebrow = yr + " cohort \u2014 graduated";
+    blurb = "Congratulations to the " + yr + " cohort! Next cycle's applications open in the fall.";
+  } else {
+    message = "\u00b7 CONGRATULATIONS TO THE " + yr + " COHORT! APPLICATIONS FOR THE NEXT COHORT OPEN THIS FALL ";
+    eyebrow = "Next cohort: " + (yr + 1);
+    blurb = "Applications for the next cohort open in the fall. Capacity is 150 seats.";
+  }
+
+  const t1 = document.getElementById("marqueeText1");
+  const t2 = document.getElementById("marqueeText2");
+  if (t1) t1.textContent = message;
+  if (t2) t2.textContent = message;
+
+  const eb = document.getElementById("applyEyebrow");
+  const bl = document.getElementById("applyBlurb");
+  if (eb) eb.textContent = eyebrow;
+  if (bl) bl.textContent = blurb;
+
+  const btn = document.getElementById("applyBtn");
+  if (btn) {
+    if (applyEnabled) {
+      btn.textContent = "Apply now";
+      btn.style.opacity = "";
+      btn.style.pointerEvents = "";
+      btn.removeAttribute("aria-disabled");
+    } else {
+      btn.textContent = "Applications closed";
+      btn.style.opacity = "0.5";
+      btn.style.pointerEvents = "none";
+      btn.setAttribute("aria-disabled", "true");
+    }
+  }
+})();
 </script>
 
 
