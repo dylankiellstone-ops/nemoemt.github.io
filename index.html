@@ -1696,9 +1696,9 @@
   let message, applyEnabled = false, eyebrow, blurb;
 
   if (now < open) {
-    message = "\u00b7 APPLICATIONS FOR THE " + yr + " COHORT OPEN " + fmt(open).toUpperCase() + " ";
+    message = "\u00b7 APPLICATIONS FOR THE " + yr + " COHORT OPEN " + fmt(open).toUpperCase() + " \u00b7 JOIN THE INTEREST LIST ";
     eyebrow = "Next cohort: " + yr;
-    blurb = "Applications open " + fmt(open) + ". Capacity is 150 seats.";
+    blurb = "Applications open " + fmt(open) + ". Join the interest list to be notified.";
   } else if (now >= open && now < close) {
     message = "\u00b7 APPLICATIONS ARE OPEN \u2014 APPLY BY " + fmt(close).toUpperCase() + " ";
     applyEnabled = true;
@@ -1715,11 +1715,11 @@
   } else if (now > end && now <= gradUntil) {
     message = "\u00b7 CONGRATULATIONS TO THE " + yr + " COHORT! ";
     eyebrow = yr + " cohort \u2014 graduated";
-    blurb = "Congratulations to the " + yr + " cohort! Next cycle's applications open in the fall.";
+    blurb = "Congratulations to the " + yr + " cohort! Join the interest list for the next cycle.";
   } else {
-    message = "\u00b7 CONGRATULATIONS TO THE " + yr + " COHORT! APPLICATIONS FOR THE NEXT COHORT OPEN THIS FALL ";
+    message = "\u00b7 CONGRATULATIONS TO THE " + yr + " COHORT! APPLICATIONS FOR THE NEXT COHORT OPEN THIS FALL \u00b7 JOIN THE INTEREST LIST ";
     eyebrow = "Next cohort: " + (yr + 1);
-    blurb = "Applications for the next cohort open in the fall. Capacity is 150 seats.";
+    blurb = "Applications for the next cohort open in the fall. Join the interest list to be notified.";
   }
 
   // Fill the marquee with 4 identical copies so the scroll is seamless even
