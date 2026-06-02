@@ -98,7 +98,7 @@
 
   @keyframes smooth-scroll {
     0% { transform: translate3d(0, 0, 0); }
-    100% { transform: translate3d(-50%, 0, 0); }
+    100% { transform: translate3d(-25%, 0, 0); }
   }
 
   .topbar nav { display: flex; gap: 24px; flex-shrink: 0; align-items: center; }
@@ -1068,11 +1068,11 @@
   </div>
   <div class="topbar-marquee">
     <div class="marquee-content" id="marqueeContent">
-      <!-- These two spans are filled automatically by the status-banner script
-           at the bottom of this file, based on the dates in BANNER_CONFIG.
-           The text below is only a fallback if JavaScript is off. -->
-      <span id="marqueeText1">· WELCOME TO NEMO</span>
-      <span id="marqueeText2" aria-hidden="true">· WELCOME TO NEMO</span>
+      <!-- This is filled automatically by the status-banner script at the
+           bottom of this file. The script repeats the message four times to
+           fill the bar so the scroll is seamless for short and long phrases
+           alike. The text below is only a fallback if JavaScript is off. -->
+      <span>· WELCOME TO NEMO</span>
     </div>
   </div>
   <nav>
@@ -1722,10 +1722,13 @@
     blurb = "Applications for the next cohort open in the fall. Capacity is 150 seats.";
   }
 
-  const t1 = document.getElementById("marqueeText1");
-  const t2 = document.getElementById("marqueeText2");
-  if (t1) t1.textContent = message;
-  if (t2) t2.textContent = message;
+  // Fill the marquee with 4 identical copies so the scroll is seamless even
+  // for short phrases. (The CSS animation shifts by 25% = one copy of four.)
+  const marquee = document.getElementById("marqueeContent");
+  if (marquee) {
+    const span = '<span>' + message + '</span>';
+    marquee.innerHTML = span + span + span + span;
+  }
 
   const eb = document.getElementById("applyEyebrow");
   const bl = document.getElementById("applyBlurb");
