@@ -331,6 +331,111 @@
     color: var(--purple);
   }
 
+  /* ---------- NEWSROOM ---------- */
+  .news-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+    margin-bottom: 40px;
+  }
+  .news-controls {
+    display: flex;
+    gap: 8px;
+  }
+  .news-arrow {
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--purple);
+    background: transparent;
+    color: var(--purple);
+    font-size: 18px;
+    cursor: pointer;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, color 0.2s;
+  }
+  .news-arrow:hover { background: var(--purple); color: var(--cream); }
+  .news-viewport { overflow: hidden; }
+  .news-track {
+    display: flex;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .news-card {
+    flex: 0 0 100%;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap: 48px;
+    align-items: center;
+    padding: 8px 4px;
+  }
+  .news-card-media {
+    aspect-ratio: 4 / 3;
+    background: var(--purple);
+    border: 1px solid var(--purple);
+    overflow: hidden;
+    position: relative;
+  }
+  .news-card-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .news-card-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--purple);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .news-card-tag::before { content: '◆'; color: var(--accent); }
+  .news-card-date { opacity: 0.55; }
+  .news-card h3 {
+    font-family: 'Fraunces', serif;
+    font-weight: 800;
+    font-size: clamp(24px, 3vw, 38px);
+    line-height: 1.05;
+    color: var(--purple-ink);
+    letter-spacing: -0.02em;
+    margin: 0 0 16px;
+  }
+  .news-card p {
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--ink);
+    margin: 0;
+    max-width: 46ch;
+  }
+  .news-dots {
+    display: flex;
+    gap: 10px;
+    margin-top: 40px;
+    justify-content: center;
+  }
+  .news-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: 1px solid var(--purple);
+    background: transparent;
+    cursor: pointer;
+    padding: 0;
+    transition: background 0.2s;
+  }
+  .news-dot.active { background: var(--purple); }
+  @media (max-width: 720px) {
+    .news-card { grid-template-columns: 1fr; gap: 24px; }
+  }
+
   /* ---------- COURSE OVERVIEW ---------- */
   .course-grid {
     display: grid;
@@ -1079,6 +1184,7 @@
   <nav>
     <a href="#apply" class="nav-pill">Apply</a>
     <a href="#course">Course</a>
+    <a href="#news">News</a>
     <a href="#schedule">Schedule</a>
     <a href="#cost">Cost</a>
     <a href="#faq">FAQ</a>
@@ -1117,9 +1223,66 @@
   </div>
 </section>
 
+<!-- NEWSROOM -->
+<section id="news">
+  <div class="section-num">§ 02 / NEWSROOM</div>
+  <div class="news-head">
+    <div>
+      <div class="section-eyebrow">What we're up to</div>
+      <h2 class="section-title" style="margin-bottom:0;">NEMO around <em>Evanston.</em></h2>
+    </div>
+    <div class="news-controls">
+      <button class="news-arrow" data-news-prev aria-label="Previous">&#8592;</button>
+      <button class="news-arrow" data-news-next aria-label="Next">&#8594;</button>
+    </div>
+  </div>
+
+  <div class="news-viewport">
+    <div class="news-track" data-news-track>
+
+      <!-- Card: duplicate this block to add an update. Swap tag, date, image, title, text. -->
+      <article class="news-card">
+        <div class="news-card-media">
+          <img src="assets/nemo_logo.png" alt="NEMO event" />
+        </div>
+        <div class="news-card-body">
+          <div class="news-card-tag">Event <span class="news-card-date">— Spring 2026</span></div>
+          <h3>Community CPR &amp; Stop the Bleed day</h3>
+          <p>Members ran free hands-only CPR and bleeding-control stations for Evanston residents, training dozens of neighbors in life-saving basics.</p>
+        </div>
+      </article>
+
+      <article class="news-card">
+        <div class="news-card-media">
+          <img src="assets/nemo_logo.png" alt="NEMO event" />
+        </div>
+        <div class="news-card-body">
+          <div class="news-card-tag">Program <span class="news-card-date">— Winter 2026</span></div>
+          <h3>Partnering with local EMS</h3>
+          <p>Our EMT-B cohort logged clinical rotations alongside MedEx Ambulance Service, putting classroom skills to work on real calls in the community.</p>
+        </div>
+      </article>
+
+      <article class="news-card">
+        <div class="news-card-media">
+          <img src="assets/nemo_logo.png" alt="NEMO event" />
+        </div>
+        <div class="news-card-body">
+          <div class="news-card-tag">Outreach <span class="news-card-date">— Fall 2025</span></div>
+          <h3>Health equity on campus</h3>
+          <p>NEMO joined partner orgs to bring emergency-readiness education to student groups across Northwestern, expanding access to first-response training.</p>
+        </div>
+      </article>
+
+    </div>
+  </div>
+
+  <div class="news-dots" data-news-dots></div>
+</section>
+
 <!-- SCHEDULE -->
 <section id="schedule">
-  <div class="section-num">§ 02 / SCHEDULE</div>
+  <div class="section-num">§ 03 / SCHEDULE</div>
   <div class="section-eyebrow">What you'll cover</div>
   <h2 class="section-title">A 5-month course, end with <em>a National Certification.</em></h2>
 
@@ -1206,7 +1369,7 @@
 
 <!-- COST / IMPACT -->
 <section class="cost-band" id="cost">
-  <div class="section-num" style="color: var(--accent);">§ 03 / TUITION</div>
+  <div class="section-num" style="color: var(--accent);">§ 04 / TUITION</div>
   <div class="section-eyebrow">What it costs</div>
   <h2 class="section-title">$600 vs. $2,000. <em>Same certification.</em></h2>
   <p style="font-size: 19px; max-width: 700px; line-height: 1.5; opacity: 0.85;">Private EMT programs in the Chicago area run between $1,800 and $2,400. We've worked extensively with the student government at Northwestern and MedEx to bring that cost to $600. We teach the same IDPH-approved curriculum, with the same NREMT exam at the end — because NEMO takes no margin and outside funding offsets infrastructure costs.</p>
@@ -1227,7 +1390,7 @@
 
 <!-- LEADERSHIP -->
 <section id="leadership">
-  <div class="section-num">§ 04 / LEADERSHIP</div>
+  <div class="section-num">§ 05 / LEADERSHIP</div>
   <div class="section-eyebrow">Who runs this</div>
   <h2 class="section-title">The executive board <em>behind the certification.</em></h2>
 
@@ -1295,7 +1458,7 @@
 
 <!-- FAQ -->
 <section id="faq">
-  <div class="section-num">§ 05 / FAQ</div>
+  <div class="section-num">§ 06 / FAQ</div>
   <div class="section-eyebrow">Things you should ask</div>
   <h2 class="section-title">Frequently asked <em>questions.</em></h2>
 
@@ -1749,5 +1912,35 @@
 </script>
 
 
+<script>
+(function () {
+  var track = document.querySelector('[data-news-track]');
+  if (!track) return;
+  var cards = Array.prototype.slice.call(track.children);
+  var dotsWrap = document.querySelector('[data-news-dots]');
+  var i = 0, timer;
+
+  cards.forEach(function (_, idx) {
+    var d = document.createElement('button');
+    d.className = 'news-dot' + (idx === 0 ? ' active' : '');
+    d.setAttribute('aria-label', 'Go to update ' + (idx + 1));
+    d.addEventListener('click', function () { go(idx); reset(); });
+    dotsWrap.appendChild(d);
+  });
+  var dots = Array.prototype.slice.call(dotsWrap.children);
+
+  function go(n) {
+    i = (n + cards.length) % cards.length;
+    track.style.transform = 'translateX(-' + (i * 100) + '%)';
+    dots.forEach(function (d, idx) { d.classList.toggle('active', idx === i); });
+  }
+  function next() { go(i + 1); }
+  function reset() { clearInterval(timer); timer = setInterval(next, 6000); }
+
+  document.querySelector('[data-news-next]').addEventListener('click', function () { go(i + 1); reset(); });
+  document.querySelector('[data-news-prev]').addEventListener('click', function () { go(i - 1); reset(); });
+  reset();
+})();
+</script>
 </body>
 </html>
