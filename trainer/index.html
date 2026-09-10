@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEMO · Scenario Trainer</title>
+<meta name="description" content="Solo practice scenarios for NEMO EMT students — assess, treat, transport, and debrief against the NEMO skill sheet and Region X SOPs.">
+<link rel="icon" href="../assets/favicon.ico">
+<link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,800;1,9..144,400&family=JetBrains+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --purple:#4E2A84; --purple-deep:#2E1855; --purple-ink:#1A0E33;
+    --cream:#F5EFE3; --paper:#FAF6EC; --rule:#2E1855; --accent:#E8A33D; --red:#B83A2A; --ink:#18121F;
+    --bg:#F5EFE3; --ink-soft:#4E2A84; --muted:#6E5C84; --gold:#E8A33D;
+    --good:#1f6f43; --good-bg:#e6f1ea; --bad:#B83A2A; --bad-bg:#fbeae9; --warn-bg:#FCEFD3;
+    --shadow: 0 1px 0 rgba(46,24,85,0.05), 0 8px 24px rgba(46,24,85,0.08);
+    --topbar-h: 42px;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html { scroll-behavior:smooth; }
+  body { font-family:'Fraunces', Georgia, serif; background:var(--bg); color:var(--ink); font-size:17px; line-height:1.55; min-height:100vh; position:relative; }
+  body::before { content:""; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background-image: radial-gradient(rgba(46,24,85,0.06) 1px, transparent 1px); background-size:4px 4px; }
+  a { color:var(--purple); }
+
+  /* ---------- topbar (matches the rest of nemonu.org) ---------- */
+  .topbar { position:fixed; top:0; left:0; right:0; background:var(--purple); color:var(--cream); padding:10px 32px;
+    display:flex; justify-content:space-between; align-items:center; font-family:'JetBrains Mono', monospace; font-size:11px;
+    letter-spacing:0.08em; text-transform:uppercase; border-bottom:1px solid rgba(245,239,227,0.15); gap:16px; z-index:100; }
+  .topbar-title { white-space:nowrap; }
+  .title-short, .title-mini { display:none; }
+  .topbar-marquee { flex:1; max-width:40%; overflow:hidden; color:var(--accent); white-space:nowrap;
+    -webkit-mask-image:linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); mask-image:linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); }
+  .marquee-content { display:inline-flex; animation:smooth-scroll 18s linear infinite; }
+  .marquee-content span { padding-right:2em; }
+  @keyframes smooth-scroll { 0% { transform:translate3d(0,0,0);} 100% { transform:translate3d(-50%,0,0);} }
+  .topbar nav { display:flex; gap:24px; align-items:center; }
+  .topbar nav a { color:var(--cream); text-decoration:none; white-space:nowrap; }
+  .nav-pill { background:var(--accent); color:var(--purple-ink) !important; padding:6px 14px; border:1px solid var(--accent); font-weight:600; }
+  .nav-pill.nav-back { background:transparent; color:var(--accent) !important; }
+  .nav-pill.nav-back:hover { background:var(--accent); color:var(--purple-ink) !important; }
+  @media (max-width:1100px) { .title-full { display:none; } .title-short { display:inline; } }
+  @media (max-width:640px) {
+    .topbar { padding:8px 16px; }
+    .title-short { display:none; } .title-mini { display:inline; }
+    .topbar-marquee { display:none; }
+    .topbar nav a:not(.nav-pill) { display:none; }
+    .topbar nav { gap:10px; }
+  }
+
+  /* ---------- page frame ---------- */
+  .wrap { position:relative; z-index:1; max-width:900px; margin:0 auto; padding:88px 24px 96px; }
+  @media (max-width:600px) { .wrap { padding:76px 16px 80px; } }
+  header.masthead { border-top:4px solid var(--ink); border-bottom:1px solid var(--ink); padding:18px 0 22px; margin-bottom:28px; display:flex; flex-direction:column; gap:6px; }
+  .eyebrow { font-family:'JetBrains Mono', monospace; font-size:11px; font-weight:500; letter-spacing:0.18em; text-transform:uppercase; color:var(--muted); display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; }
+  .eyebrow .dot { display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--gold); margin-right:8px; vertical-align:middle; }
+  h1.title { font-family:'Fraunces', serif; font-weight:800; font-size:clamp(34px, 6vw, 54px); line-height:1; letter-spacing:-0.02em; color:var(--ink); }
+  h1.title em { font-style:italic; color:var(--accent-deep, var(--purple-deep)); font-weight:600; }
+  .subtitle { font-family:'JetBrains Mono', monospace; font-size:12px; color:var(--ink-soft); letter-spacing:0.04em; }
+  h2 { font-family:'Fraunces', serif; font-weight:800; font-size:24px; letter-spacing:-0.01em; margin:36px 0 12px; color:var(--purple-deep); }
+  h3 { font-family:'Fraunces', serif; font-weight:700; font-size:19px; margin:24px 0 8px; }
+  h4.sec { font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:0.16em; text-transform:uppercase; color:var(--muted); margin:22px 0 8px; padding-bottom:4px; border-bottom:1px solid rgba(46,24,85,0.15); }
+  h4.sec:first-child { margin-top:4px; }
+  p { margin-bottom:10px; }
+  .mono { font-family:'JetBrains Mono', monospace; font-size:12px; letter-spacing:0.04em; }
+  .small { font-size:14px; color:var(--muted); }
+  .card { background:var(--paper); border-left:3px solid var(--accent); padding:18px 22px; box-shadow:var(--shadow); margin-bottom:18px; }
+  .card.scenario { font-style:italic; }
+  .card.scenario strong { font-style:normal; }
+  .card.scenario p:last-child { margin-bottom:0; }
+  .notice { padding:12px 16px; border-left:3px solid var(--gold); background:var(--warn-bg); font-size:14px; margin-bottom:16px; }
+  .notice.bad { border-color:var(--bad); background:var(--bad-bg); color:#5a1d14; }
+  .notice.good { border-color:var(--good); background:var(--good-bg); color:#123f27; }
+  .notice p:last-child { margin-bottom:0; }
+  .btn { font-family:'JetBrains Mono', monospace; font-size:13px; font-weight:500; letter-spacing:0.06em; text-transform:uppercase; padding:11px 18px;
+    border:1px solid var(--rule); background:var(--paper); color:var(--purple-deep); cursor:pointer; text-decoration:none; display:inline-block; }
+  .btn:hover { background:var(--purple-deep); color:var(--cream); }
+  .btn.primary { background:var(--purple); color:var(--cream); border-color:var(--purple); }
+  .btn.primary:hover { background:var(--purple-deep); }
+  .btn.gold { background:var(--accent); color:var(--purple-ink); border-color:var(--accent); }
+  .btn.gold:hover { background:var(--purple-deep); color:var(--cream); }
+  .btn.danger { border-color:var(--bad); color:var(--bad); }
+  .btn.danger:hover { background:var(--bad); color:#fff; }
+  .btn[disabled] { opacity:0.45; cursor:not-allowed; }
+  .btnrow { display:flex; gap:10px; flex-wrap:wrap; margin:14px 0; }
+  table.vt { width:100%; border-collapse:collapse; font-size:14px; margin:8px 0 14px; background:var(--paper); }
+  table.vt th, table.vt td { text-align:left; padding:7px 10px; border-bottom:1px solid rgba(46,24,85,0.12); vertical-align:top; }
+  table.vt th { font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); width:34%; font-weight:500; }
+  .cite { font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:0.03em; color:var(--muted); }
+  .cite a { color:var(--purple); }
+  details { margin:8px 0; }
+  summary { cursor:pointer; font-family:'JetBrains Mono', monospace; font-size:12px; letter-spacing:0.08em; text-transform:uppercase; color:var(--purple); }
+  ul.plain { list-style:none; }
+  ul.plain li { padding:6px 0; border-bottom:1px dotted rgba(46,24,85,0.18); font-size:15px; }
+  ul.plain li:last-child { border-bottom:0; }
+
+  /* ---------- home ---------- */
+  .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(260px, 1fr)); gap:14px; }
+  .sc-card { background:var(--paper); border:1px solid rgba(46,24,85,0.15); border-top:3px solid var(--purple); padding:16px 18px; box-shadow:var(--shadow); text-decoration:none; color:var(--ink); display:flex; flex-direction:column; gap:6px; transition:transform .12s; }
+  .sc-card:hover { transform:translateY(-2px); border-top-color:var(--accent); }
+  .sc-card.trauma { border-top-color:var(--red); }
+  .sc-card .tag { font-family:'JetBrains Mono', monospace; font-size:10px; letter-spacing:0.16em; text-transform:uppercase; color:var(--muted); }
+  .sc-card .name { font-family:'Fraunces', serif; font-weight:700; font-size:19px; line-height:1.15; }
+  .sc-card .badge { font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:0.06em; margin-top:auto; padding-top:6px; color:var(--muted); }
+  .sc-card .badge.pass { color:var(--good); }
+  .sc-card .badge.fail { color:var(--bad); }
+  .sc-card .rev { font-family:'JetBrains Mono', monospace; font-size:10px; letter-spacing:0.06em; color:var(--gold); }
+  .howto { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:12px; margin:12px 0 4px; }
+  .howto div { background:var(--paper); padding:12px 14px; border-left:3px solid var(--purple); font-size:14px; }
+  .howto b { font-family:'JetBrains Mono', monospace; font-size:10px; letter-spacing:0.16em; text-transform:uppercase; color:var(--purple); display:block; margin-bottom:4px; }
+
+  /* ---------- run ---------- */
+  .runbar { position:sticky; top:var(--topbar-h); z-index:10; background:var(--bg); padding:10px 0 0; border-bottom:1px solid rgba(46,24,85,0.25); margin-bottom:18px; }
+  .runbar-top { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:8px; }
+  .clock { font-family:'JetBrains Mono', monospace; font-size:20px; font-weight:500; letter-spacing:0.06em; color:var(--purple-deep); }
+  .clock small { font-size:10px; letter-spacing:0.16em; text-transform:uppercase; color:var(--muted); display:block; line-height:1; }
+  .clock.warn { color:#a4680e; }
+  .clock.over { color:var(--bad); }
+  .tabs { display:flex; gap:4px; overflow-x:auto; scrollbar-width:none; -webkit-overflow-scrolling:touch; }
+  .tabs::-webkit-scrollbar { display:none; }
+  .tab { font-family:'JetBrains Mono', monospace; font-size:12px; letter-spacing:0.08em; text-transform:uppercase; padding:9px 13px; border:1px solid transparent; border-bottom:0; background:transparent; color:var(--muted); cursor:pointer; white-space:nowrap; position:relative; top:1px; }
+  .tab .n { font-size:10px; color:var(--gold); margin-left:4px; }
+  .tab.active { background:var(--paper); border-color:rgba(46,24,85,0.25); color:var(--purple-deep); font-weight:500; }
+  .subtabs { display:flex; gap:6px; flex-wrap:wrap; margin:4px 0 14px; }
+  .subtab { font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:0.06em; text-transform:uppercase; padding:6px 10px; border:1px solid rgba(46,24,85,0.3); background:transparent; color:var(--purple-deep); cursor:pointer; }
+  .subtab.active { background:var(--purple); color:var(--cream); border-color:var(--purple); }
+  .items { display:flex; flex-direction:column; gap:6px; }
+  .subgroup { font-family:'JetBrains Mono', monospace; font-size:10px; letter-spacing:0.16em; text-transform:uppercase; color:var(--purple); margin:8px 0 0; }
+  .item { display:block; width:100%; text-align:left; background:var(--paper); border:1px solid rgba(46,24,85,0.18); padding:11px 14px; font-family:'Fraunces', serif; font-size:16px; color:var(--ink); cursor:pointer; box-shadow:var(--shadow); }
+  .item:hover { border-color:var(--purple); }
+  .item.done { cursor:default; border-left:3px solid var(--good); background:#fbf8ee; }
+  .item .lbl { display:block; }
+  .item.done .lbl::before { content:"✓ "; color:var(--good); font-weight:700; }
+  .item .finding { display:block; margin-top:6px; padding-top:6px; border-top:1px dotted rgba(46,24,85,0.25); font-style:italic; font-size:15px; color:var(--purple-ink); white-space:pre-line; }
+  .item .finding.na { color:var(--muted); }
+  .item.tx.dangerous { border-left:3px solid var(--bad); background:var(--bad-bg); }
+  .item.tx.dangerous .lbl::before { content:"⚠ "; color:var(--bad); }
+  .item .scope { display:block; margin-top:4px; font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:0.06em; color:var(--bad); }
+  .danger-banner { border-left:3px solid var(--bad); background:var(--bad-bg); padding:12px 16px; margin:12px 0; font-size:15px; }
+  .danger-banner strong { color:var(--bad); font-family:'JetBrains Mono', monospace; font-size:12px; letter-spacing:0.1em; text-transform:uppercase; display:block; margin-bottom:4px; }
+  .choice { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:10px 0; }
+  @media (max-width:520px) { .choice { grid-template-columns:1fr; } }
+  .choice .item { text-align:center; font-weight:600; }
+  .choice .item.picked { border:2px solid var(--purple); }
+  textarea.report { width:100%; min-height:170px; font-family:'JetBrains Mono', monospace; font-size:13px; line-height:1.5; padding:12px; border:1px solid var(--rule); background:#fff; color:var(--ink); resize:vertical; }
+  ol.checklist { padding-left:22px; font-size:14px; }
+  ol.checklist li { margin:4px 0; }
+  ol.checklist input { margin-right:6px; }
+  .hint { font-family:'JetBrains Mono', monospace; font-size:10px; letter-spacing:0.06em; text-transform:uppercase; margin-left:6px; }
+  .hint.yes { color:var(--good); } .hint.no { color:var(--muted); }
+
+  /* ---------- debrief ---------- */
+  .scoreboard { display:grid; grid-template-columns:repeat(auto-fit, minmax(150px,1fr)); gap:12px; margin:14px 0 22px; }
+  .score { background:var(--paper); padding:14px 16px; border-top:3px solid var(--purple); box-shadow:var(--shadow); }
+  .score b { font-family:'Fraunces', serif; font-weight:800; font-size:34px; line-height:1; display:block; }
+  .score span { font-family:'JetBrains Mono', monospace; font-size:10px; letter-spacing:0.16em; text-transform:uppercase; color:var(--muted); }
+  .score.bad { border-top-color:var(--bad); } .score.bad b { color:var(--bad); }
+  .score.good { border-top-color:var(--good); } .score.good b { color:var(--good); }
+  .fail { border-left:3px solid var(--bad); background:var(--bad-bg); padding:12px 16px; margin:10px 0; }
+  .fail h5 { font-family:'JetBrains Mono', monospace; font-size:12px; letter-spacing:0.1em; text-transform:uppercase; color:var(--bad); margin-bottom:6px; }
+  .fail ul { padding-left:20px; font-size:15px; }
+  .tx-row { display:flex; gap:10px; align-items:flex-start; padding:8px 0; border-bottom:1px dotted rgba(46,24,85,0.2); font-size:15px; }
+  .tx-row .mark { font-family:'JetBrains Mono', monospace; font-size:14px; width:22px; flex:none; }
+  .tx-row .mark.ok { color:var(--good); } .tx-row .mark.miss { color:var(--bad); } .tx-row .mark.warn { color:#a4680e; }
+  .tx-row .note { display:block; font-size:14px; color:var(--muted); margin-top:2px; }
+  .pill { font-family:'JetBrains Mono', monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; padding:2px 7px; border:1px solid currentColor; margin-left:6px; vertical-align:middle; }
+  .pill.crit { color:var(--bad); }
+  .pill.pm { color:#a4680e; }
+  table.sections { width:100%; border-collapse:collapse; font-size:14px; background:var(--paper); }
+  table.sections td, table.sections th { padding:7px 10px; border-bottom:1px solid rgba(46,24,85,0.12); text-align:left; vertical-align:top; }
+  table.sections th { font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); font-weight:500; }
+  table.sections td.num { font-family:'JetBrains Mono', monospace; white-space:nowrap; }
+  .html-block { background:var(--paper); padding:14px 18px; box-shadow:var(--shadow); font-size:15px; }
+  .html-block ul, .html-block ol { padding-left:22px; margin:6px 0; }
+  .html-block p { margin-bottom:8px; }
+  .under-review { border-left:3px solid var(--gold); background:var(--warn-bg); padding:10px 14px; font-size:14px; margin:8px 0; }
+  .report-view { background:#fff; border:1px solid rgba(46,24,85,0.2); padding:12px; font-family:'JetBrains Mono', monospace; font-size:13px; white-space:pre-wrap; margin-bottom:12px; }
+
+  /* ---------- footer (matches site) ---------- */
+  footer { position:relative; z-index:1; background:var(--paper); padding:64px 48px; border-top:4px double var(--purple); display:grid; grid-template-columns:1.4fr 1fr 1fr 1.2fr; gap:48px; font-size:13px; }
+  footer h5 { font-family:'JetBrains Mono', monospace; font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:var(--purple); margin-bottom:14px; }
+  footer p, footer a { display:block; color:var(--ink); text-decoration:none; margin-bottom:6px; }
+  footer a:hover { color:var(--purple); }
+  .footer-mark { font-family:'Fraunces', serif; font-size:56px; font-weight:800; color:var(--purple); line-height:1; }
+  @media (max-width:900px) { footer { grid-template-columns:1fr; padding:32px 24px; gap:28px; } }
+
+  /* ---------- phase 2: reasoning mode ---------- */
+  .mode-toggle { display:flex; border:1px solid rgba(46,24,85,0.3); margin-left:auto; margin-right:12px; }
+  .mode-toggle button { font-family:'JetBrains Mono', monospace; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; padding:6px 10px; background:transparent; border:0; color:var(--muted); cursor:pointer; }
+  .mode-toggle button.active { background:var(--purple); color:#fff; }
+  .ask { display:flex; gap:8px; margin:12px 0 8px; }
+  .ask input { flex:1; font:inherit; font-size:16px; padding:10px 12px; border:1px solid rgba(46,24,85,0.35); background:#fff; color:var(--ink); }
+  .ask input:focus { outline:2px solid var(--purple); outline-offset:0; }
+  .feedback { background:var(--paper); border-left:3px solid var(--purple); padding:10px 14px; margin:8px 0; font-size:15px; }
+  .feedback p.stack { margin:6px 0 0; padding-top:6px; border-top:1px dashed var(--line, #ddd); }
+  .feedback.ok { border-left-color:var(--good); }
+  .feedback.no { border-left-color:var(--bad); background:var(--bad-bg); }
+  .feedback.warn { border-left-color:var(--gold); background:var(--warn-bg); }
+  .feedback.hint { border-left-color:var(--gold); background:var(--warn-bg); }
+  .feedback.ask { border-left-color:var(--gold); }
+  .feedback .scope { display:block; font-size:13px; color:#a4680e; margin-top:4px; }
+  .learned { margin-top:10px; }
+  .learned-row { display:grid; grid-template-columns:minmax(140px,1fr) 2fr; gap:10px; padding:7px 0; border-bottom:1px dotted rgba(46,24,85,0.2); font-size:14px; }
+  .learned-row .k { font-weight:600; color:var(--purple-ink); }
+  .learned-row .k em { font-weight:400; color:var(--muted); font-size:12px; }
+  .learned-row .v.na { color:var(--muted); font-style:italic; }
+  .learned-row.bad .k { color:var(--bad); }
+  .learned-empty { margin-top:12px; }
+  .chips { display:flex; flex-wrap:wrap; gap:8px; margin:8px 0; }
+  .chip { font:inherit; font-size:14px; padding:8px 12px; background:#fff; border:1px solid var(--purple); color:var(--purple-ink); cursor:pointer; text-align:left; }
+  .chip small { display:block; font-family:'JetBrains Mono', monospace; font-size:10px; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); margin-top:2px; }
+  .chip.tx { border-color:var(--gold); }
+  .chip.all { border-style:dashed; }
+  .chip:hover { background:var(--paper); }
+  .stuck { display:flex; flex-wrap:wrap; gap:8px; margin:10px 0 4px; }
+  .btn.small-btn { font-size:12px; padding:6px 10px; }
+  .checkpoint { background:var(--paper); border:1px solid rgba(46,24,85,0.25); border-top:3px solid var(--gold); padding:12px 16px 14px; margin:10px 0; box-shadow:var(--shadow); }
+  .checkpoint p { font-size:15px; margin-bottom:8px; }
+  .checkpoint .item.wrong { border-color:var(--bad); opacity:0.85; cursor:default; }
+  .checkpoint .item.wrong .lbl { color:var(--bad); text-decoration:line-through; }
+  .checkpoint.gate { border-top-color:var(--red); }
+  .bad-text { color:var(--bad); }
+  .event-banner { background:var(--warn-bg); border-left:4px solid var(--gold); padding:10px 14px; margin:8px 0; font-size:15px; }
+  .event-banner strong { display:block; font-family:'JetBrains Mono', monospace; font-size:11px; letter-spacing:0.12em; text-transform:uppercase; color:#a4680e; margin-bottom:2px; }
+  .reason .tx-row .mark { width:36px; }
+  @media (max-width:700px) { .learned-row { grid-template-columns:1fr; gap:2px; } .mode-toggle { margin-left:0; } }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-title">
+    <span class="title-full">NEMO · Scenario Trainer</span>
+    <span class="title-short">NEMO · Trainer</span>
+    <span class="title-mini">NEMO</span>
+  </div>
+  <div class="topbar-marquee">
+    <div class="marquee-content">
+      <span>· PRACTICE MEDICAL &amp; TRAUMA SCENARIOS · NREMT-STYLE 15-MINUTE CLOCK · SCORED AGAINST THE NEMO SKILL SHEET · TEXTBOOK &amp; REGION X SOP CITATIONS</span>
+      <span aria-hidden="true">· PRACTICE MEDICAL &amp; TRAUMA SCENARIOS · NREMT-STYLE 15-MINUTE CLOCK · SCORED AGAINST THE NEMO SKILL SHEET · TEXTBOOK &amp; REGION X SOP CITATIONS</span>
+    </div>
+  </div>
+  <nav>
+    <a href="../medical-protocols.html">Medical</a>
+    <a href="../trauma-protocols.html">Trauma</a>
+    <a href="../resource-vault.html">Vault</a>
+    <a href="../training.html" class="nav-pill nav-back">← Training</a>
+    <a href="index.html" class="nav-pill" id="nav-home">Scenarios</a>
+  </nav>
+</div>
+
+<main class="wrap" id="app">
+  <noscript><p>The Scenario Trainer needs JavaScript enabled.</p></noscript>
+</main>
+
+<footer>
+  <div>
+    <div class="footer-mark">NEMO</div>
+    <p style="margin-top: 14px; font-family: 'Fraunces', serif; font-size: 15px; color: var(--purple-ink); line-height: 1.4;">Northwestern Emergency<br>Medical Organization</p>
+    <p style="margin-top: 12px; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.2em; color: var(--purple); text-transform: uppercase;">Est. 2006 · Evanston, IL</p>
+  </div>
+  <div>
+    <h5>Course</h5>
+    <a href="../index.html#course">Overview</a>
+    <a href="../index.html#schedule">Schedule</a>
+    <a href="../index.html#cost">Tuition</a>
+    <a href="../index.html#faq">FAQ</a>
+  </div>
+  <div>
+    <h5>Training</h5>
+    <a href="../medical-protocols.html">Medical Protocols</a>
+    <a href="../trauma-protocols.html">Trauma Protocols</a>
+    <a href="../resource-vault.html">Resource Vault</a>
+    <a href="index.html">Scenario Trainer</a>
+  </div>
+  <div>
+    <h5>Connect</h5>
+    <a href="mailto:nemo@u.northwestern.edu">nemo@u.northwestern.edu</a>
+    <a href="https://catsoncampus.northwestern.edu/" target="_blank" rel="noopener">Cats on Campus</a>
+    <a href="https://www.instagram.com/nemo.northwestern/" target="_blank" rel="noopener">Instagram · @nemo.northwestern</a>
+  </div>
+</footer>
+
+<script src="sheets.js"></script>
+<script src="scenarios.js"></script>
+<script>
+(function () {
+  'use strict';
+  const SHEETS = window.TRAINER_SHEETS, FAILS = window.TRAINER_CRITICAL_FAILS;
+  const SYN = window.TRAINER_SYNONYMS || {};
+  const SCENARIOS = (window.TRAINER_SCENARIOS || []).slice().sort((a, b) => order(a) - order(b));
+  const REVIEWERS = window.REVIEWERS || [];
+  const LS_KEY = 'nemoTrainer.v1';
+  const TIME_LIMIT = 900, TIME_WARN = 720;
+  const FLAG_EMAIL = 'nemo@u.northwestern.edu';
+
+  const SAFE_ITEM = 'Determines the scene/situation is safe';
+  const BSI_ITEM = 'Takes or verbalizes appropriate BSI/PPE precautions';
+  const IMPRESSION_ITEM = 'States field impression of patient';
+  const PRIORITY_RE = /priority/i, REPORT_RE = /verbal report/i, RESPONSE_RE = /^Evaluates response to treatments$/;
+  const NOT_ASSESSED = 'Not assessed — no finding recorded for this scenario.';
+
+  // Reasoning-score penalties (see TRAINER_README §8). Each has a cap so one habit cannot zero the score.
+  const PENALTY = { wrongImpression: [15, 30], confirmSkipped: [10, 10], hint: [5, 20], checklist: [10, 30], gate: [10, 40], event: [10, 30] };
+
+  // "Stuck?" tier-1 hints: the thinking framework for each phase, never the scenario's answers.
+  const HINTS = {
+    scene: 'Scene size-up asks five things before you touch the patient: Is it safe? What precautions do I need (BSI)? What is the nature of illness or mechanism of injury? How many patients? Do I need more resources? Say each one.',
+    primary: 'Primary assessment runs in a fixed order: general impression → level of consciousness (AVPU) → chief complaint → Airway → Breathing → Circulation (bleeding, pulse, skin, cap refill, shock?) → priority / transport decision. Name the step you are on.',
+    history: 'For a medical patient work OPQRST on the complaint (Onset, Provocation, Quality, Region/Radiation, Severity, Time) then AMPLE (Allergies, Medications, Past history, Last oral intake, Events). For trauma, AMPLE plus the mechanism.',
+    vitals: 'A full set is blood pressure, pulse (rate and quality), respirations (rate and quality), SpO₂, skin, and — when indicated — lung sounds, blood glucose, pupils. Ask for each by name, or ask for "vitals".',
+    focused: 'Start from the body system your impression points at. What associated signs and symptoms would you expect? What specific questions does that complaint call for? Then look, listen and feel for the findings that confirm or rule it out.',
+    secondary: 'Rapid trauma assessment goes head to toe: head, neck, chest, abdomen, pelvis, lower extremities, upper extremities, then posterior. At each region inspect and palpate for DCAP-BTLS; check pulse, motor and sensation (PMS) in each limb.',
+    treatment: 'Treat in the order things kill: airway → breathing and oxygen → bleeding and shock → positioning → EMT-level medications the patient qualifies for → immobilization → early notification. Before any drug: does the patient meet the indications, and is anything a contraindication?',
+    reassess: 'Reassessment is: repeat the primary, retake vitals (every 5 min unstable, every 15 stable), reassess the complaint, and check whether each treatment actually worked. Say which.',
+    transport: 'Decide: stable or unstable? Unstable means load and go with treatment en route. Then give the pre-arrival report in SOP order and go.'
+  };
+
+  // SOP p.7 Pre-Arrival Report — self-check list with loose auto-hints.
+  const REPORT_CHECKLIST = [
+    ['Provider name and vehicle/unit number', /\b(unit|medic|ambulance|engine|rig|this is)\b/i],
+    ['Alert if applicable — STEMI, Sepsis, Stroke, Trauma Category I/II (or "no alert")', /\b(stemi|sepsis|stroke|trauma|alert)\b/i],
+    ['Protocol used', /protocol/i],
+    ['Age, gender, approximate weight if pertinent', /\b\d{1,3}\s*(y\/?o|year|yo|yr|m|f|male|female)\b/i],
+    ['History / Subjective: chief complaint & degree of distress or pain; HPI or MOI with onset time; past medical history, medications, allergies', /\b(complain|c\/c|chief|hx|history|allerg|med|onset)\b/i],
+    ['Exam / Objective: level of consciousness, vitals, pain scale, temperature and blood glucose if indicated, skin; plus lung sounds/SpO₂, ECG, GCS/stroke screen/pupils as indicated', /(\d{2,3}\s*\/\s*\d{2,3}|\b(bp|hr|pulse|rr|spo|sat|a&o|gcs|alert|oriented|vitals?)\b)/i],
+    ['Treatment given and patient response', /\b(gave|given|administer|treat|o2|oxygen|nrb|neb|asa|aspirin|epi|glucose|tourniquet|splint|c-?collar|respon|improv)\b/i],
+    ['ETA and destination', /\b(eta|minute|min|en route|enroute|destination|hospital|ed|er)\b/i]
+  ];
+
+  function order(s) { return (s.type === 'medical' ? 0 : 100) + (parseInt(String(s.id).split('-')[1], 10) || 0); }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+  function fmt(sec) { sec = Math.max(0, Math.floor(sec)); return String(Math.floor(sec / 60)).padStart(2, '0') + ':' + String(sec % 60).padStart(2, '0'); }
+  const ACRONYMS = { copd: 'COPD', smr: 'SMR', aaa: 'AAA', acs: 'ACS', ams: 'AMS', cpr: 'CPR', gsw: 'GSW', mvc: 'MVC', als: 'ALS', bls: 'BLS' };
+  function humanRef(ref) {
+    return String(ref).split('-').map(w => ACRONYMS[w] || (w.charAt(0).toUpperCase() + w.slice(1))).join(' ');
+  }
+  function citeHtml(c) {
+    if (!c) return '';
+    if (c.src === 'SOP') {
+      return '<span class="cite"><a href="../assets/protocols/' + esc(c.ref) + '.pdf" target="_blank" rel="noopener">Region X SOP · ' + esc(humanRef(c.ref)) + ' · p.' + esc(c.page) + '</a></span>';
+    }
+    if (c.src === 'TXT') {
+      const m = /^ch(\d+)$/.exec(c.ref);
+      const where = m ? 'Ch. ' + m[1] : (c.ref === 'appA' ? 'App. A' : esc(c.ref));
+      return '<span class="cite">Emergency Care 14e · ' + where + ' · p. ' + esc(c.page) + '</span>';
+    }
+    return '<span class="cite">' + esc(c.src) + ' · ' + esc(c.ref) + (c.page ? ' · p.' + esc(c.page) : '') + '</span>';
+  }
+  function vitalsTable(rows, caption) {
+    let h = '<table class="vt">' + (caption ? '<caption class="mono small" style="text-align:left;padding:4px 0">' + esc(caption) + '</caption>' : '');
+    for (const [k, v] of rows) h += '<tr><th>' + esc(k) + '</th><td>' + esc(v) + '</td></tr>';
+    return h + '</table>';
+  }
+  // Deterministic shuffle (by scenario id) so impression options are not always listed correct-first, but stay stable per scenario.
+  function hashStr(s) { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; } return h; }
+  function stableShuffle(arr, seed) { return arr.map((v, i) => ({ v, k: hashStr(seed + '|' + i + '|' + (v.label || '')) })).sort((a, b) => a.k - b.k).map(x => x.v); }
+
+  // ---------- localStorage progress ----------
+  function loadStore() { try { return JSON.parse(localStorage.getItem(LS_KEY) || '{}'); } catch (e) { return {}; } }
+  function loadProgress() { return loadStore().progress || {}; }
+  function saveResult(id, pct, fails, reason) {
+    try {
+      const store = loadStore(); store.progress = store.progress || {};
+      const p = store.progress[id] || { attempts: 0, best: null };
+      p.attempts += 1;
+      const better = !p.best || fails < p.best.fails || (fails === p.best.fails && pct > p.best.pct);
+      if (better) p.best = { pct, fails, reason, when: new Date().toISOString().slice(0, 10) };
+      p.lastReason = reason;
+      store.progress[id] = p; localStorage.setItem(LS_KEY, JSON.stringify(store));
+    } catch (e) { /* storage unavailable — progress badges simply won't persist */ }
+  }
+
+  // ---------- palette ----------
+  function tabFor(title) { if (/^Scene/.test(title)) return 'scene'; if (/^Primary/.test(title)) return 'primary'; if (/History/.test(title)) return 'history'; if (/^Vital|^Diagnostics/.test(title)) return 'vitals'; if (/^Secondary — /.test(title)) return 'secondary'; if (/^Field Impression/.test(title)) return 'reassess'; return 'primary'; }
+  function buildPalette(sc) {
+    const sheet = SHEETS[sc.type], items = [];
+    for (const sec of sheet.sections) {
+      const tab = tabFor(sec.title);
+      for (const it of sec.items) {
+        if (it.treatment) continue;
+        let special = null;
+        if (PRIORITY_RE.test(it.item)) special = 'priority';
+        else if (REPORT_RE.test(it.item)) special = 'report';
+        else if (RESPONSE_RE.test(it.item)) special = 'reassess';
+        else if (it.item === IMPRESSION_ITEM) special = 'impression';
+        items.push({ key: it.item, dkey: it.item, section: sec.title, tab, sub: tab === 'secondary' ? sec.title.replace(/^Secondary — /, '') : null, subgroup: it.subgroup || null, special, scored: true, branch: null, extra: null });
+      }
+    }
+    if (sc.type === 'medical') {
+      for (const [ck, c] of Object.entries(sheet.complaints || {})) {
+        for (const sec of c.sections) {
+          if (sec.treatmentSection) continue;
+          for (const it of sec.items) {
+            if (it.treatment) continue;
+            items.push({ key: it.item, dkey: ck + '::' + it.item, section: sec.title, tab: 'focused', sub: ck, subgroup: it.subgroup || null, special: null, scored: ck === sc.complaint, branch: ck, extra: null });
+          }
+        }
+      }
+      (sc.extras || []).forEach((x, i) => items.push({ key: x.item, dkey: 'extra::' + i, section: 'Additional findings (scenario-specific, not scored)', tab: 'focused', sub: sc.complaint, subgroup: null, special: null, scored: false, branch: sc.complaint, extra: x.text }));
+    }
+    return items;
+  }
+  function tabsFor(sc) { return ['scene', 'primary', 'history', 'vitals', sc.type === 'medical' ? 'focused' : 'secondary', 'treatment', 'reassess', 'transport']; }
+  const TAB_LABEL = { scene: 'Scene', primary: 'Primary', history: 'History', vitals: 'Vitals', focused: 'Focused', secondary: 'Secondary', treatment: 'Treatment', reassess: 'Reassess', transport: 'Transport' };
+  const ASK_PLACEHOLDER = {
+    scene: 'What do you check or ask before approaching? e.g. "is the scene safe", "gloves on", "how many patients"',
+    primary: 'What do you assess? e.g. "is he alert", "check the airway", "how is she breathing", "skin"',
+    history: 'What do you ask the patient? e.g. "when did it start", "what does it feel like", "any allergies"',
+    vitals: 'What do you measure? e.g. "blood pressure", "pulse ox", "vitals", "lung sounds"',
+    focused: 'What do you ask, look for, listen to, or feel? e.g. "any chest pain", "listen to the lungs"',
+    secondary: 'What do you examine? e.g. "check the head", "palpate the abdomen", "pulse motor sensation in the legs"',
+    treatment: 'What do you do for the patient? e.g. "oxygen by non-rebreather", "aspirin", "sit her up"',
+    reassess: 'What do you reassess? e.g. "repeat vitals", "is she breathing easier", "repeat the primary"',
+    transport: 'Stable or unstable? Or type "give report" when you are ready to go.'
+  };
+
+  // ---------- state ----------
+  let run = null, clockTimer = null, view = 'home';
+  function newRun(sc) {
+    stopClock();
+    const palette = buildPalette(sc);
+    const subs = sc.type === 'medical'
+      ? Object.entries(SHEETS.medical.complaints || {}).map(([k, v]) => ({ key: k, label: v.label }))
+      : [...new Set(palette.filter(p => p.tab === 'secondary').map(p => p.sub))].map(k => ({ key: k, label: k }));
+    run = { sc, palette, subs, tab: 'scene', sub: subs.length ? subs[0].key : null, done: new Set(), treated: new Set(), log: [], start: null, end: null,
+      arrived: false, priority: null, reassessed: false, reportOpen: false, report: '', dangerous: [],
+      // Phase 2 — reasoning mode
+      mode: 'reason', guidedAt: null, vitals: sc.vitals.initial.map(r => r.slice()), events: [],
+      impression: { done: false, wrong: [], confirmed: null, confirmSkipped: false, confirmMisses: 0 },
+      hints: {}, checklist: new Set(), misses: [], gateViolations: [], pending: null, feedback: null };
+  }
+  function elapsed() { return run && run.start ? ((run.end || Date.now()) - run.start) / 1000 : 0; }
+  function logAction(kind, key, tab) { run.log.push({ t: elapsed(), kind, key, tab }); }
+  function startClock() {
+    stopClock();
+    clockTimer = setInterval(() => {
+      const el = document.getElementById('clock'); if (!el) return;
+      const e = elapsed(); el.firstChild.nodeValue = fmt(e);
+      el.className = 'clock' + (e >= TIME_LIMIT ? ' over' : e >= TIME_WARN ? ' warn' : '');
+      checkEvents();
+    }, 1000);
+  }
+  function stopClock() { if (clockTimer) clearInterval(clockTimer); clockTimer = null; }
+  // Sheet items whose answer is a vital-signs row. After a deterioration event
+  // changes that row, the live value wins over the static sheet response.
+  const VITAL_ITEM_ROW = { 'Blood pressure': 'BP', 'Pulse rate and quality': 'HR', 'Ventilatory rate and quality': 'RR', 'SpO₂': 'SpO₂', 'Lung sounds': 'Lung sounds', 'Blood glucose level': 'BGL', 'Determines responsiveness — AVPU': 'Mental status', 'Pupils': 'Pupils', 'Color': 'Skin', 'Temperature': 'Skin', 'Moisture': 'Skin', 'Skin (color, temperature, moisture)': 'Skin', 'Capillary refill': 'Cap refill' };
+  function liveVital(key) {
+    const row = VITAL_ITEM_ROW[key]; if (!row || !run.changedRows || !run.changedRows.has(row)) return null;
+    const r = run.vitals.find(x => x[0] === row); return r ? String(r[1]).replace(/\.?$/, '.') + ' (changed since your first look)' : null;
+  }
+  function responseFor(p) { if (p.extra != null) return p.extra; if (p.branch && p.branch !== run.sc.complaint) return null; const live = liveVital(p.key); if (live) return live; const r = run.sc.responses[p.key]; return r == null ? null : r; }
+  function criticalTreatmentsDone() { return run.sc.treatments.every((t, i) => !(t.verdict === 'indicated' && t.critical) || run.treated.has(i)); }
+  // Has this sheet item (by text) been assessed, in any branch or as an extra?
+  function itemDone(item) { return run.palette.some(p => p.key === item && run.done.has(p.dkey)); }
+  function currentVitals() { return run.vitals; }
+
+  // ---------- deterioration clock ----------
+  function checkEvents() {
+    if (!run || !run.start || run.end || view !== 'run') return;
+    const evs = (run.sc.phase2 && run.sc.phase2.deterioration) || [];
+    let changed = false;
+    evs.forEach((e, i) => {
+      if (run.events.some(x => x.i === i)) return;
+      const t = elapsed(); if (t < e.at) return;
+      const prevented = !!(e.unless && e.unless.tx && e.unless.tx.some(k => run.treated.has(k)));
+      run.events.push({ i, t, fired: !prevented });
+      if (prevented) return;
+      run.changedRows = run.changedRows || new Set();
+      for (const [row, val] of e.vitals || []) { const r = run.vitals.find(x => x[0] === row); if (r) { if (r[1] !== val) run.changedRows.add(row); r[1] = val; } else { run.vitals.push([row, val]); run.changedRows.add(row); } }
+      logAction('event', e.narrative, run.tab); changed = true;
+    });
+    if (changed) { renderEvents(); if (run.tab === 'vitals' || run.tab === 'reassess') renderPanel(); }
+  }
+  function renderEvents() {
+    const el = document.getElementById('events'); if (!el) return;
+    const evs = (run.sc.phase2 && run.sc.phase2.deterioration) || [];
+    el.innerHTML = run.events.filter(x => x.fired).map(x => { const e = evs[x.i]; return '<div class="event-banner"><strong>⚠ Patient update · ' + fmt(x.t) + '</strong>' + esc(e.narrative) + ' <span class="small">Vitals have changed — retake them.</span> ' + citeHtml(e.cite) + '</div>'; }).join('');
+  }
+
+  // ---------- routing ----------
+  function route() { const id = decodeURIComponent(location.hash.replace(/^#/, '')); const sc = SCENARIOS.find(s => s.id === id); if (!sc) { run = null; stopClock(); view = 'home'; renderHome(); return; } if (!run || run.sc.id !== sc.id) newRun(sc); view = 'run'; renderRun(); }
+  window.addEventListener('hashchange', route);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) checkEvents(); });
+
+  // ---------- HOME ----------
+  function renderHome() {
+    const prog = loadProgress();
+    const unreviewed = SCENARIOS.filter(s => !s.meta || !s.meta.reviewedBy);
+    const reviewedDates = SCENARIOS.map(s => s.meta && s.meta.reviewedOn).filter(Boolean).sort();
+    let h = '<header class="masthead">' +
+      '<div class="eyebrow"><span><span class="dot"></span>NEMO · Training · Scenario Trainer</span><span>' + SCENARIOS.length + ' scenarios</span></div>' +
+      '<h1 class="title">Scenario <em>Trainer</em></h1>' +
+      '<div class="subtitle">Solo practice · you decide what to ask · scored against the NEMO skill sheet</div></header>';
+    h += '<p>Run a call the way you would on the NREMT practical: size up the scene, work the primary assessment, gather history and vitals, treat, decide on transport, and give a radio report. ' +
+      'There is no menu of questions. You type what you would ask or do, and findings appear only for the things you actually think to check. ' +
+      'Before a treatment lands you are asked what you think is going on and what you need to know first. The patient gets worse on a clock if the critical treatment is late. ' +
+      'At the end you get a debrief scored against the NEMO medical/trauma skill sheet, the critical criteria your proctor would use, and a reasoning score.</p>';
+    h += '<div class="howto">' +
+      '<div><b>1 · Assess</b>Type what you would ask or check. No list to pick from — if you don’t think of it, you don’t find it. Scene safety and BSI come first.</div>' +
+      '<div><b>2 · Treat</b>Say what you would do. You must commit to a field impression and the finding that supports it, and some treatments ask what you need to know before giving them.</div>' +
+      '<div><b>3 · Transport</b>Call priority, give your pre-arrival report, and transport before the 15-minute clock runs out — the patient deteriorates if you are slow.</div>' +
+      '<div><b>4 · Debrief</b>See what you missed, why it mattered, how your reasoning held up, and the textbook / SOP page that backs each point.</div></div>';
+    if (unreviewed.length) {
+      h += '<div class="notice"><p><strong>Not yet clinically reviewed.</strong> ' + unreviewed.length + ' of ' + SCENARIOS.length +
+        ' scenarios are awaiting sign-off from ' + esc(REVIEWERS.join(', ')) + '. Content is drawn from the NEMO proctor briefs and the ' + esc(window.PROTOCOL_EDITION || 'Region X SOPs') +
+        ', but treat every finding as practice material until it carries a reviewer name.</p></div>';
+    }
+    h += '<p class="small">Textbook: ' + esc(window.TEXTBOOK_EDITION || '—') + ' · Protocol edition: ' + esc(window.PROTOCOL_EDITION || '—') +
+      ' · Last clinically reviewed: ' + (reviewedDates.length ? esc(reviewedDates[reviewedDates.length - 1]) : 'not yet') +
+      '. <strong>For training only</strong> — on a real call, follow your medical director and the current Region X SOPs, not this page.</p>';
+    for (const type of ['medical', 'trauma']) {
+      const list = SCENARIOS.filter(s => s.type === type);
+      h += '<h2>' + (type === 'medical' ? 'Medical' : 'Trauma') + ' scenarios</h2><div class="grid">';
+      for (const s of list) {
+        const p = prog[s.id];
+        let badge = '<span class="badge">Not attempted</span>';
+        if (p && p.best) badge = '<span class="badge ' + (p.best.fails ? 'fail' : 'pass') + '">Best: ' + p.best.pct + '% · ' + p.best.fails + ' critical ' + (p.best.fails === 1 ? 'fail' : 'fails') +
+          (p.best.reason != null ? ' · reasoning ' + p.best.reason : '') + ' · ' + p.attempts + (p.attempts === 1 ? ' attempt' : ' attempts') + '</span>';
+        h += '<a class="sc-card ' + s.type + '" href="#' + esc(s.id) + '"><span class="tag">' + esc(s.tag) + '</span><span class="name">' + esc(s.title) + '</span>' +
+          (s.meta && s.meta.reviewedBy ? '' : '<span class="rev">Unreviewed draft</span>') + badge + '</a>';
+      }
+      h += '</div>';
+    }
+    h += '<h2>About the scoring</h2><p class="small">Section scores count the assessment steps on the NEMO skill sheet that you performed. Critical criteria mirror the NREMT psychomotor exam: ' +
+      FAILS.map(f => esc(f.toLowerCase())).join('; ') + '. A single critical criterion is a failed station regardless of section scores.</p>' +
+      '<p class="small">The <strong>reasoning score</strong> starts at 100 and drops for: a wrong field impression (−15 each), skipping the confirming finding (−10), each hint (−5), each checklist you reveal or switching to guided mode (−10 per phase), giving a treatment without the information it depends on (−10 each), and each time the patient deteriorates because a critical treatment was late (−10). Each penalty is capped, and none of them touches the skill-sheet score — they are there to show you where the thinking slipped.</p>' +
+      '<p class="small">Spotted an error? Email <a href="mailto:' + FLAG_EMAIL + '?subject=' + encodeURIComponent('Scenario Trainer — issue report') + '">' + FLAG_EMAIL + '</a> with the scenario name and the step you think is wrong. The textbook (Emergency Care, 14th ed.) is the primary authority; Region X SOPs are cited for local protocol. Where they differ, the textbook wins, because NEMO members work outside Region X too.</p>';
+    document.getElementById('app').innerHTML = h;
+    window.scrollTo(0, 0);
+  }
+
+  // ---------- RUN ----------
+  function renderRun() {
+    const sc = run.sc;
+    let h = '<header class="masthead">' +
+      '<div class="eyebrow"><span><span class="dot"></span>' + esc(sc.tag) + ' · ' + esc(sc.patient.age) + esc(sc.patient.sex) + '</span>' +
+      '<span><a href="#" style="color:var(--muted)">← All scenarios</a></span></div>' +
+      '<h1 class="title">' + esc(sc.title) + '</h1>' +
+      '<div class="subtitle">' + (sc.type === 'medical' ? 'Medical assessment' : 'Trauma assessment') + ' · NREMT-style 15:00 clock · findings reveal when you ask for them</div></header>';
+    if (!run.arrived) {
+      h += '<h4 class="sec">Dispatch</h4><div class="card scenario">' + sc.dispatch + '</div>' +
+        '<p class="small">The clock starts when you arrive. You have 15 minutes to assess, treat, decide on transport, and give your report — same as the NREMT station. ' +
+        'You will type what you want to ask, check, or do; nothing is listed for you. If you get stuck, each phase has a <strong>Stuck?</strong> button that gives the thinking framework (it costs reasoning points, not skill-sheet points).</p>' +
+        '<div class="btnrow"><button class="btn primary" id="arrive">Arrive on scene ▸</button></div>';
+      document.getElementById('app').innerHTML = h; window.scrollTo(0, 0);
+      document.getElementById('arrive').onclick = () => { run.arrived = true; run.start = Date.now(); startClock(); renderRun(); };
+      return;
+    }
+    h += '<details class="scenecard" open><summary>Scene · what you see on arrival<div class="card scenario" style="margin-top:8px">' + sc.scene + '</div></details>';
+    h += '<div id="danger"></div><div id="events"></div>';
+    h += '<div class="runbar"><div class="runbar-top"><div class="tabs" id="tabs"></div>' +
+      '<div class="mode-toggle" id="mode"></div>' +
+      '<div class="clock" id="clock">' + fmt(elapsed()) + '<small>elapsed / 15:00</small></div></div></div>';
+    h += '<div id="panel"></div>';
+    document.getElementById('app').innerHTML = h;
+    syncTopbarOffset();
+    renderTabs(); renderMode(); renderDanger(); renderEvents(); renderPanel();
+  }
+  function syncTopbarOffset() { const tb = document.querySelector('.topbar'); if (tb) document.documentElement.style.setProperty('--topbar-h', tb.offsetHeight + 'px'); }
+  function renderMode() {
+    const el = document.getElementById('mode'); if (!el) return;
+    el.innerHTML = '<button class="' + (run.mode === 'reason' ? 'active' : '') + '" data-mode="reason" title="Type what you would ask or do">Reasoning</button>' +
+      '<button class="' + (run.mode === 'guided' ? 'active' : '') + '" data-mode="guided" title="Show the skill-sheet checklist (costs reasoning points)">Guided</button>';
+    el.querySelectorAll('button').forEach(b => b.onclick = () => {
+      const m = b.dataset.mode; if (m === run.mode) return;
+      if (m === 'guided' && run.guidedAt == null) { run.guidedAt = elapsed(); logAction('guided', 'switched to guided mode', run.tab); }
+      run.mode = m; renderMode(); renderPanel();
+    });
+  }
+  function renderTabs() {
+    const el = document.getElementById('tabs'); if (!el) return;
+    el.innerHTML = tabsFor(run.sc).map(t => {
+      const items = run.palette.filter(p => p.tab === t && !p.special && p.scored);
+      const done = items.filter(p => run.done.has(p.dkey)).length;
+      let count = '';
+      if (t === 'treatment') count = run.treated.size ? '<span class="n">' + run.treated.size + '</span>' : '';
+      else if (items.length) count = done ? '<span class="n">' + done + (run.mode === 'guided' || run.checklist.has(t) ? '/' + items.length : '') + '</span>' : '';
+      return '<button class="tab' + (run.tab === t ? ' active' : '') + '" data-tab="' + t + '">' + TAB_LABEL[t] + count + '</button>';
+    }).join('');
+    el.querySelectorAll('.tab').forEach(b => b.onclick = () => { checkEvents(); run.tab = b.dataset.tab; renderTabs(); renderPanel(); });
+  }
+  function renderDanger() { const el = document.getElementById('danger'); if (!el) return; el.innerHTML = run.dangerous.map(i => { const t = run.sc.treatments[i]; return '<div class="danger-banner"><strong>⚠ Dangerous intervention — critical fail</strong>' + esc(t.action) + '. ' + esc(t.note || '') + ' ' + citeHtml(t.cite) + '</div>'; }).join(''); }
+  function itemHtml(p) {
+    const done = run.done.has(p.dkey);
+    let h = '<button class="item' + (done ? ' done' : '') + '" data-dkey="' + esc(p.dkey) + '"><span class="lbl">' + esc(p.key) + '</span>';
+    if (done) { const r = responseFor(p); h += '<span class="finding' + (r == null ? ' na' : '') + '">' + esc(r == null ? NOT_ASSESSED : r) + '</span>'; }
+    return h + '</button>';
+  }
+  function itemsBySection(items) {
+    let h = '', lastSec = null, lastSub = null;
+    for (const p of items) {
+      if (p.section !== lastSec) { h += '<h4 class="sec">' + esc(p.section) + '</h4>'; lastSec = p.section; lastSub = null; }
+      if (p.subgroup && p.subgroup !== lastSub) { h += '<div class="subgroup">' + esc(p.subgroup) + '</div>'; lastSub = p.subgroup; }
+      h += itemHtml(p);
+    }
+    return '<div class="items">' + h + '</div>';
+  }
+
+  // ---------- reasoning mode: matcher ----------
+  const reCache = {};
+  function synRes(item) { if (!reCache[item]) reCache[item] = (SYN[item] || []).map(s => { try { return new RegExp(s, 'i'); } catch (e) { return null; } }).filter(Boolean); return reCache[item]; }
+  const txReCache = {};
+  function txRe(sc, i) { const k = sc.id + '#' + i; if (!(k in txReCache)) { try { txReCache[k] = sc.treatments[i].match ? new RegExp(sc.treatments[i].match, 'i') : null; } catch (e) { txReCache[k] = null; } } return txReCache[k]; }
+  function matchAssess(text) {
+    // Returns unique item keys whose synonyms match, with the palette entries behind each key.
+    const keys = new Map();
+    for (const p of run.palette) {
+      if (keys.has(p.key)) { keys.get(p.key).push(p); continue; }
+      if (synRes(p.key).some(re => re.test(text))) keys.set(p.key, [p]);
+    }
+    // Keys map only holds matched keys; second pass collected entries for matched keys after the first hit — collect the rest too.
+    for (const p of run.palette) { const arr = keys.get(p.key); if (arr && !arr.includes(p)) arr.push(p); }
+    return [...keys.entries()].map(([key, entries]) => ({ key, entries }));
+  }
+  function matchTx(text) { return run.sc.treatments.map((t, i) => (txRe(run.sc, i) && txRe(run.sc, i).test(text)) ? i : -1).filter(i => i >= 0); }
+  function setFeedback(html, kind) { run.feedback = { tab: run.tab, html, kind: kind || '' }; }
+
+  // A "Which one?" chip prompt must not discard a treatment gate or confirm
+  // step that is waiting on the answer; stash it and restore it afterwards.
+  function stashable(pd) { return pd && (pd.kind === 'gate' || pd.kind === 'confirm') ? pd : null; }
+  function handleAsk(text) {
+    text = String(text || '').trim(); if (!text) return;
+    checkEvents();
+    if (run.pending && run.pending.kind === 'chips') run.pending = run.pending.resume || null;
+    const lower = text.toLowerCase();
+    const onTx = run.tab === 'treatment';
+    let hits = matchAssess(text), txs = matchTx(text);
+    // Prefer what the student is currently working on.
+    const inTab = hits.filter(h => h.entries.some(p => p.tab === run.tab));
+    if (onTx && txs.length) return resolveTx(txs, text);
+    if (inTab.length) hits = inTab;
+    // Prefer the scenario's own complaint branch: when anything in-branch (or
+    // branch-neutral) matches, drop entries that live only in other complaint
+    // branches so "listen to the lungs" doesn't offer the cardiac copy in an
+    // asthma call. Other branches remain reachable when nothing in-branch fits.
+    const inBranch = hits.filter(h => h.entries.some(p => !p.branch || p.branch === run.sc.complaint));
+    if (inBranch.length) hits = inBranch;
+    if (!hits.length && txs.length) return resolveTx(txs, text);
+    if (!hits.length) return noMatch(text);
+    // Specials first (priority / report / reassess / impression) when they are the only hit.
+    if (hits.length === 1 && hits[0].entries[0].special) return resolveSpecial(hits[0].entries[0], lower);
+    const plain = hits.filter(h => !h.entries[0].special);
+    if (!plain.length) return resolveSpecial(hits[0].entries[0], lower);
+    if (plain.length === 1) return reveal([plain[0].key], text);
+    // Several: same subgroup, or all vital signs → reveal them all (a "set of vitals" is one act).
+    const first = plain[0].entries[0];
+    const sameGroup = plain.every(h => h.entries[0].subgroup && h.entries[0].subgroup === first.subgroup && h.entries[0].section === first.section);
+    const allVitals = plain.every(h => h.entries.some(p => p.section === 'Vital Signs'));
+    if (sameGroup || allVitals) return reveal(plain.map(h => h.key), text);
+    run.pending = { kind: 'chips', text, keys: plain.slice(0, 8).map(h => h.key), txs: [], resume: stashable(run.pending) };
+    setFeedback('<strong>Which one?</strong> "' + esc(text) + '" could mean several things — pick the one you meant' + (plain.length <= 4 ? ', or all of them' : '') + '.', 'ask');
+    renderPanel();
+  }
+  function noMatch(text) {
+    const n = run.misses.filter(m => m.tab === run.tab).length + 1;
+    run.misses.push({ tab: run.tab, text, t: elapsed() });
+    let msg = '<strong>Nothing matched</strong> "' + esc(text) + '". ';
+    if (n === 1) msg += 'Phrase it as the question you would ask the patient, the thing you would look at or feel, or the treatment you would give — one thing at a time.';
+    else if (n === 2) msg += 'Try a different word for the same idea (for example "sats" or "pulse ox" for SpO₂, "log roll" for the posterior exam). If you are unsure what comes next, <strong>Stuck?</strong> gives the framework for this phase.';
+    else msg += 'Still nothing. It may be something this scenario has no finding for, or it may belong to a different phase — the tabs above are the skill-sheet order. <strong>Stuck?</strong> is there if you need it.';
+    setFeedback(msg, 'no'); renderPanel();
+  }
+  function reveal(keys, text) {
+    const shown = []; let confirmKey = null;
+    for (const key of keys) {
+      const entries = run.palette.filter(p => p.key === key);
+      const already = entries.every(p => run.done.has(p.dkey));
+      for (const p of entries) if (!run.done.has(p.dkey)) { run.done.add(p.dkey); logAction('assess', p.extra != null ? p.dkey : p.key, run.tab); }
+      // Best available finding for this key (correct branch or an extra beats a wrong-branch null).
+      let r = null; for (const p of entries) { const v = responseFor(p); if (v != null) { r = v; break; } }
+      shown.push({ key, r, already, tab: entries[0].tab, sub: entries.find(p => p.tab === run.tab) ? null : entries[0].sub });
+      // Confirm-step: naming the critical finding after committing to an impression.
+      if (run.pending && run.pending.kind === 'confirm' && (run.sc.criticalAssessments || []).some(c => c.item === key)) confirmKey = key;
+    }
+    let html = shown.map(s => '<div class="learned-row' + (s.already ? ' again' : '') + '"><span class="k">' + esc(s.key) + (s.already ? ' <em>(already assessed)</em>' : '') + '</span><span class="v' + (s.r == null ? ' na' : '') + '">' + esc(s.r == null ? NOT_ASSESSED : s.r) + '</span></div>').join('');
+    const elsewhere = shown.find(s => s.tab !== run.tab && !s.already);
+    if (elsewhere) { html += '<p class="small">That belongs to the <strong>' + esc(TAB_LABEL[elsewhere.tab]) + '</strong> phase — recorded there.</p>'; }
+    if (run.events.some(e => e.fired) && shown.some(s => s.already && s.tab === 'vitals')) html += '<p class="small">The patient has changed since then — current vitals:</p>' + vitalsTable(currentVitals());
+    setFeedback(html, 'ok');
+    // Gate check: did this reveal satisfy a pending treatment gate?
+    if (run.pending && run.pending.kind === 'gate') { const unmet = unmetGates(run.pending.tx); if (!unmet.length) { const i = run.pending.tx; run.pending = null; doTreatment(i, html + '<p class="stack">Now that you have that — '); return; } else run.pending.unmet = unmet; }
+    renderTabs(); renderPanel();
+    // Confirm-step satisfied by this reveal: stack the confirmation (and any
+    // treatment it unlocks) under the finding rows instead of replacing them.
+    if (confirmKey) { run.impression.confirmed = confirmKey; afterConfirm(html); }
+  }
+  function resolveSpecial(p, lower) {
+    if (p.special === 'priority') {
+      const unstable = /\bunstable\b|load and go|load & go|load-and-go|\bemergent\b|lights and sirens/.test(lower);
+      const stable = !unstable && /\bstable\b|routine|non-?emergent|stay and play/.test(lower);
+      if (unstable || stable) {
+        setPriority(unstable ? 'unstable' : 'stable'); run.tab = 'transport';
+        const phrase = unstable ? 'unstable — load and go.' : 'stable — routine transport.';
+        const resp = String(run.sc.responses[p.key] || '').trim();
+        const dup = resp && resp.toLowerCase().replace(/[.\s]+$/, '') === phrase.toLowerCase().replace(/[.\s]+$/, '');
+        setFeedback('<strong>Priority recorded:</strong> ' + phrase + (resp && !dup ? ' ' + esc(resp) : ''), 'ok');
+      }
+      else { run.tab = 'transport'; setFeedback('<strong>Make the call:</strong> is this patient stable or unstable? Say which, or use the buttons below.', 'ask'); }
+      renderTabs(); renderPanel(); return;
+    }
+    if (p.special === 'report') { run.tab = 'transport'; run.reportOpen = true; setFeedback('<strong>Go ahead —</strong> give your pre-arrival report below. Transmitting it ends the scenario.', 'ask'); renderTabs(); renderPanel(); const ta = document.getElementById('report-text'); if (ta) ta.focus(); return; }
+    if (p.special === 'reassess') { run.tab = 'reassess'; doReassess(); setFeedback('<strong>Reassessing.</strong> ' + (criticalTreatmentsDone() ? esc(run.sc.vitals.afterNote || 'Repeat vitals below.') : 'No change — the patient has not received the indicated treatment yet.'), 'ok'); renderTabs(); renderPanel(); return; }
+    if (p.special === 'impression') { openImpression(null); return; }
+  }
+  function resolveTx(txs, text) {
+    if (run.tab !== 'treatment') { run.tab = 'treatment'; }
+    if (txs.length === 1) return attemptTreatment(txs[0]);
+    run.pending = { kind: 'chips', text, keys: [], txs: txs.slice(0, 8), resume: stashable(run.pending) };
+    setFeedback('<strong>Which one?</strong> "' + esc(text) + '" could mean more than one intervention — pick the one you meant.', 'ask');
+    renderTabs(); renderPanel();
+  }
+
+  // ---------- treatments: impression checkpoint → gate → do ----------
+  function unmetGates(i) { return (run.sc.treatments[i].requires || []).filter(r => !(r.any || []).some(itemDone)); }
+  function attemptTreatment(i, prefix) {
+    const t = run.sc.treatments[i]; prefix = prefix || '';
+    if (run.treated.has(i)) { setFeedback('<strong>Already done:</strong> ' + esc(t.action) + '. ' + esc(t.result || ''), 'ok'); renderPanel(); return; }
+    if (t.needsImpression && !run.impression.done && run.sc.phase2 && run.sc.phase2.impression) { openImpression(i); return; }
+    const unmet = unmetGates(i);
+    if (unmet.length) {
+      run.pending = { kind: 'gate', tx: i, unmet };
+      setFeedback(prefix + '<strong>Before you do that —</strong> what do you need to know first? Ask for it (any tab). Once you have it, ' + esc(t.action) + ' goes ahead on its own.', 'ask');
+      renderPanel(); return;
+    }
+    doTreatment(i, prefix);
+  }
+  function doTreatment(i, prefix) {
+    const t = run.sc.treatments[i];
+    run.treated.add(i); logAction('treat', t.action, 'treatment');
+    if (t.verdict === 'contraindicated' && t.critical) run.dangerous.push(i);
+    let body = '<strong>' + esc(t.action) + '.</strong> ' + esc(t.result || 'Done.');
+    if (t.scope === 'PM' && t.verdict === 'not-indicated') body += '<span class="scope">Paramedic only — out of EMT-B scope; request ALS.</span>';
+    // A prefix may end with an open stacked paragraph ("Now that you have that — "); close it after the result.
+    const openP = /<p class="stack">[^<]*$/.test(prefix || '');
+    setFeedback((prefix || '') + body + (openP ? '</p>' : ''), 'ok');
+    checkEvents(); renderTabs(); renderDanger(); renderPanel();
+  }
+  function openImpression(tx) {
+    const imp = run.sc.phase2 && run.sc.phase2.impression; if (!imp) return;
+    run.pending = { kind: 'impression', tx, options: stableShuffle(imp.options, run.sc.id), tried: [] };
+    setFeedback(tx == null ? '<strong>Commit to it.</strong> What is your field impression?' : '<strong>Hold on.</strong> Before a treatment like that, commit to a field impression — what do you think is going on?', 'ask');
+    renderPanel();
+  }
+  function pickImpression(idx) {
+    const pd = run.pending; if (!pd || pd.kind !== 'impression') return;
+    const o = pd.options[idx];
+    if (!o.correct) { if (!pd.tried.includes(idx)) { pd.tried.push(idx); run.impression.wrong.push(o.label); logAction('impression-wrong', o.label, run.tab); } renderPanel(); return; }
+    run.impression.done = true; logAction('impression', o.label, run.tab);
+    const p = run.palette.find(q => q.special === 'impression'); if (p) run.done.add(p.dkey);
+    const cas = run.sc.criticalAssessments || [];
+    if (cas.length) { run.pending = { kind: 'confirm', tx: pd.tx, label: o.label, why: o.why, cite: o.cite }; }
+    else { run.pending = null; if (pd.tx != null) { attemptTreatment(pd.tx); return; } }
+    renderTabs(); renderPanel();
+  }
+  function confirmAnswer(text) {
+    const pd = run.pending; if (!pd || pd.kind !== 'confirm') return;
+    text = String(text || '').trim(); if (!text) return;
+    const cas = run.sc.criticalAssessments || [];
+    const hit = cas.find(c => synRes(c.item).some(re => re.test(text)));
+    if (!hit) { run.impression.confirmMisses++; logAction('confirm-miss', text, run.tab); pd.miss = text; renderPanel(); return; }
+    run.impression.confirmed = hit.item; logAction('confirm', hit.item, run.tab);
+    if (!itemDone(hit.item)) reveal([hit.item], text); else afterConfirm();
+  }
+  function afterConfirm(prefixHtml) {
+    const pd = run.pending; if (!pd || pd.kind !== 'confirm') return;
+    const ca = (run.sc.criticalAssessments || []).find(c => c.item === run.impression.confirmed);
+    run.pending = null;
+    const lead = (prefixHtml || '') + '<p class="stack"><strong>' + esc(pd.label) + '</strong> — confirmed by <em>' + esc(run.impression.confirmed) + '</em>. ' + esc(ca ? ca.label : '') + ' ' + citeHtml(ca ? ca.cite : pd.cite) + '</p>';
+    setFeedback(lead, 'ok');
+    if (pd.tx != null) { attemptTreatment(pd.tx, lead); return; }
+    renderTabs(); renderPanel();
+  }
+  function skipConfirm() {
+    const pd = run.pending; if (!pd || pd.kind !== 'confirm') return;
+    run.impression.confirmSkipped = true; logAction('confirm-skip', pd.label, run.tab);
+    const lead = '<p class="stack"><strong>' + esc(pd.label) + '</strong> — noted without a confirming finding. ' + esc(pd.why || '') + ' ' + citeHtml(pd.cite) + '</p>';
+    run.pending = null; setFeedback(lead, 'warn');
+    if (pd.tx != null) { attemptTreatment(pd.tx, lead); return; }
+    renderTabs(); renderPanel();
+  }
+  function proceedGate() {
+    const pd = run.pending; if (!pd || pd.kind !== 'gate') return;
+    run.gateViolations.push({ tx: pd.tx, missing: pd.unmet.map(r => r.why), t: elapsed() }); logAction('gate-override', run.sc.treatments[pd.tx].action, run.tab);
+    run.pending = null; doTreatment(pd.tx, 'Proceeding without it — ');
+  }
+  function setPriority(v) {
+    if (run.priority) return;
+    run.priority = v; const p = run.palette.find(q => q.special === 'priority');
+    if (p) run.done.add(p.dkey); logAction('priority', v, 'transport');
+  }
+  function doReassess() {
+    run.reassessed = true; const p = run.palette.find(q => q.special === 'reassess');
+    if (p) run.done.add(p.dkey); logAction('reassess', 'Evaluates response to treatments', 'reassess');
+  }
+  function useHint(tab) { run.hints[tab] = (run.hints[tab] || 0) + 1; logAction('hint', tab, tab); if (run.pending && run.pending.kind === 'chips') run.pending = run.pending.resume || null; setFeedback('<strong>How to think about this phase.</strong> ' + esc(HINTS[tab] || ''), 'hint'); renderPanel(); }
+  function showChecklist(tab) { if (!run.checklist.has(tab)) { run.checklist.add(tab); logAction('checklist', tab, tab); } renderTabs(); renderPanel(); }
+
+  // ---------- panel ----------
+  function pendingHtml() {
+    const pd = run.pending; if (!pd) return '';
+    const sc = run.sc;
+    if (pd.kind === 'impression') {
+      return '<div class="checkpoint impression"><h4 class="sec">Field impression</h4><p>' + (pd.tx != null ? 'You want to give <strong>' + esc(sc.treatments[pd.tx].action) + '</strong>. ' : '') + 'What do you think is going on with this patient?</p><div class="choice">' +
+        pd.options.map((o, i) => { const tried = pd.tried.includes(i); return '<button class="item' + (tried ? ' wrong' : '') + '" data-imp="' + i + '"' + (tried ? ' disabled' : '') + '><span class="lbl">' + esc(o.label) + '</span>' + (tried ? '<span class="finding">' + esc(o.why) + ' ' + citeHtml(o.cite) + '</span>' : '') + '</button>'; }).join('') +
+        '</div><div class="btnrow"><button class="btn" id="imp-cancel">Never mind</button></div></div>';
+    }
+    if (pd.kind === 'confirm') {
+      return '<div class="checkpoint impression"><h4 class="sec">Confirm it</h4><p><strong>' + esc(pd.label) + '.</strong> ' + esc(pd.why || '') + ' ' + citeHtml(pd.cite) + '</p>' +
+        '<p>What assessment finding confirms that impression? Name the thing you would check.</p>' +
+        (pd.miss ? '<p class="small bad-text">"' + esc(pd.miss) + '" is not the key finding here. Think about what would be different if you were wrong.</p>' : '') +
+        '<form class="ask" id="confirm-form"><input id="confirm-text" autocomplete="off" placeholder="e.g. the finding on exam that fits this and not the alternatives"><button class="btn primary" type="submit">That confirms it</button></form>' +
+        '<div class="btnrow"><button class="btn" id="confirm-skip">Skip — treat without confirming</button></div></div>';
+    }
+    if (pd.kind === 'gate') {
+      const t = sc.treatments[pd.tx];
+      return '<div class="checkpoint gate"><h4 class="sec">Before you do that</h4><p>You want to give <strong>' + esc(t.action) + '</strong>. What do you need to know first? Ask for it in the box below — on any tab — and the treatment goes ahead once you have it.</p>' +
+        '<p class="small">Still missing: ' + pd.unmet.length + ' ' + (pd.unmet.length === 1 ? 'thing' : 'things') + '.</p>' +
+        '<div class="btnrow"><button class="btn danger" id="gate-proceed">Proceed anyway</button><button class="btn" id="gate-cancel">Never mind</button></div></div>';
+    }
+    if (pd.kind === 'chips') {
+      return '<div class="chips">' + pd.keys.map(k => { const p = run.palette.find(q => q.key === k); return '<button class="chip" data-chip-key="' + esc(k) + '">' + esc(k) + '<small>' + esc(p ? p.section.replace(/^Secondary — |^Primary Assessment — /, '') : '') + '</small></button>'; }).join('') +
+        pd.txs.map(i => '<button class="chip tx" data-chip-tx="' + i + '">' + esc(sc.treatments[i].action) + '<small>treatment</small></button>').join('') +
+        (pd.keys.length > 1 && pd.keys.length <= 4 ? '<button class="chip all" data-chip-all="1">All of these</button>' : '') + '</div>';
+    }
+    return '';
+  }
+  function learnedHtml(tab) {
+    const seen = new Set(); const rows = [];
+    for (const p of run.palette) {
+      if (p.tab !== tab || p.special || !run.done.has(p.dkey) || seen.has(p.key)) continue;
+      seen.add(p.key);
+      let r = null; for (const q of run.palette) if (q.key === p.key && run.done.has(q.dkey)) { const v = responseFor(q); if (v != null) { r = v; break; } }
+      rows.push('<div class="learned-row"><span class="k">' + esc(p.key) + '</span><span class="v' + (r == null ? ' na' : '') + '">' + esc(r == null ? NOT_ASSESSED : r) + '</span></div>');
+    }
+    if (!rows.length) return '<p class="small learned-empty">Nothing yet in this phase. Ask for what you want to know.</p>';
+    return '<div class="learned"><h4 class="sec">What you have so far</h4>' + rows.join('') + '</div>';
+  }
+  function askBoxHtml(tab) {
+    const fb = run.feedback && run.feedback.tab === tab ? '<div class="feedback ' + esc(run.feedback.kind) + '">' + run.feedback.html + '</div>' : '';
+    const hinted = (run.hints[tab] || 0) > 0;
+    return '<form class="ask" id="ask-form"><input id="ask-text" autocomplete="off" placeholder="' + esc(ASK_PLACEHOLDER[tab] || '') + '"><button class="btn primary" type="submit">' + (tab === 'treatment' ? 'Do it' : 'Ask / check') + '</button></form>' +
+      fb + pendingHtml() +
+      '<div class="stuck"><button class="btn small-btn" id="hint-btn">Stuck? ' + (hinted ? 'Show the framework again' : 'Show me how to think about this phase') + '</button>' +
+      (hinted && !run.checklist.has(tab) && tab !== 'treatment' && tab !== 'transport' ? '<button class="btn small-btn" id="checklist-btn">Show the checklist for this phase (−10 reasoning)</button>' : '') + '</div>';
+  }
+  function renderPanel() {
+    const sc = run.sc, el = document.getElementById('panel'); if (!el) return;
+    const t = run.tab; let h = '';
+    const guided = run.mode === 'guided';
+    const listed = guided || run.checklist.has(t);   // show the checklist for this tab?
+    if (!guided) h += askBoxHtml(t);
+    else h += (run.feedback && run.feedback.tab === t ? '<div class="feedback ' + esc(run.feedback.kind) + '">' + run.feedback.html + '</div>' : '') + pendingHtml();
+    if (t === 'scene' || t === 'primary' || t === 'history') {
+      h += listed ? itemsBySection(run.palette.filter(p => p.tab === t && !p.special)) : learnedHtml(t);
+      if (t === 'primary') h += '<p class="small" style="margin-top:14px">Patient priority and transport decision live under the <strong>Transport</strong> tab (scored as part of Primary — Circulation).</p>';
+    } else if (t === 'vitals') {
+      h += listed ? itemsBySection(run.palette.filter(p => p.tab === 'vitals')) : learnedHtml(t);
+      const anyVitals = run.palette.some(p => p.section === 'Vital Signs' && run.done.has(p.dkey));
+      if (anyVitals) h += '<h4 class="sec">' + (run.events.some(e => e.fired) ? 'Current vital signs' : 'Full initial vital signs') + '</h4>' + vitalsTable(currentVitals());
+      else h += '<p class="small" style="margin-top:14px">Take a full set of vitals to see the complete table.</p>';
+    } else if (t === 'focused' || t === 'secondary') {
+      if (listed) {
+        h += '<div class="subtabs">' + run.subs.map(s => '<button class="subtab' + (run.sub === s.key ? ' active' : '') + '" data-sub="' + esc(s.key) + '">' + esc(s.label) + '</button>').join('') + '</div>';
+        if (t === 'focused') h += '<p class="small">Pick the complaint branch that fits your field impression — only the matching branch counts. Wrong-branch items reveal nothing.</p>';
+        h += itemsBySection(run.palette.filter(p => p.tab === t && p.sub === run.sub && p.extra == null));
+        if (t === 'focused' && run.sub === sc.complaint) h += itemsBySection(run.palette.filter(p => p.tab === t && p.extra != null));
+      } else h += learnedHtml(t);
+    } else if (t === 'treatment') {
+      if (listed || guided) {
+        h += '<p class="small">Choose the interventions you would perform, in order. Some are indicated, some unnecessary, some dangerous — a dangerous one fails the station immediately.</p>';
+        h += '<div class="items">' + sc.treatments.map((tx, i) => {
+          const done = run.treated.has(i), danger = done && tx.verdict === 'contraindicated' && tx.critical;
+          let b = '<button class="item tx' + (done ? ' done' : '') + (danger ? ' dangerous' : '') + '" data-tx="' + i + '"><span class="lbl">' + esc(tx.action) + '</span>';
+          if (done) { b += '<span class="finding">' + esc(tx.result || 'Done.') + '</span>'; if (tx.scope === 'PM' && tx.verdict === 'not-indicated') b += '<span class="scope">Paramedic only — out of EMT-B scope; request ALS.</span>'; }
+          return b + '</button>';
+        }).join('') + '</div>';
+      } else {
+        const done = [...run.treated].sort((a, b) => a - b);
+        h += done.length ? '<div class="learned"><h4 class="sec">Given so far</h4>' + done.map(i => { const tx = sc.treatments[i]; return '<div class="learned-row' + (tx.verdict === 'contraindicated' && tx.critical ? ' bad' : '') + '"><span class="k">' + esc(tx.action) + '</span><span class="v">' + esc(tx.result || 'Done.') + '</span></div>'; }).join('') + '</div>'
+          : '<p class="small learned-empty">No interventions yet. Say what you would do, one at a time, in the order you would do it.</p>';
+      }
+    } else if (t === 'reassess') {
+      h += listed ? itemsBySection(run.palette.filter(p => p.tab === 'reassess' && !p.special)) : learnedHtml(t);
+      h += '<h4 class="sec">Evaluate response to treatment</h4>';
+      h += '<div class="btnrow"><button class="btn" id="reassess-btn">' + (run.reassessed ? 'Reassess vitals again' : 'Reassess vitals') + '</button></div>';
+      if (run.reassessed) {
+        if (criticalTreatmentsDone()) h += '<p class="small"><em>' + esc(sc.vitals.afterNote || 'Repeat vitals:') + '</em></p>' + vitalsTable(sc.vitals.after);
+        else h += '<div class="notice"><p><strong>No improvement</strong> — the patient has not received the indicated treatment yet.</p></div>' + vitalsTable(currentVitals());
+      }
+    } else if (t === 'transport') {
+      const pItem = run.palette.find(p => p.special === 'priority');
+      h += '<h4 class="sec">Patient priority &amp; transport decision</h4>';
+      h += '<div class="choice">' +
+        '<button class="item' + (run.priority === 'stable' ? ' picked done' : '') + '" data-priority="stable"><span class="lbl">Stable — routine transport</span></button>' +
+        '<button class="item' + (run.priority === 'unstable' ? ' picked done' : '') + '" data-priority="unstable"><span class="lbl">Unstable — load and go</span></button></div>';
+      if (run.priority) { const r = pItem ? sc.responses[pItem.key] : null; h += '<div class="card">' + (r ? '<p><em>' + esc(r) + '</em></p>' : '') + '<p><strong>Destination:</strong> ' + esc(sc.transport.destination) + '</p>' + citeHtml(sc.transport.cite) + '</div>'; }
+      h += '<h4 class="sec">Pre-arrival report &amp; transport</h4>';
+      if (!run.reportOpen) {
+        h += '<p class="small">When you are ready to go, give your radio report and transport. This ends the scenario and opens the debrief.</p>' +
+          '<div class="btnrow"><button class="btn gold" id="report-open">Give report &amp; transport ▸</button></div>';
+      } else {
+        h += '<p class="small">Type your pre-arrival report as you would say it on the radio (Region X SOP p.7 order). It is not auto-graded — you will self-check it against the SOP checklist in the debrief.</p>' +
+          '<textarea class="report" id="report-text" placeholder="Unit, alert, protocol, age/sex, history, exam, treatment &amp; response, ETA &amp; destination…">' + esc(run.report) + '</textarea>' +
+          '<div class="btnrow"><button class="btn primary" id="report-send">Transmit report &amp; transport — end scenario</button>' +
+          '<button class="btn" id="report-cancel">Not yet</button></div>';
+      }
+    }
+    el.innerHTML = h;
+    wirePanel(el);
+  }
+  function wirePanel(el) {
+    const sc = run.sc;
+    const af = document.getElementById('ask-form');
+    if (af) { af.onsubmit = ev => { ev.preventDefault(); const inp = document.getElementById('ask-text'); const v = inp.value; handleAsk(v); const again = document.getElementById('ask-text'); if (again) { again.value = ''; again.focus(); } }; }
+    const cf = document.getElementById('confirm-form');
+    if (cf) { cf.onsubmit = ev => { ev.preventDefault(); confirmAnswer(document.getElementById('confirm-text').value); const ct = document.getElementById('confirm-text'); if (ct) ct.focus(); }; const ct = document.getElementById('confirm-text'); if (ct) ct.focus(); }
+    const cs = document.getElementById('confirm-skip'); if (cs) cs.onclick = skipConfirm;
+    const gp = document.getElementById('gate-proceed'); if (gp) gp.onclick = proceedGate;
+    const gc = document.getElementById('gate-cancel'); if (gc) gc.onclick = () => { run.pending = null; setFeedback('Okay — nothing given.', ''); renderPanel(); };
+    const ic = document.getElementById('imp-cancel'); if (ic) ic.onclick = () => { run.pending = null; setFeedback('Okay — nothing given. Come back when you have committed to an impression.', ''); renderPanel(); };
+    el.querySelectorAll('[data-imp]').forEach(b => b.onclick = () => pickImpression(+b.dataset.imp));
+    el.querySelectorAll('[data-chip-key]').forEach(b => b.onclick = () => { run.pending = run.pending.resume || null; reveal([b.dataset.chipKey], b.dataset.chipKey); });
+    el.querySelectorAll('[data-chip-tx]').forEach(b => b.onclick = () => { run.pending = run.pending.resume || null; attemptTreatment(+b.dataset.chipTx); });
+    el.querySelectorAll('[data-chip-all]').forEach(b => b.onclick = () => { const keys = run.pending.keys; run.pending = run.pending.resume || null; reveal(keys, 'all'); });
+    const hb = document.getElementById('hint-btn'); if (hb) hb.onclick = () => useHint(run.tab);
+    const cb = document.getElementById('checklist-btn'); if (cb) cb.onclick = () => showChecklist(run.tab);
+
+    el.querySelectorAll('.item[data-dkey]').forEach(b => b.onclick = () => {
+      const k = b.dataset.dkey; if (run.done.has(k)) return;
+      const p = run.palette.find(q => q.dkey === k);
+      if (p && p.special === 'impression') { openImpression(null); return; }
+      run.done.add(k); logAction('assess', p && p.extra == null ? p.key : k, run.tab);
+      if (run.pending && run.pending.kind === 'gate') { const unmet = unmetGates(run.pending.tx); if (!unmet.length) { const i = run.pending.tx; run.pending = null; doTreatment(i, 'Now that you have that — '); return; } run.pending.unmet = unmet; }
+      if (run.pending && run.pending.kind === 'confirm' && p && (sc.criticalAssessments || []).some(c => c.item === p.key)) { run.impression.confirmed = p.key; afterConfirm(); return; }
+      renderTabs(); renderPanel();
+    });
+    el.querySelectorAll('.subtab').forEach(b => b.onclick = () => { run.sub = b.dataset.sub; renderPanel(); });
+    el.querySelectorAll('.item[data-tx]').forEach(b => b.onclick = () => attemptTreatment(+b.dataset.tx));
+    const rb = document.getElementById('reassess-btn');
+    if (rb) rb.onclick = () => { doReassess(); renderTabs(); renderPanel(); };
+    el.querySelectorAll('.item[data-priority]').forEach(b => b.onclick = () => { if (run.priority) return; setPriority(b.dataset.priority); renderTabs(); renderPanel(); });
+    const ro = document.getElementById('report-open'); if (ro) ro.onclick = () => { run.reportOpen = true; renderPanel(); document.getElementById('report-text').focus(); };
+    const rc = document.getElementById('report-cancel'); if (rc) rc.onclick = () => { run.report = document.getElementById('report-text').value; run.reportOpen = false; renderPanel(); };
+    const rs = document.getElementById('report-send'); if (rs) rs.onclick = () => {
+      run.report = document.getElementById('report-text').value.trim();
+      if (run.report) { const p = run.palette.find(q => q.special === 'report'); if (p) run.done.add(p.dkey); }
+      logAction('report', run.report ? 'given' : 'none', 'transport');
+      finish();
+    };
+  }
+
+  // ---------- DEBRIEF ----------
+  function finish() {
+    run.end = Date.now(); stopClock();
+    const d = computeDebrief();
+    saveResult(run.sc.id, d.pct, d.fails.length, d.reason.score);
+    view = 'debrief'; renderDebrief(d);
+  }
+  function computeReasoning() {
+    const sc = run.sc, evs = (sc.phase2 && sc.phase2.deterioration) || [];
+    const lines = [];   // { pts, text, cite?, good? }
+    const cap = (n, k) => Math.min(n * PENALTY[k][0], PENALTY[k][1]);
+    let score = 100;
+    const wrong = run.impression.wrong;
+    if (wrong.length) { const p = cap(wrong.length, 'wrongImpression'); score -= p; lines.push({ pts: -p, text: 'Wrong field impression before the right one: ' + wrong.join('; ') + '.' }); }
+    else if (run.impression.done) lines.push({ pts: 0, good: true, text: 'Field impression correct on the first try.' });
+    else lines.push({ pts: 0, text: 'Never committed to a field impression.' });
+    if (run.impression.confirmSkipped) { score -= PENALTY.confirmSkipped[0]; lines.push({ pts: -PENALTY.confirmSkipped[0], text: 'Skipped naming the finding that confirms the impression. Treating on a hunch is how the wrong drug gets given.' }); }
+    else if (run.impression.confirmed) lines.push({ pts: 0, good: true, text: 'Confirmed the impression with: ' + run.impression.confirmed + (run.impression.confirmMisses ? ' (after ' + run.impression.confirmMisses + ' other ' + (run.impression.confirmMisses === 1 ? 'guess' : 'guesses') + ')' : '') + '.' });
+    const hintN = Object.values(run.hints).reduce((a, b) => a + b, 0);
+    if (hintN) { const p = cap(hintN, 'hint'); score -= p; lines.push({ pts: -p, text: hintN + ' hint' + (hintN === 1 ? '' : 's') + ' used (' + Object.keys(run.hints).map(t => TAB_LABEL[t]).join(', ') + ').' }); }
+    const listN = run.guidedAt != null ? Math.max(run.checklist.size, 3) : run.checklist.size;
+    if (listN) { const p = cap(listN, 'checklist'); score -= p; lines.push({ pts: -p, text: run.guidedAt != null ? 'Switched to guided mode at ' + fmt(run.guidedAt) + ' — the checklist did the thinking from there.' : 'Revealed the checklist for: ' + [...run.checklist].map(t => TAB_LABEL[t]).join(', ') + '.' }); }
+    if (run.gateViolations.length) {
+      const p = cap(run.gateViolations.length, 'gate'); score -= p;
+      for (const g of run.gateViolations) lines.push({ pts: -Math.min(PENALTY.gate[0], p), text: 'Gave ' + sc.treatments[g.tx].action + ' at ' + fmt(g.t) + ' without: ' + g.missing.join(' ') , cite: sc.treatments[g.tx].cite });
+    }
+    const fired = run.events.filter(e => e.fired), prevented = run.events.filter(e => !e.fired);
+    if (fired.length) { const p = cap(fired.length, 'event'); score -= p; for (const e of fired) lines.push({ pts: -Math.min(PENALTY.event[0], p), text: 'Patient deteriorated at ' + fmt(e.t) + ': ' + evs[e.i].narrative + (evs[e.i].unless && evs[e.i].unless.tx ? ' Prevented by: ' + evs[e.i].unless.tx.map(i => sc.treatments[i].action).join(' / ') + '.' : ''), cite: evs[e.i].cite }); }
+    for (const e of prevented) lines.push({ pts: 0, good: true, text: 'Prevented deterioration at ' + fmt(evs[e.i].at) + ' by giving ' + (evs[e.i].unless.tx.filter(i => run.treated.has(i)).map(i => sc.treatments[i].action).join(' / ')) + ' in time.' });
+    const missN = run.misses.length;
+    if (missN) lines.push({ pts: 0, text: missN + ' ' + (missN === 1 ? 'entry' : 'entries') + ' matched nothing: ' + run.misses.slice(0, 6).map(m => '"' + m.text + '"').join(', ') + (missN > 6 ? ', …' : '') + '. Not penalised — but if these were real questions, tell us so the trainer learns them.' });
+    // Time to each critical indicated treatment.
+    const times = [];
+    sc.treatments.forEach((t, i) => { if (t.verdict === 'indicated' && t.critical) { const e = run.log.find(l => l.kind === 'treat' && l.key === t.action); times.push({ action: t.action, t: e ? e.t : null }); } });
+    return { score: Math.max(0, Math.min(100, score)), lines, times };
+  }
+  function computeDebrief() {
+    const sc = run.sc, log = run.log, fails = [];
+    const addFail = (idx, detail, cite) => fails.push({ idx, detail, cite });
+    // Scene safety / BSI must precede any non-scene action.
+    const firstNonScene = log.findIndex(e => e.tab !== 'scene' && !/^(hint|checklist|guided|event)$/.test(e.kind));
+    const orderCheck = (key, idx) => {
+      const at = log.findIndex(e => e.kind === 'assess' && e.key === key);
+      if (at === -1) addFail(idx, 'Never performed or verbalized.');
+      else if (firstNonScene !== -1 && at > firstNonScene) addFail(idx, 'Performed at ' + fmt(log[at].t) + ', after you had already moved on to "' + log[firstNonScene].key + '".');
+    };
+    orderCheck(SAFE_ITEM, 0); orderCheck(BSI_ITEM, 1);
+    // Transport decision & time limit.
+    const total = elapsed();
+    if (!run.priority) addFail(2, 'No patient priority / transport decision was made.');
+    if (total > TIME_LIMIT) addFail(2, 'Scenario ran ' + fmt(total) + ' — over the 15:00 limit.');
+    if (run.priority && run.priority !== sc.transport.priority) addFail(7, 'Called the patient "' + run.priority + '" — this patient is ' + sc.transport.priority + '. ' + sc.transport.destination, sc.transport.cite);
+    // Treatments.
+    const expected = [], harmful = [], unnecessary = [], alsoExpected = [];
+    sc.treatments.forEach((t, i) => {
+      const did = run.treated.has(i);
+      if (t.verdict === 'indicated') {
+        expected.push({ t, did });
+        if (!did) { if (t.critical) addFail(t.failCategory == null ? 7 : t.failCategory, 'Did not perform: ' + t.action + (t.note ? ' — ' + t.note : ''), t.cite); else alsoExpected.push(t); }
+      } else if (t.verdict === 'contraindicated' && did) {
+        if (t.critical) addFail(5, t.action + (t.note ? ' — ' + t.note : ''), t.cite); else harmful.push(t);
+      } else if (t.verdict === 'not-indicated' && did) unnecessary.push(t);
+    });
+    // Report.
+    const reportItem = run.palette.find(p => p.special === 'report');
+    if (!reportItem || !run.done.has(reportItem.dkey)) addFail(6, 'No pre-arrival report was given before transport.', { src: 'SOP', ref: 'pre-arrival-report', page: 7 });
+    // Critical assessments.
+    for (const ca of sc.criticalAssessments || []) {
+      if (!itemDone(ca.item)) addFail(7, 'Never assessed "' + ca.item + '" — ' + ca.label, ca.cite);
+    }
+    // Section scores (palette items in scoring sections; specials count via their mechanisms).
+    const sections = [];
+    for (const p of run.palette) {
+      if (!p.scored) continue;
+      let s = sections.find(x => x.title === p.section);
+      if (!s) { s = { title: p.section, total: 0, done: 0, skipped: [] }; sections.push(s); }
+      s.total++; if (run.done.has(p.dkey)) s.done++; else s.skipped.push(p.key);
+    }
+    const tot = sections.reduce((a, s) => a + s.total, 0), don = sections.reduce((a, s) => a + s.done, 0);
+    const grouped = [];
+    for (const f of fails) { let g = grouped.find(x => x.idx === f.idx); if (!g) { g = { idx: f.idx, items: [] }; grouped.push(g); } g.items.push(f); }
+    grouped.sort((a, b) => a.idx - b.idx);
+    return { fails, grouped, expected, harmful, unnecessary, alsoExpected, sections, pct: tot ? Math.round(100 * don / tot) : 0, total, done: don, totalItems: tot, reason: computeReasoning() };
+  }
+  function renderDebrief(d) {
+    const sc = run.sc;
+    const ok = d.fails.length === 0;
+    let h = '<header class="masthead">' +
+      '<div class="eyebrow"><span><span class="dot"></span>' + esc(sc.tag) + ' · Debrief</span><span><a href="#" style="color:var(--muted)">← All scenarios</a></span></div>' +
+      '<h1 class="title">' + esc(sc.title) + '</h1><div class="subtitle">Scored against the NEMO ' + (sc.type === 'medical' ? 'medical' : 'trauma') + ' skill sheet · ' + esc(window.TEXTBOOK_EDITION || '') + ' · ' + esc(window.PROTOCOL_EDITION || '') + '</div></header>';
+    h += '<div class="notice ' + (ok ? 'good' : 'bad') + '"><p><strong>' + (ok ? 'No critical criteria triggered.' : d.fails.length + ' critical ' + (d.fails.length === 1 ? 'criterion' : 'criteria') + ' triggered — this station would be a fail.') +
+      '</strong> ' + (ok ? 'Now look at what you skipped below; a clean station is one where nothing important was left out.' : 'Any single critical criterion fails an NREMT station regardless of the section scores.') + '</p></div>';
+    const rs = d.reason.score;
+    h += '<div class="scoreboard"><div class="score ' + (d.pct >= 80 ? 'good' : d.pct >= 60 ? '' : 'bad') + '"><b>' + d.pct + '%</b><span>steps performed · ' + d.done + '/' + d.totalItems + '</span></div>' +
+      '<div class="score ' + (ok ? 'good' : 'bad') + '"><b>' + d.fails.length + '</b><span>critical criteria</span></div>' +
+      '<div class="score ' + (rs >= 80 ? 'good' : rs >= 60 ? '' : 'bad') + '"><b>' + rs + '</b><span>reasoning · out of 100</span></div>' +
+      '<div class="score ' + (d.total > TIME_LIMIT ? 'bad' : '') + '"><b>' + fmt(d.total) + '</b><span>time on scene</span></div></div>';
+    if (!ok) {
+      h += '<h2>Critical criteria</h2>';
+      for (const g of d.grouped) {
+        h += '<div class="fail"><h5>' + esc(FAILS[g.idx] || 'Critical criterion') + '</h5><ul>' +
+          g.items.map(f => '<li>' + esc(f.detail) + (f.cite ? ' ' + citeHtml(f.cite) : '') + '</li>').join('') + '</ul></div>';
+      }
+    }
+    // Clinical reasoning
+    h += '<h2>Clinical reasoning</h2><p class="small">How you got to your decisions — separate from whether the skill-sheet boxes got ticked.</p>';
+    h += '<div class="reason">' + d.reason.lines.map(l => '<div class="tx-row"><span class="mark ' + (l.good ? 'ok' : l.pts < 0 ? 'miss' : 'warn') + '">' + (l.good ? '✓' : l.pts < 0 ? l.pts : '–') + '</span><div>' + esc(l.text) + (l.cite ? ' ' + citeHtml(l.cite) : '') + '</div></div>').join('') + '</div>';
+    if (d.reason.times.length) {
+      h += '<h3>Time to critical treatment</h3>' + d.reason.times.map(x => '<div class="tx-row"><span class="mark ' + (x.t == null ? 'miss' : 'ok') + '">' + (x.t == null ? '✗' : fmt(x.t)) + '</span><div>' + esc(x.action) + (x.t == null ? '<span class="note">never given</span>' : '') + '</div></div>').join('');
+    }
+    // Priority / transport
+    h += '<h2>Transport decision</h2>';
+    h += '<div class="card"><p>You called: <strong>' + (run.priority ? esc(run.priority) : 'no decision') + '</strong> · Expected: <strong>' + esc(sc.transport.priority) + '</strong></p>' +
+      '<p>' + esc(sc.transport.destination) + '</p>' + citeHtml(sc.transport.cite) + '</div>';
+    // Treatments
+    h += '<h2>Treatment review</h2>';
+    h += '<h3>Expected interventions</h3>';
+    h += d.expected.map(x => '<div class="tx-row"><span class="mark ' + (x.did ? 'ok' : 'miss') + '">' + (x.did ? '✓' : '✗') + '</span><div>' + esc(x.t.action) +
+      (x.t.critical ? '<span class="pill crit">critical</span>' : '') + '<span class="note">' + esc(x.t.note || '') + ' ' + citeHtml(x.t.cite) + '</span></div></div>').join('') || '<p class="small">None recorded.</p>';
+    if (d.harmful.length) h += '<h3>Harmful choices (not a critical fail, but wrong)</h3>' + d.harmful.map(t => '<div class="tx-row"><span class="mark miss">✗</span><div>' + esc(t.action) + '<span class="note">' + esc(t.note || '') + ' ' + citeHtml(t.cite) + '</span></div></div>').join('');
+    if (d.unnecessary.length) h += '<h3>Unnecessary interventions</h3>' + d.unnecessary.map(t => '<div class="tx-row"><span class="mark warn">–</span><div>' + esc(t.action) + (t.scope === 'PM' ? '<span class="pill pm">paramedic</span>' : '') + '<span class="note">' + esc(t.note || '') + ' ' + citeHtml(t.cite) + '</span></div></div>').join('');
+    const skippedContra = sc.treatments.filter((t, i) => t.verdict === 'contraindicated' && !run.treated.has(i));
+    if (skippedContra.length) h += '<h3>Correctly withheld</h3>' + skippedContra.map(t => '<div class="tx-row"><span class="mark ok">✓</span><div>' + esc(t.action) + '<span class="note">' + esc(t.note || '') + ' ' + citeHtml(t.cite) + '</span></div></div>').join('');
+    if (sc.expectedTreatmentHtml) h += '<h3>Expected treatment path</h3><div class="html-block">' + sc.expectedTreatmentHtml + '</div>';
+    if (sc.pitfallsHtml) h += '<h3>Common pitfalls</h3><div class="html-block">' + sc.pitfallsHtml + '</div>';
+    // Sections
+    h += '<h2>Assessment by section</h2><table class="sections"><tr><th>Section</th><th>Done</th><th>Skipped</th></tr>';
+    for (const s of d.sections) {
+      h += '<tr><td>' + esc(s.title) + '</td><td class="num">' + s.done + ' / ' + s.total + '</td><td>' +
+        (s.skipped.length ? '<details><summary>' + s.skipped.length + ' skipped</summary><ul class="plain">' + s.skipped.map(k => '<li>' + esc(k) + '</li>').join('') + '</ul></details>' : '<span class="small">—</span>') + '</td></tr>';
+    }
+    h += '</table>';
+    // Impression options — teach the differential after the fact.
+    if (sc.phase2 && sc.phase2.impression) {
+      h += '<h2>The differential</h2><p class="small">Why the right impression is right and the others are not.</p>' +
+        sc.phase2.impression.options.map(o => '<div class="tx-row"><span class="mark ' + (o.correct ? 'ok' : 'warn') + '">' + (o.correct ? '✓' : '–') + '</span><div>' + esc(o.label) + '<span class="note">' + esc(o.why) + ' ' + citeHtml(o.cite) + '</span></div></div>').join('');
+    }
+    // Hidden findings
+    if (sc.hidden && sc.hidden.length) {
+      h += '<h2>What the proctor had ready</h2><p class="small">Findings that exist in this scenario whether or not you asked for them.</p>' + vitalsTable(sc.hidden);
+    }
+    h += '<h3>Initial vitals</h3>' + vitalsTable(sc.vitals.initial);
+    if (sc.vitals.after && sc.vitals.after.length) h += '<h3>After indicated treatment</h3><p class="small"><em>' + esc(sc.vitals.afterNote || '') + '</em></p>' + vitalsTable(sc.vitals.after);
+    // Report self-check
+    h += '<h2>Pre-arrival report self-check</h2><p class="small">Region X SOP p.7 order. Tick what your report actually covered — the hints are only a rough text match.</p>';
+    h += '<div class="report-view">' + (run.report ? esc(run.report) : '(no report given)') + '</div>';
+    h += '<ol class="checklist">' + REPORT_CHECKLIST.map(([label, re]) => {
+      const hit = run.report && re.test(run.report);
+      return '<li><label><input type="checkbox">' + esc(label) + '</label><span class="hint ' + (hit ? 'yes' : 'no') + '">' + (hit ? 'mentioned?' : 'not detected') + '</span></li>';
+    }).join('') + '</ol><p>' + citeHtml({ src: 'SOP', ref: 'pre-arrival-report', page: 7 }) + '</p>';
+    // Review status / sources
+    h += '<h2>Sources &amp; review status</h2>';
+    if (sc.meta && sc.meta.reviewedBy) h += '<p class="small">Clinically reviewed by ' + esc(sc.meta.reviewedBy) + ' on ' + esc(sc.meta.reviewedOn) + '.</p>';
+    else h += '<div class="notice"><p><strong>Unreviewed draft.</strong> This scenario has not yet been signed off by ' + esc(REVIEWERS.join(', ')) + '.</p></div>';
+    for (const f of (sc.meta && sc.meta.reviewerFlags) || []) h += '<div class="under-review"><strong>Under review:</strong> ' + esc(f) + '</div>';
+    if (sc.meta && sc.meta.sources && sc.meta.sources.length) h += '<p>' + sc.meta.sources.map(citeHtml).join(' &nbsp;·&nbsp; ') + '</p>';
+    h += '<p class="small">The textbook takes precedence over Region X SOPs where they differ. <a href="mailto:' + FLAG_EMAIL + '?subject=' + encodeURIComponent('Scenario Trainer — issue in ' + sc.id + ' (' + sc.title + ')') + '">Flag an issue with this scenario</a>.</p>';
+    h += '<div class="btnrow"><button class="btn primary" id="again">Try again</button><a class="btn" href="#">Back to scenarios</a></div>';
+    document.getElementById('app').innerHTML = h; window.scrollTo(0, 0);
+    document.getElementById('again').onclick = () => { newRun(sc); view = 'run'; renderRun(); };
+  }
+
+  // ---------- boot ----------
+  if (!SHEETS || !SCENARIOS.length) {
+    document.getElementById('app').innerHTML = '<p>Scenario data failed to load. Make sure <code>sheets.js</code> and <code>scenarios.js</code> sit next to this page.</p>';
+  } else {
+    window.addEventListener('resize', syncTopbarOffset);
+    route();
+  }
+})();
+</script>
+</body>
+</html>

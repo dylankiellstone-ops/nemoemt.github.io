@@ -1,0 +1,27 @@
+name: Validate scenario trainer
+
+on:
+  push:
+    paths:
+      - "trainer/**"
+      - "validate_trainer.py"
+      - ".github/workflows/validate-trainer.yml"
+  pull_request:
+    paths:
+      - "trainer/**"
+      - "validate_trainer.py"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - name: Validate trainer data (citations, protocol refs, schema)
+        run: python3 validate_trainer.py

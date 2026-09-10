@@ -1,0 +1,3 @@
+# Proctor scenario source — contains material from the access-controlled page; never commit.
+trainer/proctor_data.json
+.DS_Store
